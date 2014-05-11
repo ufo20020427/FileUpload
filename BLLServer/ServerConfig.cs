@@ -19,7 +19,7 @@ namespace BLLServer
                 _thumbPictureHeight = int.Parse(ConfigurationManager.AppSettings["ThumbPictureHeight"]);
                 _vectorPictureExtenName = ConfigurationManager.AppSettings["VectorPictureExtenName"].ToString();
 
-                _token = ConfigurationManager.AppSettings["Token"].ToString();
+                _token = ConfigurationManager.AppSettings["Token"].ToString();              
             }
             catch (Exception ex)
             {

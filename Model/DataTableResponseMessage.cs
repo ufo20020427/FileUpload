@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Model
 {
-  public  class CategoryResponseMessage
+    public class DataTableResponseMessage
     {
         [MessageHeader]
         public bool IsSuccessed;

@@ -25,7 +25,7 @@ namespace Client
             string file = "E:\\项目前期资料\\佛山三期资料\\固定费统计分析\\输入\\201312\\abc.jpg";
             using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read))
             {
-                FileUploadMessage request = new FileUploadMessage();
+                FileUploadQuestMessage request = new FileUploadQuestMessage();
                 request.Token = "1qaz2wsx";
                 request.Account = "account1";
                 request.PassWord = "pass1";
@@ -39,7 +39,7 @@ namespace Client
                 request.FileName = "abc.jpg";
                 request.StoreTableName = "Files_Boy";
                 request.FileData = fs;
-                ResponseMessage response = _proxy.FileUpLoad(request);
+                CommonResponseMessage response = _proxy.FileUpLoad(request);
                 Console.WriteLine(response.IsSuccessed);
                 Console.WriteLine(response.ResultMessage);
             }    
@@ -54,11 +54,11 @@ namespace Client
 
                 (_proxy as ICommunicationObject).Open();
 
-                CategoryResponseMessage response = _proxy.GetCategory(ClientConfig.Token, 1, "account1", "pass1");
-                Console.WriteLine(response.IsSuccessed.ToString());
-                Console.WriteLine(response.ResultMessage);
-                DataTable dt = response.DataTable;
-                Console.WriteLine(dt.Rows.Count.ToString());
+                //DataTableResponseMessage response = _proxy.GetFileServerInfoByEndPoint(ClientConfig.Token, 1, "account1", "pass1");
+                //Console.WriteLine(response.IsSuccessed.ToString());
+                //Console.WriteLine(response.ResultMessage);
+                //DataTable dt = response.DataTable;
+                //Console.WriteLine(dt.Rows.Count.ToString());
 
                 //   ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadProc), string.Empty);
 

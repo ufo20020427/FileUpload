@@ -7,7 +7,7 @@ using System.Text;
 namespace Model
 {
     [MessageContract]
-    public class ResponseMessage
+    public class CommonResponseMessage
     {
         [MessageHeader]
         public bool IsSuccessed;

@@ -86,9 +86,9 @@ namespace BLLServer
             return isPermission;
         }
 
-        public ResponseMessage DirectoryCreate(DirectoryCreateMessage requestMessage)
+        public CommonResponseMessage DirectoryCreate(DirectoryCreateQuestMessage requestMessage)
         {
-            ResponseMessage responseMessage = new ResponseMessage();
+            CommonResponseMessage responseMessage = new CommonResponseMessage();
             responseMessage.IsSuccessed = false;
       
             try
@@ -117,7 +117,7 @@ namespace BLLServer
             return responseMessage;
         }
 
-        private void GalleryCreateParamAdd(ref DbCommand cmd, GalleryCreateMessage requestMessage)
+        private void GalleryCreateParamAdd(ref DbCommand cmd, GalleryCreateQuestMessage requestMessage)
         {
             DbParameter param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@CategoryId";
@@ -193,9 +193,9 @@ namespace BLLServer
             cmd.Parameters.Add(param);
         }  
 
-        public ResponseMessage GalleryCreate(GalleryCreateMessage requestMessage)
+        public CommonResponseMessage GalleryCreate(GalleryCreateQuestMessage requestMessage)
         {
-            ResponseMessage responseMessage = new ResponseMessage();
+            CommonResponseMessage responseMessage = new CommonResponseMessage();
             responseMessage.IsSuccessed = false;
 
             try
@@ -261,7 +261,7 @@ namespace BLLServer
             return responseMessage;
         }
 
-        private void FileInsertParamAdd(ref DbCommand cmd, FileUploadMessage requestMessage)
+        private void FileInsertParamAdd(ref DbCommand cmd, FileUploadQuestMessage requestMessage)
         {
             DbParameter param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@StoreTableName";
@@ -300,9 +300,9 @@ namespace BLLServer
             cmd.Parameters.Add(param);
         }
 
-        public ResponseMessage FileUpLoad(FileUploadMessage requestMessage)
+        public CommonResponseMessage FileUpLoad(FileUploadQuestMessage requestMessage)
         {
-            ResponseMessage responseMessage = new ResponseMessage();
+            CommonResponseMessage responseMessage = new CommonResponseMessage();
             responseMessage.IsSuccessed = false;
             string originalFileSavePath = string.Empty;
             string thumbFileSavePath = string.Empty;
@@ -406,9 +406,9 @@ namespace BLLServer
             return responseMessage;
         }
 
-        public ResponseMessage FileBundling(GalleryBundlingMessage requestMessage)
+        public CommonResponseMessage FileBundling(GalleryBundlingQuestMessage requestMessage)
         {
-            ResponseMessage responseMessage = new ResponseMessage();
+            CommonResponseMessage responseMessage = new CommonResponseMessage();
             responseMessage.IsSuccessed = false;
             string packageSavePath = string.Empty;
 
@@ -465,9 +465,9 @@ namespace BLLServer
             return responseMessage;
         }
 
-        public CategoryResponseMessage GetCategory(string token, int fileServerId, string account, string passWord)
+        public DataTableResponseMessage GetCategoryInfo(string token, int fileServerId, string account, string passWord)
         {
-            CategoryResponseMessage responseMessage = new CategoryResponseMessage();
+            DataTableResponseMessage responseMessage = new DataTableResponseMessage();
 
             DataTable dt = new DataTable();         
             
@@ -489,9 +489,18 @@ namespace BLLServer
                 cmd.CommandText = "Proc_Category_GetAll";
                 dt = _dataBaseAccess.GetDataTable(cmd);
                 dt.TableName = "Category";
-                responseMessage.IsSuccessed = true;
-                responseMessage.ResultMessage=string.Empty; 
+
                 responseMessage.DataTable = dt;
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    responseMessage.IsSuccessed = true;
+                    responseMessage.ResultMessage = string.Empty;
+                }
+                else
+                {
+                    responseMessage.IsSuccessed = false;
+                    responseMessage.ResultMessage = "目录信息表为空!";
+                }                
             }
             catch (Exception ex)
             {
@@ -507,5 +516,78 @@ namespace BLLServer
 
             return responseMessage;
         }
+        
+
+        public DataTableResponseMessage GetFileServerInfoByEndPoint(string token, string endPoint, string account, string passWord)
+        {
+            DataTableResponseMessage responseMessage = new DataTableResponseMessage();
+
+            DataTable dt = new DataTable();
+
+            try
+            {
+                bool isPermission = token== ServerConfig.Token;
+                if (!isPermission)
+                {
+                    dt.TableName = "FileServer";
+                    dt.Columns.Add("Error", typeof(string));
+
+                    responseMessage.IsSuccessed = false;
+                    responseMessage.ResultMessage = "您没有访问该文件服务器接口的权限!";
+                    responseMessage.DataTable = dt;
+                    return responseMessage;
+                }
+
+                DbCommand cmd = _dataBaseAccess.CreateCommand();
+                cmd.CommandText = "Proc_FileServer_GetByEndPoint";
+
+                DbParameter param = _dataBaseAccess.CreateParameter();
+                param.ParameterName = "@EndPoint";
+                param.DbType = DbType.String;
+                param.Value = endPoint;
+                cmd.Parameters.Add(param);
+
+                param = _dataBaseAccess.CreateParameter();
+                param.ParameterName = "@Account";
+                param.DbType = DbType.String;
+                param.Value = account;
+                cmd.Parameters.Add(param);
+
+                param = _dataBaseAccess.CreateParameter();
+                param.ParameterName = "@PassWord";
+                param.DbType = DbType.String;
+                param.Value = Tools.MD5Encrypt(passWord);
+                cmd.Parameters.Add(param);
+
+                dt = _dataBaseAccess.GetDataTable(cmd);
+                dt.TableName = "FileServer";
+
+                responseMessage.DataTable = dt;
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    responseMessage.IsSuccessed = true;
+                    responseMessage.ResultMessage = string.Empty;
+                }
+                else
+                {
+                    responseMessage.IsSuccessed = false;
+                    responseMessage.ResultMessage = string.Format("终结点：{0}从服务器信息表获取不到内容！", endPoint);
+                }              
+            }
+            catch (Exception ex)
+            {
+                dt = new DataTable();
+                dt.TableName = "FileServer";
+                dt.Columns.Add("Error", typeof(string));
+
+                responseMessage.IsSuccessed = false;
+                responseMessage.ResultMessage = ex.Message;
+                responseMessage.DataTable = dt;
+                Tools.LogWrite(ex.ToString());
+            }
+
+            return responseMessage;
+        }
+    
     }
 }
