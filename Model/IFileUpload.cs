@@ -28,6 +28,6 @@ namespace Model
         DataTableResponseMessage GetCategoryInfo(string token, int fileServerId, string account, string passWord);
 
         [OperationContract]
-        DataTableResponseMessage GetFileServerInfoByEndPoint(string token, string endPoint, string account, string passWord);
+        DataTableResponseMessage GetFileServerInfoByEndPoint(string token, string wcfAddress, string account, string passWord);
     }
 }

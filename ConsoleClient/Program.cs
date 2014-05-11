@@ -49,16 +49,19 @@ namespace Client
         {
             try
             {
-                channelFactory = new ChannelFactory<IFileUpload>("FileUploadEndPoint");
+                NetTcpBinding binding = new NetTcpBinding();
+                binding.TransferMode = TransferMode.Streamed;
+                channelFactory = new ChannelFactory<IFileUpload>(binding, ClientConfig.WCFAddress);
+
                 _proxy = channelFactory.CreateChannel();
 
                 (_proxy as ICommunicationObject).Open();
 
-                //DataTableResponseMessage response = _proxy.GetFileServerInfoByEndPoint(ClientConfig.Token, 1, "account1", "pass1");
-                //Console.WriteLine(response.IsSuccessed.ToString());
-                //Console.WriteLine(response.ResultMessage);
-                //DataTable dt = response.DataTable;
-                //Console.WriteLine(dt.Rows.Count.ToString());
+                DataTableResponseMessage response = _proxy.GetFileServerInfoByEndPoint(ClientConfig.Token, ClientConfig.WCFAddress, "account1", "pass1");
+                Console.WriteLine(response.IsSuccessed.ToString());
+                Console.WriteLine(response.ResultMessage);
+                DataTable dt = response.DataTable;
+                Console.WriteLine(dt.Rows.Count.ToString());
 
                 //   ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadProc), string.Empty);
 

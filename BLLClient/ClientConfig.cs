@@ -12,6 +12,7 @@ namespace BLLClient
         {
             try
             {
+                _wcfAddress = ConfigurationManager.AppSettings["WCFAddress"].ToString();
                 _account = ConfigurationManager.AppSettings["Account"].ToString();
                 _passWord = ConfigurationManager.AppSettings["PassWord"].ToString();
                 _token = ConfigurationManager.AppSettings["Token"].ToString();
@@ -23,9 +24,15 @@ namespace BLLClient
             }
         }
 
+        private static string _wcfAddress;
         private static string _account;
         private static string _passWord;
         private static string _token;
+
+        public static string WCFAddress
+        {
+            get { return _wcfAddress; }
+        }
 
         public static string Account
         {

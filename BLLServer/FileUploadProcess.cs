@@ -516,9 +516,9 @@ namespace BLLServer
 
             return responseMessage;
         }
-        
 
-        public DataTableResponseMessage GetFileServerInfoByEndPoint(string token, string endPoint, string account, string passWord)
+
+        public DataTableResponseMessage GetFileServerInfoByEndPoint(string token, string wcfAddress, string account, string passWord)
         {
             DataTableResponseMessage responseMessage = new DataTableResponseMessage();
 
@@ -526,7 +526,7 @@ namespace BLLServer
 
             try
             {
-                bool isPermission = token== ServerConfig.Token;
+                bool isPermission = token == ServerConfig.Token;
                 if (!isPermission)
                 {
                     dt.TableName = "FileServer";
@@ -542,9 +542,9 @@ namespace BLLServer
                 cmd.CommandText = "Proc_FileServer_GetByEndPoint";
 
                 DbParameter param = _dataBaseAccess.CreateParameter();
-                param.ParameterName = "@EndPoint";
+                param.ParameterName = "@WCFAddress";
                 param.DbType = DbType.String;
-                param.Value = endPoint;
+                param.Value = wcfAddress;
                 cmd.Parameters.Add(param);
 
                 param = _dataBaseAccess.CreateParameter();
@@ -571,7 +571,7 @@ namespace BLLServer
                 else
                 {
                     responseMessage.IsSuccessed = false;
-                    responseMessage.ResultMessage = string.Format("终结点：{0}从服务器信息表获取不到内容！", endPoint);
+                    responseMessage.ResultMessage = string.Format("{0}从服务器信息表获取不到内容！", wcfAddress);
                 }              
             }
             catch (Exception ex)
