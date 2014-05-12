@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Category.cs" />
     <Compile Include="DataTableResponseMessage.cs" />
     <Compile Include="DirectoryCreateQuestMessage.cs" />
     <Compile Include="GalleryBundlingQuestMessage.cs" />

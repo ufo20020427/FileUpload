@@ -57,6 +57,7 @@
             this.Controls.Add(this.statusStrip1);
             this.Name = "FormMain";
             this.Text = "素材上传";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 
