@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.treeMenu = new System.Windows.Forms.TreeView();
+            this.treeCategory = new System.Windows.Forms.TreeView();
             this.SuspendLayout();
             // 
             // statusStrip1
@@ -40,20 +40,20 @@
             this.statusStrip1.TabIndex = 0;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // treeMenu
+            // treeCategory
             // 
-            this.treeMenu.Dock = System.Windows.Forms.DockStyle.Left;
-            this.treeMenu.Location = new System.Drawing.Point(0, 0);
-            this.treeMenu.Name = "treeMenu";
-            this.treeMenu.Size = new System.Drawing.Size(219, 447);
-            this.treeMenu.TabIndex = 1;
+            this.treeCategory.Dock = System.Windows.Forms.DockStyle.Left;
+            this.treeCategory.Location = new System.Drawing.Point(0, 0);
+            this.treeCategory.Name = "treeCategory";
+            this.treeCategory.Size = new System.Drawing.Size(219, 447);
+            this.treeCategory.TabIndex = 1;
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(801, 469);
-            this.Controls.Add(this.treeMenu);
+            this.Controls.Add(this.treeCategory);
             this.Controls.Add(this.statusStrip1);
             this.Name = "FormMain";
             this.Text = "素材上传";
@@ -66,7 +66,7 @@
         #endregion
 
         private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.TreeView treeMenu;
+        private System.Windows.Forms.TreeView treeCategory;
     }
 }
 

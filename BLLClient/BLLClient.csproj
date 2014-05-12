@@ -33,6 +33,8 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLLCategoryTree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ClientConfig.cs" />
   </ItemGroup>
@@ -47,6 +50,10 @@
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{cdd96520-a3f7-4500-86b2-a95065af9e2a}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{668802ab-1e68-405e-9f6e-f550eb56b729}</Project>
+      <Name>Model</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
