@@ -94,10 +94,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="Images\folder.gif">
+    <Content Include="Images\FolderGallery.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Images\folderopen.gif">
+    <Content Include="Images\FolderPicture.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\page.gif">

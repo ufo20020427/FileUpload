@@ -43,6 +43,7 @@
             // treeCategory
             // 
             this.treeCategory.Dock = System.Windows.Forms.DockStyle.Left;
+            this.treeCategory.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.treeCategory.Location = new System.Drawing.Point(0, 0);
             this.treeCategory.Name = "treeCategory";
             this.treeCategory.Size = new System.Drawing.Size(219, 447);
@@ -52,9 +53,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.ClientSize = new System.Drawing.Size(801, 469);
             this.Controls.Add(this.treeCategory);
             this.Controls.Add(this.statusStrip1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "FormMain";
             this.Text = "素材上传";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
