@@ -47,7 +47,7 @@ namespace WinFormClient
         {
             try
             {
-                DataTableResponseMessage response = _proxy.GetCategoryInfo(ClientConfig.Token, 1, "account1", "pass1");
+                DataTableResponse response = _proxy.GetCategoryInfo(ClientConfig.Token, 1, "account1", "pass1");
                 BLLCategoryTree bllCategoryTree = new BLLCategoryTree(treeCategory);
                 bllCategoryTree.CategoryLoad(response.DataTable);
             }

@@ -7,7 +7,7 @@ using System.Text;
 namespace Model
 {
     [MessageContract]
-    public class GalleryBundlingQuestMessage
+    public class GalleryBundlingQuest
     {
         [MessageHeader]
         public string Token;

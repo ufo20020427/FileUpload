@@ -86,9 +86,9 @@ namespace BLLServer
             return isPermission;
         }
 
-        public CommonResponseMessage DirectoryCreate(DirectoryCreateQuestMessage requestMessage)
+        public CommonResponse DirectoryCreate(DirectoryCreateQuest requestMessage)
         {
-            CommonResponseMessage responseMessage = new CommonResponseMessage();
+            CommonResponse responseMessage = new CommonResponse();
             responseMessage.IsSuccessed = false;
       
             try
@@ -117,7 +117,7 @@ namespace BLLServer
             return responseMessage;
         }
 
-        private void GalleryCreateParamAdd(ref DbCommand cmd, GalleryCreateQuestMessage requestMessage)
+        private void GalleryCreateParamAdd(ref DbCommand cmd, GalleryCreateQuest requestMessage)
         {
             DbParameter param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@CategoryId";
@@ -193,9 +193,9 @@ namespace BLLServer
             cmd.Parameters.Add(param);
         }  
 
-        public CommonResponseMessage GalleryCreate(GalleryCreateQuestMessage requestMessage)
+        public CommonResponse GalleryCreate(GalleryCreateQuest requestMessage)
         {
-            CommonResponseMessage responseMessage = new CommonResponseMessage();
+            CommonResponse responseMessage = new CommonResponse();
             responseMessage.IsSuccessed = false;
 
             try
@@ -261,7 +261,7 @@ namespace BLLServer
             return responseMessage;
         }
 
-        private void FileInsertParamAdd(ref DbCommand cmd, FileUploadQuestMessage requestMessage)
+        private void FileInsertParamAdd(ref DbCommand cmd, FileUploadQuest requestMessage)
         {
             DbParameter param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@StoreTableName";
@@ -300,9 +300,9 @@ namespace BLLServer
             cmd.Parameters.Add(param);
         }
 
-        public CommonResponseMessage FileUpLoad(FileUploadQuestMessage requestMessage)
+        public CommonResponse FileUpLoad(FileUploadQuest requestMessage)
         {
-            CommonResponseMessage responseMessage = new CommonResponseMessage();
+            CommonResponse responseMessage = new CommonResponse();
             responseMessage.IsSuccessed = false;
             string originalFileSavePath = string.Empty;
             string thumbFileSavePath = string.Empty;
@@ -406,9 +406,9 @@ namespace BLLServer
             return responseMessage;
         }
 
-        public CommonResponseMessage FileBundling(GalleryBundlingQuestMessage requestMessage)
+        public CommonResponse FileBundling(GalleryBundlingQuest requestMessage)
         {
-            CommonResponseMessage responseMessage = new CommonResponseMessage();
+            CommonResponse responseMessage = new CommonResponse();
             responseMessage.IsSuccessed = false;
             string packageSavePath = string.Empty;
 
@@ -465,9 +465,9 @@ namespace BLLServer
             return responseMessage;
         }
 
-        public DataTableResponseMessage GetCategoryInfo(string token, int fileServerId, string account, string passWord)
+        public DataTableResponse GetCategoryInfo(string token, int fileServerId, string account, string passWord)
         {
-            DataTableResponseMessage responseMessage = new DataTableResponseMessage();
+            DataTableResponse responseMessage = new DataTableResponse();
 
             DataTable dt = new DataTable();         
             
@@ -518,9 +518,9 @@ namespace BLLServer
         }
 
 
-        public DataTableResponseMessage GetFileServerInfoByEndPoint(string token, string wcfAddress, string account, string passWord)
+        public DataTableResponse GetFileServerInfoByEndPoint(string token, string wcfAddress, string account, string passWord)
         {
-            DataTableResponseMessage responseMessage = new DataTableResponseMessage();
+            DataTableResponse responseMessage = new DataTableResponse();
 
             DataTable dt = new DataTable();
 

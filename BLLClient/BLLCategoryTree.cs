@@ -94,8 +94,7 @@ namespace BLLClient
                 }
 
                 newTreeNode.ImageIndex =  indexImage;
-                newTreeNode.SelectedImageIndex = indexImage;
-             
+                newTreeNode.SelectedImageIndex = indexImage;             
                 parentNode.Nodes.Add(newTreeNode);
 
                 GreateTree(dt, colId.ToString(), newTreeNode);

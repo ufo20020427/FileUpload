@@ -8,7 +8,7 @@ using System.Text;
 namespace Model
 {
     [MessageContract]
-    public class FileUploadQuestMessage
+    public class FileUploadQuest
     {
         [MessageHeader]
         public string Token;

@@ -42,14 +42,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Category.cs" />
-    <Compile Include="DataTableResponseMessage.cs" />
-    <Compile Include="DirectoryCreateQuestMessage.cs" />
-    <Compile Include="GalleryBundlingQuestMessage.cs" />
-    <Compile Include="GalleryCreateQuestMessage.cs" />
+    <Compile Include="DataTableResponse.cs" />
+    <Compile Include="DirectoryCreateQuest.cs" />
+    <Compile Include="GalleryBundlingQuest.cs" />
+    <Compile Include="GalleryCreateQuest.cs" />
     <Compile Include="IFileUpload.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="FileUploadQuestMessage.cs" />
-    <Compile Include="CommonResponseMessage.cs" />
+    <Compile Include="FileUploadQuest.cs" />
+    <Compile Include="CommonResponse.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -7,7 +7,7 @@ using System.Text;
 namespace Model
 {
     [MessageContract]
-    public class DirectoryCreateQuestMessage
+    public class DirectoryCreateQuest
     {
         [MessageHeader]
         public string Token;
