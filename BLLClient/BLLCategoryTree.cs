@@ -64,6 +64,7 @@ namespace BLLClient
             nodeRoot.SelectedImageIndex = _indexImageRoot;
             nodeRoot.Text = "目录";
             nodeRoot.Expand();
+            nodeRoot.Tag = null;
             _treeCategory.Nodes.Add(nodeRoot);
 
             GreateTree(dt, "0", nodeRoot);
@@ -86,7 +87,16 @@ namespace BLLClient
                 category.IsExistVideo = Convert.ToBoolean(_indexIsExistVideo);
                 category.IsExistVector = Convert.ToBoolean(_indexIsExistVector);
                 category.StoreTableName = drv[_indexStoreTableName].ToString();
-                category.IsDetail = Convert.ToBoolean(_indexIsDetail);               
+                category.IsDetail = Convert.ToBoolean(drv[_indexIsDetail]);
+
+                if (parentNode.Tag == null)
+                {
+                    category.Path = category.FolderName;
+                }
+                else
+                {
+                    category.Path = (parentNode.Tag as Category).FolderName + "|" + category.FolderName;
+                }
 
                 int indexImage = 0;
                 if (category.Type == 1)
