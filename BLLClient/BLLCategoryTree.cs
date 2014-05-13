@@ -18,13 +18,18 @@ namespace BLLClient
         private int _indexImagePicture = 1;
         private int _indexImagePictureDetail = 2;
         private int _indexImageGallery = 3;
-        private int _indexImageGalleryDetail = 4;  
+        private int _indexImageGalleryDetail = 4;
+        private int _indexImageUnKnowType = 5;
 
         private int _indexId;
-        private int _indexParentId;
         private int _indexName;
-        private int _indexIsDetail;
+        private int _indexFolderName;
+        private int _indexParentId;
         private int _indexType;
+        private int _indexIsExistVideo;
+        private int _indexIsExistVector;
+        private int _indexStoreTableName;
+        private int _indexIsDetail;
 
         public BLLCategoryTree(TreeView treeCategory)
         {
@@ -36,6 +41,7 @@ namespace BLLClient
             imageList.Images.Add(Image.FromFile("Images/PictureDetail.ico"));
             imageList.Images.Add(Image.FromFile("Images/Gallery.ico"));
             imageList.Images.Add(Image.FromFile("Images/GalleryDetail.ico"));
+            imageList.Images.Add(Image.FromFile("Images/UnKnowType.ico"));
 
             _treeCategory.ImageList = imageList;
             _treeCategory.HideSelection = false;          
@@ -44,10 +50,14 @@ namespace BLLClient
         public void CategoryLoad(DataTable dt)
         {
             _indexId = dt.Columns.IndexOf("CID");
-            _indexParentId = dt.Columns.IndexOf("FID");
             _indexName = dt.Columns.IndexOf("CName");
-            _indexIsDetail = dt.Columns.IndexOf("IsDetail");
+            _indexFolderName = dt.Columns.IndexOf("FolderName");
+            _indexParentId = dt.Columns.IndexOf("FID");
             _indexType = dt.Columns.IndexOf("CType");
+            _indexIsExistVideo = dt.Columns.IndexOf("IsVideo");
+            _indexIsExistVector = dt.Columns.IndexOf("IsVector");
+            _indexStoreTableName = dt.Columns.IndexOf("DataTable");
+            _indexIsDetail = dt.Columns.IndexOf("IsDetail");          
 
             TreeNode nodeRoot = new TreeNode();
             nodeRoot.ImageIndex = _indexImageRoot;
@@ -67,37 +77,39 @@ namespace BLLClient
 
             foreach (DataRowView drv in dv)
             {
-                int colId = Convert.ToInt32(drv[_indexId]);
-                int colParentId = Convert.ToInt32(drv[_indexParentId]);
-                string colName = drv[_indexName].ToString();
-                bool colIsDetail = Convert.ToBoolean(drv[_indexIsDetail]);
-                byte colType = Convert.ToByte(drv[_indexType]);
-
                 Category category = new Category();
-                category.Id = colId;
-                category.ParentId = colParentId;
-                category.Name = colName;
-                category.IsDetail = colIsDetail;
-
-                TreeNode newTreeNode = new TreeNode();
-                newTreeNode.Text = colName;
-                newTreeNode.Tag = category;
+                category.Id = Convert.ToInt32(drv[_indexId]);
+                category.Name = drv[_indexName].ToString();
+                category.FolderName = drv[_indexFolderName].ToString(); 
+                category.ParentId = Convert.ToInt32(drv[_indexParentId]); 
+                category.Type = Convert.ToByte(drv[_indexType]);
+                category.IsExistVideo = Convert.ToBoolean(_indexIsExistVideo);
+                category.IsExistVector = Convert.ToBoolean(_indexIsExistVector);
+                category.StoreTableName = drv[_indexStoreTableName].ToString();
+                category.IsDetail = Convert.ToBoolean(_indexIsDetail);               
 
                 int indexImage = 0;
-                if(colType == 1)
+                if (category.Type == 1)
                 {
-                    indexImage = colIsDetail ? _indexImagePictureDetail : _indexImagePicture;
+                    indexImage = category.IsDetail ? _indexImagePictureDetail : _indexImagePicture;
                 }
-                else if(colType == 2)
+                else if (category.Type == 2)
                 {
-                    indexImage = colIsDetail ? _indexImageGalleryDetail : _indexImageGallery;
+                    indexImage = category.IsDetail ? _indexImageGalleryDetail : _indexImageGallery;
+                }
+                else
+                {
+                    indexImage = _indexImageUnKnowType;
                 }
 
-                newTreeNode.ImageIndex =  indexImage;
-                newTreeNode.SelectedImageIndex = indexImage;             
+                TreeNode newTreeNode = new TreeNode();
+                newTreeNode.ImageIndex = indexImage;
+                newTreeNode.SelectedImageIndex = indexImage;   
+                newTreeNode.Text = category.Name;
+                newTreeNode.Tag = category;                      
                 parentNode.Nodes.Add(newTreeNode);
 
-                GreateTree(dt, colId.ToString(), newTreeNode);
+                GreateTree(dt, category.Id.ToString(), newTreeNode);
             }
         }
 
