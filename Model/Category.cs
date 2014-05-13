@@ -17,6 +17,7 @@ namespace Model
         public string StoreTableName { get; set; }
         public bool IsDetail { get; set; }
 
-        public string Path { get; set; }
+        public string LevelPath { get; set; }
+        public string LocalDirectoryPath { get; set; }
     }
 }

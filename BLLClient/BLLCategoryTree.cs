@@ -20,6 +20,7 @@ namespace BLLClient
         private int _indexImageGallery = 3;
         private int _indexImageGalleryDetail = 4;
         private int _indexImageUnKnowType = 5;
+        private int _indexImageNoBind = 6;
 
         private int _indexId;
         private int _indexName;
@@ -42,6 +43,7 @@ namespace BLLClient
             imageList.Images.Add(Image.FromFile("Images/Gallery.ico"));
             imageList.Images.Add(Image.FromFile("Images/GalleryDetail.ico"));
             imageList.Images.Add(Image.FromFile("Images/UnKnowType.ico"));
+            imageList.Images.Add(Image.FromFile("Images/NoBind.ico"));
 
             _treeCategory.ImageList = imageList;
             _treeCategory.HideSelection = false;          
@@ -62,9 +64,9 @@ namespace BLLClient
             TreeNode nodeRoot = new TreeNode();
             nodeRoot.ImageIndex = _indexImageRoot;
             nodeRoot.SelectedImageIndex = _indexImageRoot;
-            nodeRoot.Text = "目录";
+            nodeRoot.Text = "分类目录";
             nodeRoot.Expand();
-            nodeRoot.Tag = null;
+            nodeRoot.Tag = new Category();
             _treeCategory.Nodes.Add(nodeRoot);
 
             GreateTree(dt, "0", nodeRoot);
@@ -91,15 +93,19 @@ namespace BLLClient
 
                 if (parentNode.Tag == null)
                 {
-                    category.Path = category.FolderName;
+                    category.LevelPath = category.FolderName;
                 }
                 else
                 {
-                    category.Path = (parentNode.Tag as Category).FolderName + "|" + category.FolderName;
+                    category.LevelPath = (parentNode.Tag as Category).LevelPath + "|" + category.FolderName;
                 }
 
                 int indexImage = 0;
-                if (category.Type == 1)
+                if (string.IsNullOrEmpty(category.LocalDirectoryPath))
+                {
+                    indexImage = _indexImageNoBind;
+                }
+                else if (category.Type == 1)
                 {
                     indexImage = category.IsDetail ? _indexImagePictureDetail : _indexImagePicture;
                 }
@@ -114,9 +120,9 @@ namespace BLLClient
 
                 TreeNode newTreeNode = new TreeNode();
                 newTreeNode.ImageIndex = indexImage;
-                newTreeNode.SelectedImageIndex = indexImage;   
+                newTreeNode.SelectedImageIndex = indexImage;                
                 newTreeNode.Text = category.Name;
-                newTreeNode.Tag = category;                      
+                newTreeNode.Tag = category;     
                 parentNode.Nodes.Add(newTreeNode);
 
                 GreateTree(dt, category.Id.ToString(), newTreeNode);

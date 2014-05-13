@@ -31,7 +31,7 @@ namespace WinFormClient
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                Application.Exit();              
+                Application.Exit();
             }
         }
 
@@ -47,7 +47,7 @@ namespace WinFormClient
                 _proxy = channelFactory.CreateChannel();
                 (_proxy as ICommunicationObject).Open();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Tools.LogWrite(ex.ToString());
                 throw new Exception("连接WCF服务端失败:" + ex.Message);
@@ -104,5 +104,27 @@ namespace WinFormClient
         {
             (_proxy as ICommunicationObject).Close();
         }
+
+        private void treeCategory_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            TreeNode selectedNode = treeCategory.SelectedNode;
+            Category category = selectedNode.Tag as Category;
+            statusLabel.Text = "本地目录：" + category.LocalDirectoryPath;
+        }
+
+        private void ContextMenuLocalDirectoryBind_Click(object sender, EventArgs e)
+        {           
+            using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+            {
+                if (folderBrowserDialog.ShowDialog() == DialogResult.OK) 
+                {
+                    string selectedPath = folderBrowserDialog.SelectedPath;
+
+                    TreeNode selectedNode = treeCategory.SelectedNode;
+                    Category category = selectedNode.Tag as Category;
+                }
+            }         
+        }
+
     }
 }

@@ -28,26 +28,63 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.components = new System.ComponentModel.Container();
+            this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.treeCategory = new System.Windows.Forms.TreeView();
+            this.contextCategory = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ContextItemLocalDirectoryCreate = new System.Windows.Forms.ToolStripMenuItem();
+            this.ContextMenuLocalDirectoryBind = new System.Windows.Forms.ToolStripMenuItem();
+            this.statusStrip.SuspendLayout();
+            this.contextCategory.SuspendLayout();
             this.SuspendLayout();
             // 
-            // statusStrip1
+            // statusStrip
             // 
-            this.statusStrip1.Location = new System.Drawing.Point(0, 453);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(794, 22);
-            this.statusStrip1.TabIndex = 0;
-            this.statusStrip1.Text = "statusStrip1";
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statusLabel});
+            this.statusStrip.Location = new System.Drawing.Point(0, 453);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Size = new System.Drawing.Size(794, 22);
+            this.statusStrip.TabIndex = 0;
+            this.statusStrip.Text = "statusStrip1";
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(0, 17);
             // 
             // treeCategory
             // 
+            this.treeCategory.ContextMenuStrip = this.contextCategory;
             this.treeCategory.Dock = System.Windows.Forms.DockStyle.Left;
             this.treeCategory.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.treeCategory.Location = new System.Drawing.Point(0, 0);
             this.treeCategory.Name = "treeCategory";
             this.treeCategory.Size = new System.Drawing.Size(219, 453);
             this.treeCategory.TabIndex = 1;
+            this.treeCategory.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeCategory_AfterSelect);
+            // 
+            // contextCategory
+            // 
+            this.contextCategory.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ContextMenuLocalDirectoryBind,
+            this.ContextItemLocalDirectoryCreate});
+            this.contextCategory.Name = "contextCategory";
+            this.contextCategory.Size = new System.Drawing.Size(153, 70);
+            // 
+            // ContextItemLocalDirectoryCreate
+            // 
+            this.ContextItemLocalDirectoryCreate.Name = "ContextItemLocalDirectoryCreate";
+            this.ContextItemLocalDirectoryCreate.Size = new System.Drawing.Size(152, 22);
+            this.ContextItemLocalDirectoryCreate.Text = "创建本地目录";
+            // 
+            // ContextMenuLocalDirectoryBind
+            // 
+            this.ContextMenuLocalDirectoryBind.Name = "ContextMenuLocalDirectoryBind";
+            this.ContextMenuLocalDirectoryBind.Size = new System.Drawing.Size(152, 22);
+            this.ContextMenuLocalDirectoryBind.Text = "关联本地目录";
+            this.ContextMenuLocalDirectoryBind.Click += new System.EventHandler(this.ContextMenuLocalDirectoryBind_Click);
             // 
             // FormMain
             // 
@@ -56,10 +93,12 @@
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.ClientSize = new System.Drawing.Size(794, 475);
             this.Controls.Add(this.treeCategory);
-            this.Controls.Add(this.statusStrip1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Controls.Add(this.statusStrip);
             this.Name = "FormMain";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
+            this.contextCategory.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -67,8 +106,12 @@
 
         #endregion
 
-        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.TreeView treeCategory;
+        private System.Windows.Forms.ContextMenuStrip contextCategory;
+        private System.Windows.Forms.ToolStripMenuItem ContextItemLocalDirectoryCreate;
+        private System.Windows.Forms.ToolStripStatusLabel statusLabel;
+        private System.Windows.Forms.ToolStripMenuItem ContextMenuLocalDirectoryBind;
     }
 }
 
