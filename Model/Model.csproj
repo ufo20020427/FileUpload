@@ -44,6 +44,7 @@
     <Compile Include="Category.cs" />
     <Compile Include="DataTableResponse.cs" />
     <Compile Include="DirectoryCreateQuest.cs" />
+    <Compile Include="FileServerInfo.cs" />
     <Compile Include="GalleryBundlingQuest.cs" />
     <Compile Include="GalleryCreateQuest.cs" />
     <Compile Include="IFileUpload.cs" />
