@@ -15,9 +15,10 @@ namespace BLLClient
         private TreeView _treeCategory;       
 
         private int _indexImageRoot = 0;
-        private int _indexImagePage = 1;
-        private int _indexImageFolderPicture = 2;
-        private int _indexImageFolderGallery = 3;  
+        private int _indexImagePicture = 1;
+        private int _indexImagePictureDetail = 2;
+        private int _indexImageGallery = 3;
+        private int _indexImageGalleryDetail = 4;  
 
         private int _indexId;
         private int _indexParentId;
@@ -31,9 +32,10 @@ namespace BLLClient
 
             ImageList imageList = new ImageList();
             imageList.Images.Add(Image.FromFile("Images/root.gif"));
-            imageList.Images.Add(Image.FromFile("Images/page.gif"));
-            imageList.Images.Add(Image.FromFile("Images/FolderPicture.ico"));
-            imageList.Images.Add(Image.FromFile("Images/FolderGallery.ico"));
+            imageList.Images.Add(Image.FromFile("Images/Picture.ico"));
+            imageList.Images.Add(Image.FromFile("Images/PictureDetail.ico"));
+            imageList.Images.Add(Image.FromFile("Images/Gallery.ico"));
+            imageList.Images.Add(Image.FromFile("Images/GalleryDetail.ico"));
 
             _treeCategory.ImageList = imageList;
             _treeCategory.HideSelection = false;          
@@ -82,17 +84,13 @@ namespace BLLClient
                 newTreeNode.Tag = category;
 
                 int indexImage = 0;
-                if (colIsDetail)
+                if(colType == 1)
                 {
-                     indexImage = _indexImagePage;                    
+                    indexImage = colIsDetail ? _indexImagePictureDetail : _indexImagePicture;
                 }
-                else if (colType == 1)
+                else if(colType == 2)
                 {
-                    indexImage = _indexImageFolderPicture;
-                }
-                else
-                {
-                    indexImage = _indexImageFolderGallery;
+                    indexImage = colIsDetail ? _indexImageGalleryDetail : _indexImageGallery;
                 }
 
                 newTreeNode.ImageIndex =  indexImage;
