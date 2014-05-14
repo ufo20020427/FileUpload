@@ -59,14 +59,17 @@ namespace BLLClient
             _indexIsExistVideo = dt.Columns.IndexOf("IsVideo");
             _indexIsExistVector = dt.Columns.IndexOf("IsVector");
             _indexStoreTableName = dt.Columns.IndexOf("DataTable");
-            _indexIsDetail = dt.Columns.IndexOf("IsDetail");          
+            _indexIsDetail = dt.Columns.IndexOf("IsDetail");
+
+            Category categoryRoot = new Category();
+            categoryRoot.LevelPath = string.Empty;       
 
             TreeNode nodeRoot = new TreeNode();
             nodeRoot.ImageIndex = _indexImageRoot;
             nodeRoot.SelectedImageIndex = _indexImageRoot;
             nodeRoot.Text = "分类目录";
             nodeRoot.Expand();
-            nodeRoot.Tag = new Category();
+            nodeRoot.Tag = categoryRoot;
             _treeCategory.Nodes.Add(nodeRoot);
 
             GreateTree(dt, "0", nodeRoot);
@@ -91,7 +94,7 @@ namespace BLLClient
                 category.StoreTableName = drv[_indexStoreTableName].ToString();
                 category.IsDetail = Convert.ToBoolean(drv[_indexIsDetail]);
 
-                if (parentNode.Tag == null)
+                if ((parentNode.Tag as Category).LevelPath == string.Empty)
                 {
                     category.LevelPath = category.FolderName;
                 }
@@ -126,6 +129,17 @@ namespace BLLClient
                 parentNode.Nodes.Add(newTreeNode);
 
                 GreateTree(dt, category.Id.ToString(), newTreeNode);
+            }
+        }
+
+        public void LocalDirectoryBind(TreeNode selectedNode, string selectedPath)
+        {
+            Category category = (selectedNode.Tag as Category);
+            category.LocalDirectoryPath = selectedPath + category.LevelPath.Replace("|","\\");          
+
+            foreach(TreeNode node in selectedNode.Nodes)
+            {
+                LocalDirectoryBind(node, selectedPath);
             }
         }
 

@@ -17,6 +17,7 @@ namespace WinFormClient
     {
         private IFileUpload _proxy;
         private FileServerInfo _fileServerInfo;
+        private BLLCategoryTree _bllCategoryTree;
 
         public FormMain()
         {
@@ -84,13 +85,13 @@ namespace WinFormClient
         private void CategoryTreeLoad()
         {
             try
-            {
+            {                
                 DataTableResponse response = _proxy.GetCategoryInfo(ClientConfig.Token, 1, "account1", "pass1");
-                BLLCategoryTree bllCategoryTree = new BLLCategoryTree(treeCategory);
+                _bllCategoryTree = new BLLCategoryTree(treeCategory);
 
                 if (response.DataTable != null || response.DataTable.Rows.Count > 1)
                 {
-                    bllCategoryTree.CategoryLoad(response.DataTable);
+                    _bllCategoryTree.CategoryLoad(response.DataTable);
                 }
             }
             catch (Exception ex)
@@ -107,23 +108,36 @@ namespace WinFormClient
 
         private void treeCategory_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            TreeNode selectedNode = treeCategory.SelectedNode;
-            Category category = selectedNode.Tag as Category;
-            statusLabel.Text = "本地目录：" + category.LocalDirectoryPath;
+            try
+            {
+                TreeNode selectedNode = treeCategory.SelectedNode;
+                Category category = selectedNode.Tag as Category;
+                statusLabel.Text = "本地目录：" + category.LocalDirectoryPath;
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void ContextMenuLocalDirectoryBind_Click(object sender, EventArgs e)
-        {           
-            using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+        {
+            try
             {
-                if (folderBrowserDialog.ShowDialog() == DialogResult.OK) 
+                using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
                 {
-                    string selectedPath = folderBrowserDialog.SelectedPath;
-
-                    TreeNode selectedNode = treeCategory.SelectedNode;
-                    Category category = selectedNode.Tag as Category;
+                    if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        _bllCategoryTree.LocalDirectoryBind(treeCategory.SelectedNode, folderBrowserDialog.SelectedPath);
+                    }
                 }
-            }         
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
         }
 
     }
