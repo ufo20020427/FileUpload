@@ -140,5 +140,10 @@ namespace WinFormClient
             }
         }
 
+        private void ContextItemCategoryRefresh_Click(object sender, EventArgs e)
+        {
+            CategoryTreeLoad();
+        }
+
     }
 }

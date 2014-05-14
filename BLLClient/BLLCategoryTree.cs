@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -10,17 +11,20 @@ using Model;
 
 namespace BLLClient
 {
+    public enum ImageIndex 
+    {
+        Root = 0,
+        Picture = 1,
+        PictureDetail = 2,
+        Gallery = 3,
+        GalleryDetail = 4,
+        UnKnowType = 5,
+        NoBind = 6
+    }
+
     public class BLLCategoryTree
     {
-        private TreeView _treeCategory;       
-
-        private int _indexImageRoot = 0;
-        private int _indexImagePicture = 1;
-        private int _indexImagePictureDetail = 2;
-        private int _indexImageGallery = 3;
-        private int _indexImageGalleryDetail = 4;
-        private int _indexImageUnKnowType = 5;
-        private int _indexImageNoBind = 6;
+        private TreeView _treeCategory;   
 
         private int _indexId;
         private int _indexName;
@@ -65,11 +69,12 @@ namespace BLLClient
             categoryRoot.LevelPath = string.Empty;       
 
             TreeNode nodeRoot = new TreeNode();
-            nodeRoot.ImageIndex = _indexImageRoot;
-            nodeRoot.SelectedImageIndex = _indexImageRoot;
+            nodeRoot.ImageIndex = (int)ImageIndex.Root;
+            nodeRoot.SelectedImageIndex = (int)ImageIndex.Root;
             nodeRoot.Text = "分类目录";
             nodeRoot.Expand();
             nodeRoot.Tag = categoryRoot;
+            _treeCategory.Nodes.Clear();
             _treeCategory.Nodes.Add(nodeRoot);
 
             GreateTree(dt, "0", nodeRoot);
@@ -92,34 +97,22 @@ namespace BLLClient
                 category.IsExistVideo = Convert.ToBoolean(_indexIsExistVideo);
                 category.IsExistVector = Convert.ToBoolean(_indexIsExistVector);
                 category.StoreTableName = drv[_indexStoreTableName].ToString();
-                category.IsDetail = Convert.ToBoolean(drv[_indexIsDetail]);
+                category.IsDetail = Convert.ToBoolean(drv[_indexIsDetail]);             
+                category.LevelPath = (parentNode.Tag as Category).LevelPath + "|" + category.FolderName;              
 
-                if ((parentNode.Tag as Category).LevelPath == string.Empty)
+                int indexImage = (int)ImageIndex.UnKnowType;
+                if (string.IsNullOrEmpty(category.LocalDirectoryPath) || !Directory.Exists(category.LocalDirectoryPath))
                 {
-                    category.LevelPath = category.FolderName;
-                }
-                else
-                {
-                    category.LevelPath = (parentNode.Tag as Category).LevelPath + "|" + category.FolderName;
-                }
-
-                int indexImage = 0;
-                if (string.IsNullOrEmpty(category.LocalDirectoryPath))
-                {
-                    indexImage = _indexImageNoBind;
+                    indexImage =(int)ImageIndex.NoBind;
                 }
                 else if (category.Type == 1)
                 {
-                    indexImage = category.IsDetail ? _indexImagePictureDetail : _indexImagePicture;
+                    indexImage = category.IsDetail ? (int)ImageIndex.PictureDetail : (int)ImageIndex.Picture;
                 }
                 else if (category.Type == 2)
                 {
-                    indexImage = category.IsDetail ? _indexImageGalleryDetail : _indexImageGallery;
-                }
-                else
-                {
-                    indexImage = _indexImageUnKnowType;
-                }
+                    indexImage = category.IsDetail ? (int)ImageIndex.GalleryDetail : (int)ImageIndex.Gallery;
+                }              
 
                 TreeNode newTreeNode = new TreeNode();
                 newTreeNode.ImageIndex = indexImage;
@@ -135,7 +128,11 @@ namespace BLLClient
         public void LocalDirectoryBind(TreeNode selectedNode, string selectedPath)
         {
             Category category = (selectedNode.Tag as Category);
-            category.LocalDirectoryPath = selectedPath + category.LevelPath.Replace("|","\\");          
+            category.LocalDirectoryPath = selectedPath + category.LevelPath.Replace("|","\\");
+            if (!string.IsNullOrEmpty(category.LevelPath))
+            {
+                Directory.CreateDirectory(category.LocalDirectoryPath);
+            }
 
             foreach(TreeNode node in selectedNode.Nodes)
             {

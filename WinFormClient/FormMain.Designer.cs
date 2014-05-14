@@ -33,8 +33,8 @@
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.treeCategory = new System.Windows.Forms.TreeView();
             this.contextCategory = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.ContextItemLocalDirectoryCreate = new System.Windows.Forms.ToolStripMenuItem();
             this.ContextMenuLocalDirectoryBind = new System.Windows.Forms.ToolStripMenuItem();
+            this.ContextItemCategoryRefresh = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             this.contextCategory.SuspendLayout();
             this.SuspendLayout();
@@ -69,15 +69,9 @@
             // 
             this.contextCategory.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ContextMenuLocalDirectoryBind,
-            this.ContextItemLocalDirectoryCreate});
+            this.ContextItemCategoryRefresh});
             this.contextCategory.Name = "contextCategory";
             this.contextCategory.Size = new System.Drawing.Size(153, 70);
-            // 
-            // ContextItemLocalDirectoryCreate
-            // 
-            this.ContextItemLocalDirectoryCreate.Name = "ContextItemLocalDirectoryCreate";
-            this.ContextItemLocalDirectoryCreate.Size = new System.Drawing.Size(152, 22);
-            this.ContextItemLocalDirectoryCreate.Text = "创建本地目录";
             // 
             // ContextMenuLocalDirectoryBind
             // 
@@ -85,6 +79,13 @@
             this.ContextMenuLocalDirectoryBind.Size = new System.Drawing.Size(152, 22);
             this.ContextMenuLocalDirectoryBind.Text = "关联本地目录";
             this.ContextMenuLocalDirectoryBind.Click += new System.EventHandler(this.ContextMenuLocalDirectoryBind_Click);
+            // 
+            // ContextItemCategoryRefresh
+            // 
+            this.ContextItemCategoryRefresh.Name = "ContextItemCategoryRefresh";
+            this.ContextItemCategoryRefresh.Size = new System.Drawing.Size(152, 22);
+            this.ContextItemCategoryRefresh.Text = "刷新分类";
+            this.ContextItemCategoryRefresh.Click += new System.EventHandler(this.ContextItemCategoryRefresh_Click);
             // 
             // FormMain
             // 
@@ -109,9 +110,9 @@
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.TreeView treeCategory;
         private System.Windows.Forms.ContextMenuStrip contextCategory;
-        private System.Windows.Forms.ToolStripMenuItem ContextItemLocalDirectoryCreate;
         private System.Windows.Forms.ToolStripStatusLabel statusLabel;
         private System.Windows.Forms.ToolStripMenuItem ContextMenuLocalDirectoryBind;
+        private System.Windows.Forms.ToolStripMenuItem ContextItemCategoryRefresh;
     }
 }
 
