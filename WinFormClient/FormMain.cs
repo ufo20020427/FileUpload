@@ -129,7 +129,7 @@ namespace WinFormClient
                 {
                     if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
                     {
-                        _bllCategoryTree.LocalDirectoryBind(treeCategory.SelectedNode, folderBrowserDialog.SelectedPath);
+                        _bllCategoryTree.LocalDirectoryBind(treeCategory.SelectedNode, string.Empty, folderBrowserDialog.SelectedPath);
                     }
                 }
             }

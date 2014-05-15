@@ -11,7 +11,7 @@ using Model;
 
 namespace BLLClient
 {
-    public enum ImageIndex 
+    public enum ImageIndex
     {
         Root = 0,
         Picture = 1,
@@ -24,7 +24,7 @@ namespace BLLClient
 
     public class BLLCategoryTree
     {
-        private TreeView _treeCategory;   
+        private TreeView _treeCategory;
 
         private int _indexId;
         private int _indexName;
@@ -50,7 +50,7 @@ namespace BLLClient
             imageList.Images.Add(Image.FromFile("Images/NoBind.ico"));
 
             _treeCategory.ImageList = imageList;
-            _treeCategory.HideSelection = false;          
+            _treeCategory.HideSelection = false;
         }
 
         public void CategoryLoad(DataTable dt)
@@ -66,7 +66,8 @@ namespace BLLClient
             _indexIsDetail = dt.Columns.IndexOf("IsDetail");
 
             Category categoryRoot = new Category();
-            categoryRoot.LevelPath = string.Empty;       
+            categoryRoot.LevelPath = string.Empty;
+            categoryRoot.FolderName = string.Empty;
 
             TreeNode nodeRoot = new TreeNode();
             nodeRoot.ImageIndex = (int)ImageIndex.Root;
@@ -91,19 +92,19 @@ namespace BLLClient
                 Category category = new Category();
                 category.Id = Convert.ToInt32(drv[_indexId]);
                 category.Name = drv[_indexName].ToString();
-                category.FolderName = drv[_indexFolderName].ToString(); 
-                category.ParentId = Convert.ToInt32(drv[_indexParentId]); 
+                category.FolderName = drv[_indexFolderName].ToString();
+                category.ParentId = Convert.ToInt32(drv[_indexParentId]);
                 category.Type = Convert.ToByte(drv[_indexType]);
                 category.IsExistVideo = Convert.ToBoolean(_indexIsExistVideo);
                 category.IsExistVector = Convert.ToBoolean(_indexIsExistVector);
                 category.StoreTableName = drv[_indexStoreTableName].ToString();
-                category.IsDetail = Convert.ToBoolean(drv[_indexIsDetail]);             
-                category.LevelPath = (parentNode.Tag as Category).LevelPath + "|" + category.FolderName;              
+                category.IsDetail = Convert.ToBoolean(drv[_indexIsDetail]);
+                category.LevelPath = (parentNode.Tag as Category).LevelPath + "|" + category.FolderName;
 
                 int indexImage = (int)ImageIndex.UnKnowType;
                 if (string.IsNullOrEmpty(category.LocalDirectoryPath) || !Directory.Exists(category.LocalDirectoryPath))
                 {
-                    indexImage =(int)ImageIndex.NoBind;
+                    indexImage = (int)ImageIndex.NoBind;
                 }
                 else if (category.Type == 1)
                 {
@@ -112,31 +113,40 @@ namespace BLLClient
                 else if (category.Type == 2)
                 {
                     indexImage = category.IsDetail ? (int)ImageIndex.GalleryDetail : (int)ImageIndex.Gallery;
-                }              
+                }
 
                 TreeNode newTreeNode = new TreeNode();
                 newTreeNode.ImageIndex = indexImage;
-                newTreeNode.SelectedImageIndex = indexImage;                
+                newTreeNode.SelectedImageIndex = indexImage;
                 newTreeNode.Text = category.Name;
-                newTreeNode.Tag = category;     
+                newTreeNode.Tag = category;
                 parentNode.Nodes.Add(newTreeNode);
 
                 GreateTree(dt, category.Id.ToString(), newTreeNode);
             }
         }
 
-        public void LocalDirectoryBind(TreeNode selectedNode, string selectedPath)
+        public void LocalDirectoryBind(TreeNode selectedNode, string parentNodeLevelPath, string selectedPath)
         {
-            Category category = (selectedNode.Tag as Category);
-            category.LocalDirectoryPath = selectedPath + category.LevelPath.Replace("|","\\");
-            if (!string.IsNullOrEmpty(category.LevelPath))
-            {
-                Directory.CreateDirectory(category.LocalDirectoryPath);
-            }
+            Category category = (selectedNode.Tag as Category);         
 
-            foreach(TreeNode node in selectedNode.Nodes)
+             if (string.IsNullOrEmpty(parentNodeLevelPath))
+             {            
+                 category.LocalDirectoryPath = selectedPath;
+             }
+             else
+             {
+                 category.LocalDirectoryPath = parentNodeLevelPath + "\\" + category.FolderName;
+
+                 if (!string.IsNullOrEmpty(category.LevelPath))
+                 {
+                     Directory.CreateDirectory(category.LocalDirectoryPath);
+                 }
+             }                
+
+            foreach (TreeNode node in selectedNode.Nodes)
             {
-                LocalDirectoryBind(node, selectedPath);
+                LocalDirectoryBind(node, category.LocalDirectoryPath, selectedPath);
             }
         }
 
