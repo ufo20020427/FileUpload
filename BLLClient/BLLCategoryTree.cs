@@ -25,6 +25,7 @@ namespace BLLClient
     public class BLLCategoryTree
     {
         private TreeView _treeCategory;
+        private string _categoryMapFilePath;        
 
         private int _indexId;
         private int _indexName;
@@ -51,10 +52,27 @@ namespace BLLClient
 
             _treeCategory.ImageList = imageList;
             _treeCategory.HideSelection = false;
+
+            _categoryMapFilePath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "CategoryMap.txt");
         }
 
         public void CategoryLoad(DataTable dt)
-        {
+        { 
+            Dictionary<int, string> dicCategoryMap = new Dictionary<int, string>();
+
+            if (File.Exists(_categoryMapFilePath))
+            {
+                IEnumerable<string> listCategoryMap = File.ReadLines(_categoryMapFilePath);
+
+                string[] columns;
+                foreach (string categoryMap in listCategoryMap)
+                {
+                    columns = categoryMap.Split('|');
+                    dicCategoryMap.Add(int.Parse(columns[0]), columns[1]);
+                }              
+            }
+            
+
             _indexId = dt.Columns.IndexOf("CID");
             _indexName = dt.Columns.IndexOf("CName");
             _indexFolderName = dt.Columns.IndexOf("FolderName");
@@ -66,8 +84,13 @@ namespace BLLClient
             _indexIsDetail = dt.Columns.IndexOf("IsDetail");
 
             Category categoryRoot = new Category();
+            categoryRoot.Id = 0;
             categoryRoot.LevelPath = string.Empty;
             categoryRoot.FolderName = string.Empty;
+
+            string localDirectoryPath;
+            dicCategoryMap.TryGetValue(categoryRoot.Id, out localDirectoryPath);
+            categoryRoot.LocalDirectoryPath = localDirectoryPath;
 
             TreeNode nodeRoot = new TreeNode();
             nodeRoot.ImageIndex = (int)ImageIndex.Root;
@@ -78,10 +101,10 @@ namespace BLLClient
             _treeCategory.Nodes.Clear();
             _treeCategory.Nodes.Add(nodeRoot);
 
-            GreateTree(dt, "0", nodeRoot);
+            GreateTree(dt, "0", nodeRoot, ref dicCategoryMap);
         }
 
-        private void GreateTree(DataTable dt, string parentId, TreeNode parentNode)
+        private void GreateTree(DataTable dt, string parentId, TreeNode parentNode, ref Dictionary<int, string> dicCategoryMap)
         {
             DataView dv = new DataView(dt);
 
@@ -100,6 +123,10 @@ namespace BLLClient
                 category.StoreTableName = drv[_indexStoreTableName].ToString();
                 category.IsDetail = Convert.ToBoolean(drv[_indexIsDetail]);
                 category.LevelPath = (parentNode.Tag as Category).LevelPath + "|" + category.FolderName;
+
+                string localDirectoryPath;
+                dicCategoryMap.TryGetValue(category.Id, out localDirectoryPath);
+                category.LocalDirectoryPath = localDirectoryPath;
 
                 int indexImage = (int)ImageIndex.UnKnowType;
                 if (string.IsNullOrEmpty(category.LocalDirectoryPath) || !Directory.Exists(category.LocalDirectoryPath))
@@ -122,7 +149,7 @@ namespace BLLClient
                 newTreeNode.Tag = category;
                 parentNode.Nodes.Add(newTreeNode);
 
-                GreateTree(dt, category.Id.ToString(), newTreeNode);
+                GreateTree(dt, category.Id.ToString(), newTreeNode, ref dicCategoryMap);
             }
         }
 
@@ -150,5 +177,28 @@ namespace BLLClient
             }
         }
 
+        private void BindSave(TreeNode parentNode, ref StringBuilder sbLocalDirectoryBind)
+        {
+            foreach (TreeNode node in parentNode.Nodes)
+            {
+                Category category = (node.Tag as Category);
+
+                sbLocalDirectoryBind.AppendLine(category.Id + "|" + category.LocalDirectoryPath);
+
+                BindSave(node, ref sbLocalDirectoryBind);
+            }
+        }
+
+        public void LocalDirectoryBindSave()
+        {
+            StringBuilder sbLocalDirectoryBind = new StringBuilder();
+
+            Category categoryRoot = (_treeCategory.Nodes[0].Tag as Category);
+            sbLocalDirectoryBind.AppendLine(categoryRoot.Id + "|" + categoryRoot.LocalDirectoryPath);
+    
+            BindSave(_treeCategory.Nodes[0], ref sbLocalDirectoryBind);        
+            
+            File.WriteAllText(_categoryMapFilePath, sbLocalDirectoryBind.ToString());         
+        }
     }
 }
