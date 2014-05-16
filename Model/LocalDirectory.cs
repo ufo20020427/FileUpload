@@ -5,8 +5,19 @@ using System.Text;
 
 namespace Model
 {
-   public class LocalDirectory
+    public class LocalDirectory
     {
-       public string FileName;
+        public LocalDirectory()
+        {
+
+        }
+
+        public string FilePath { get; set; }
+        public string FileName { get; set; }
+
     }
+
 }
+
+
+

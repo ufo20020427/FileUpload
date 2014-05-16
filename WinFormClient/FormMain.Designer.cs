@@ -97,9 +97,10 @@
             this.listBoxLocalDirectory.Location = new System.Drawing.Point(225, 0);
             this.listBoxLocalDirectory.Name = "listBoxLocalDirectory";
             this.listBoxLocalDirectory.ScrollAlwaysVisible = true;
-            this.listBoxLocalDirectory.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
+            this.listBoxLocalDirectory.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.listBoxLocalDirectory.Size = new System.Drawing.Size(569, 160);
             this.listBoxLocalDirectory.TabIndex = 2;
+            this.listBoxLocalDirectory.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.listBoxLocalDirectory_DrawItem);
             // 
             // FormMain
             // 
