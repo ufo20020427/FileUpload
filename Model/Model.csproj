@@ -48,6 +48,7 @@
     <Compile Include="GalleryBundlingQuest.cs" />
     <Compile Include="GalleryCreateQuest.cs" />
     <Compile Include="IFileUpload.cs" />
+    <Compile Include="LocalDirectory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FileUploadQuest.cs" />
     <Compile Include="CommonResponse.cs" />

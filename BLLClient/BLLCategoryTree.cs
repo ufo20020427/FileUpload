@@ -49,6 +49,8 @@ namespace BLLClient
             imageList.Images.Add(Image.FromFile("Images/GalleryDetail.ico"));
             imageList.Images.Add(Image.FromFile("Images/UnKnowType.ico"));
             imageList.Images.Add(Image.FromFile("Images/NoBind.ico"));
+            imageList.ImageSize = new Size(20, 20);
+         
 
             _treeCategory.ImageList = imageList;
             _treeCategory.HideSelection = false;

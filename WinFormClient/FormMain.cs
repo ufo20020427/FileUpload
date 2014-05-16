@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
@@ -113,6 +114,17 @@ namespace WinFormClient
                 TreeNode selectedNode = treeCategory.SelectedNode;
                 Category category = selectedNode.Tag as Category;
                 statusLabel.Text = "本地目录：" + category.LocalDirectoryPath;
+
+                List<LocalDirectory> listTest = new List<LocalDirectory>();
+                foreach (string file in Directory.GetDirectories("f:\\Local"))
+                {
+                    LocalDirectory localDirectory = new LocalDirectory();
+                    localDirectory.FileName= file;
+                    listTest.Add(localDirectory);
+                }
+                listBoxLocalDirectory.DisplayMember = "FileName";
+                listBoxLocalDirectory.DataSource = listTest;
+             
             }
             catch (Exception ex)
             {

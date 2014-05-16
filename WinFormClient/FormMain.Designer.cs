@@ -35,6 +35,7 @@
             this.contextCategory = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ContextMenuLocalDirectoryBind = new System.Windows.Forms.ToolStripMenuItem();
             this.ContextItemCategoryRefresh = new System.Windows.Forms.ToolStripMenuItem();
+            this.listBoxLocalDirectory = new System.Windows.Forms.ListBox();
             this.statusStrip.SuspendLayout();
             this.contextCategory.SuspendLayout();
             this.SuspendLayout();
@@ -71,21 +72,34 @@
             this.ContextMenuLocalDirectoryBind,
             this.ContextItemCategoryRefresh});
             this.contextCategory.Name = "contextCategory";
-            this.contextCategory.Size = new System.Drawing.Size(153, 70);
+            this.contextCategory.Size = new System.Drawing.Size(143, 48);
             // 
             // ContextMenuLocalDirectoryBind
             // 
             this.ContextMenuLocalDirectoryBind.Name = "ContextMenuLocalDirectoryBind";
-            this.ContextMenuLocalDirectoryBind.Size = new System.Drawing.Size(152, 22);
+            this.ContextMenuLocalDirectoryBind.Size = new System.Drawing.Size(142, 22);
             this.ContextMenuLocalDirectoryBind.Text = "关联本地目录";
             this.ContextMenuLocalDirectoryBind.Click += new System.EventHandler(this.ContextMenuLocalDirectoryBind_Click);
             // 
             // ContextItemCategoryRefresh
             // 
             this.ContextItemCategoryRefresh.Name = "ContextItemCategoryRefresh";
-            this.ContextItemCategoryRefresh.Size = new System.Drawing.Size(152, 22);
+            this.ContextItemCategoryRefresh.Size = new System.Drawing.Size(142, 22);
             this.ContextItemCategoryRefresh.Text = "刷新分类";
             this.ContextItemCategoryRefresh.Click += new System.EventHandler(this.ContextItemCategoryRefresh_Click);
+            // 
+            // listBoxLocalDirectory
+            // 
+            this.listBoxLocalDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listBoxLocalDirectory.FormattingEnabled = true;
+            this.listBoxLocalDirectory.ItemHeight = 12;
+            this.listBoxLocalDirectory.Location = new System.Drawing.Point(225, 0);
+            this.listBoxLocalDirectory.Name = "listBoxLocalDirectory";
+            this.listBoxLocalDirectory.ScrollAlwaysVisible = true;
+            this.listBoxLocalDirectory.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
+            this.listBoxLocalDirectory.Size = new System.Drawing.Size(569, 160);
+            this.listBoxLocalDirectory.TabIndex = 2;
             // 
             // FormMain
             // 
@@ -93,6 +107,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.ClientSize = new System.Drawing.Size(794, 475);
+            this.Controls.Add(this.listBoxLocalDirectory);
             this.Controls.Add(this.treeCategory);
             this.Controls.Add(this.statusStrip);
             this.Name = "FormMain";
@@ -113,6 +128,7 @@
         private System.Windows.Forms.ToolStripStatusLabel statusLabel;
         private System.Windows.Forms.ToolStripMenuItem ContextMenuLocalDirectoryBind;
         private System.Windows.Forms.ToolStripMenuItem ContextItemCategoryRefresh;
+        private System.Windows.Forms.ListBox listBoxLocalDirectory;
     }
 }
 
