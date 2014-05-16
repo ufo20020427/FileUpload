@@ -35,9 +35,11 @@
             this.contextCategory = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ContextMenuLocalDirectoryBind = new System.Windows.Forms.ToolStripMenuItem();
             this.ContextItemCategoryRefresh = new System.Windows.Forms.ToolStripMenuItem();
-            this.listBoxLocalDirectory = new System.Windows.Forms.ListBox();
+            this.groupBoxLocalDirectory = new System.Windows.Forms.GroupBox();
+            this.listBoxLocalDirectory = new WinFormClient.ListBoxDirectory();
             this.statusStrip.SuspendLayout();
             this.contextCategory.SuspendLayout();
+            this.groupBoxLocalDirectory.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip
@@ -57,8 +59,9 @@
             // 
             // treeCategory
             // 
+            this.treeCategory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.treeCategory.ContextMenuStrip = this.contextCategory;
-            this.treeCategory.Dock = System.Windows.Forms.DockStyle.Left;
             this.treeCategory.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.treeCategory.Location = new System.Drawing.Point(0, 0);
             this.treeCategory.Name = "treeCategory";
@@ -88,19 +91,31 @@
             this.ContextItemCategoryRefresh.Text = "刷新分类";
             this.ContextItemCategoryRefresh.Click += new System.EventHandler(this.ContextItemCategoryRefresh_Click);
             // 
+            // groupBoxLocalDirectory
+            // 
+            this.groupBoxLocalDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxLocalDirectory.Controls.Add(this.listBoxLocalDirectory);
+            this.groupBoxLocalDirectory.Location = new System.Drawing.Point(227, 4);
+            this.groupBoxLocalDirectory.Name = "groupBoxLocalDirectory";
+            this.groupBoxLocalDirectory.Size = new System.Drawing.Size(555, 207);
+            this.groupBoxLocalDirectory.TabIndex = 3;
+            this.groupBoxLocalDirectory.TabStop = false;
+            this.groupBoxLocalDirectory.Text = "本地目录";
+            // 
             // listBoxLocalDirectory
             // 
             this.listBoxLocalDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.listBoxLocalDirectory.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.listBoxLocalDirectory.FormattingEnabled = true;
-            this.listBoxLocalDirectory.ItemHeight = 12;
-            this.listBoxLocalDirectory.Location = new System.Drawing.Point(225, 0);
+            this.listBoxLocalDirectory.ItemHeight = 20;
+            this.listBoxLocalDirectory.Location = new System.Drawing.Point(12, 20);
             this.listBoxLocalDirectory.Name = "listBoxLocalDirectory";
             this.listBoxLocalDirectory.ScrollAlwaysVisible = true;
             this.listBoxLocalDirectory.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.listBoxLocalDirectory.Size = new System.Drawing.Size(569, 160);
-            this.listBoxLocalDirectory.TabIndex = 2;
-            this.listBoxLocalDirectory.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.listBoxLocalDirectory_DrawItem);
+            this.listBoxLocalDirectory.Size = new System.Drawing.Size(472, 164);
+            this.listBoxLocalDirectory.TabIndex = 3;
             // 
             // FormMain
             // 
@@ -108,7 +123,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.ClientSize = new System.Drawing.Size(794, 475);
-            this.Controls.Add(this.listBoxLocalDirectory);
+            this.Controls.Add(this.groupBoxLocalDirectory);
             this.Controls.Add(this.treeCategory);
             this.Controls.Add(this.statusStrip);
             this.Name = "FormMain";
@@ -116,6 +131,7 @@
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             this.contextCategory.ResumeLayout(false);
+            this.groupBoxLocalDirectory.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -129,7 +145,9 @@
         private System.Windows.Forms.ToolStripStatusLabel statusLabel;
         private System.Windows.Forms.ToolStripMenuItem ContextMenuLocalDirectoryBind;
         private System.Windows.Forms.ToolStripMenuItem ContextItemCategoryRefresh;
-        private System.Windows.Forms.ListBox listBoxLocalDirectory;
+        private System.Windows.Forms.GroupBox groupBoxLocalDirectory;   
+        private ListBoxDirectory listBoxLocalDirectory;
+        
     }
 }
 

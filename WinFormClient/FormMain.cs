@@ -20,6 +20,7 @@ namespace WinFormClient
         private IFileUpload _proxy;
         private FileServerInfo _fileServerInfo;
         private BLLCategoryTree _bllCategoryTree;
+      
 
         private Color RowBackColorSel = Color.FromArgb(150, 200, 250);
 
@@ -44,9 +45,6 @@ namespace WinFormClient
         {
             try
             {
-                listBoxLocalDirectory.DrawMode = DrawMode.OwnerDrawFixed;
-                listBoxLocalDirectory.ItemHeight = 20;
-
                 ClientConfig.Init();
 
                 NetTcpBinding binding = new NetTcpBinding();
@@ -169,41 +167,7 @@ namespace WinFormClient
         private void ContextItemCategoryRefresh_Click(object sender, EventArgs e)
         {
             CategoryTreeLoad();
-        }
-
-        private void listBoxLocalDirectory_DrawItem(object sender, DrawItemEventArgs e)
-        {
-            LocalDirectory localDirectory = listBoxLocalDirectory.Items[e.Index] as LocalDirectory;
-
-            Brush myBrush = Brushes.Black;
-            if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
-            {
-                myBrush = new SolidBrush(RowBackColorSel);
-            }
-            else
-            {
-                myBrush = new SolidBrush(Color.White);
-            }
-
-            e.Graphics.FillRectangle(myBrush, e.Bounds);
-            e.DrawFocusRectangle();
-
-            Image image = Image.FromFile("images/root.gif");
-            Graphics g = e.Graphics;
-            Rectangle bounds = e.Bounds;
-            Rectangle imageRect = new Rectangle(bounds.X, bounds.Y, bounds.Height, bounds.Height);
-            Rectangle textRect = new Rectangle(imageRect.Right, bounds.Y, bounds.Width - imageRect.Right, bounds.Height);
-
-            if (image != null)
-            {
-                g.DrawImage(image, imageRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel);
-            }
-
-            StringFormat strFormat = new StringFormat();
-            strFormat.LineAlignment = StringAlignment.Center;
-            e.Graphics.DrawString(localDirectory.FileName, e.Font, new SolidBrush(e.ForeColor), textRect, strFormat);
-
-        }
+        }       
 
     }
 }
