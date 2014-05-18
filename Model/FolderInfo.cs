@@ -12,8 +12,11 @@ namespace Model
 
         }
 
+        public CategoryType Type { get; set; }
+        public bool IsExistVideo { get; set; }
+        public bool IsExistVector { get; set; }
         public string Name { get; set; }
-        public string Path { get; set; }  
+        public string Path { get; set; }
 
     }
 

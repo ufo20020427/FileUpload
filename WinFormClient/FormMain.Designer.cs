@@ -41,10 +41,13 @@
             this.listBoxUploadDirectory = new System.Windows.Forms.ListBox();
             this.btnUploadDirectoryAdd = new System.Windows.Forms.Button();
             this.btnUploadDirectoryRemove = new System.Windows.Forms.Button();
+            this.contextLocalDirectory = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.contextItemSetCanUpload = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             this.contextCategory.SuspendLayout();
             this.groupBoxLocalDirectory.SuspendLayout();
             this.groupBoxUploadDirectory.SuspendLayout();
+            this.contextLocalDirectory.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip
@@ -80,19 +83,19 @@
             this.ContextMenuLocalDirectoryBind,
             this.ContextItemCategoryRefresh});
             this.contextCategory.Name = "contextCategory";
-            this.contextCategory.Size = new System.Drawing.Size(153, 70);
+            this.contextCategory.Size = new System.Drawing.Size(143, 48);
             // 
             // ContextMenuLocalDirectoryBind
             // 
             this.ContextMenuLocalDirectoryBind.Name = "ContextMenuLocalDirectoryBind";
-            this.ContextMenuLocalDirectoryBind.Size = new System.Drawing.Size(152, 22);
+            this.ContextMenuLocalDirectoryBind.Size = new System.Drawing.Size(142, 22);
             this.ContextMenuLocalDirectoryBind.Text = "关联本地目录";
             this.ContextMenuLocalDirectoryBind.Click += new System.EventHandler(this.ContextMenuLocalDirectoryBind_Click);
             // 
             // ContextItemCategoryRefresh
             // 
             this.ContextItemCategoryRefresh.Name = "ContextItemCategoryRefresh";
-            this.ContextItemCategoryRefresh.Size = new System.Drawing.Size(152, 22);
+            this.ContextItemCategoryRefresh.Size = new System.Drawing.Size(142, 22);
             this.ContextItemCategoryRefresh.Text = "刷新分类";
             this.ContextItemCategoryRefresh.Click += new System.EventHandler(this.ContextItemCategoryRefresh_Click);
             // 
@@ -101,7 +104,7 @@
             this.groupBoxLocalDirectory.Controls.Add(this.listBoxLocalDirectory);
             this.groupBoxLocalDirectory.Location = new System.Drawing.Point(210, 5);
             this.groupBoxLocalDirectory.Name = "groupBoxLocalDirectory";
-            this.groupBoxLocalDirectory.Size = new System.Drawing.Size(250, 258);
+            this.groupBoxLocalDirectory.Size = new System.Drawing.Size(250, 280);
             this.groupBoxLocalDirectory.TabIndex = 3;
             this.groupBoxLocalDirectory.TabStop = false;
             this.groupBoxLocalDirectory.Text = "本地目录";
@@ -110,6 +113,7 @@
             // 
             this.listBoxLocalDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.listBoxLocalDirectory.ContextMenuStrip = this.contextLocalDirectory;
             this.listBoxLocalDirectory.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.listBoxLocalDirectory.FormattingEnabled = true;
             this.listBoxLocalDirectory.ItemHeight = 20;
@@ -117,9 +121,10 @@
             this.listBoxLocalDirectory.Name = "listBoxLocalDirectory";
             this.listBoxLocalDirectory.ScrollAlwaysVisible = true;
             this.listBoxLocalDirectory.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.listBoxLocalDirectory.Size = new System.Drawing.Size(225, 224);
+            this.listBoxLocalDirectory.Size = new System.Drawing.Size(225, 244);
             this.listBoxLocalDirectory.TabIndex = 3;
             this.listBoxLocalDirectory.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.listBoxLocalDirectory_DrawItem);
+            this.listBoxLocalDirectory.SelectedIndexChanged += new System.EventHandler(this.listBoxLocalDirectory_SelectedIndexChanged);
             // 
             // groupBoxUploadDirectory
             // 
@@ -127,7 +132,7 @@
             this.groupBoxUploadDirectory.Controls.Add(this.listBoxUploadDirectory);
             this.groupBoxUploadDirectory.Location = new System.Drawing.Point(504, 5);
             this.groupBoxUploadDirectory.Name = "groupBoxUploadDirectory";
-            this.groupBoxUploadDirectory.Size = new System.Drawing.Size(505, 258);
+            this.groupBoxUploadDirectory.Size = new System.Drawing.Size(505, 280);
             this.groupBoxUploadDirectory.TabIndex = 4;
             this.groupBoxUploadDirectory.TabStop = false;
             this.groupBoxUploadDirectory.Text = "待上传目录";
@@ -138,14 +143,16 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listBoxUploadDirectory.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.listBoxUploadDirectory.FormattingEnabled = true;
+            this.listBoxUploadDirectory.HorizontalScrollbar = true;
             this.listBoxUploadDirectory.ItemHeight = 20;
             this.listBoxUploadDirectory.Location = new System.Drawing.Point(11, 20);
             this.listBoxUploadDirectory.Name = "listBoxUploadDirectory";
             this.listBoxUploadDirectory.ScrollAlwaysVisible = true;
             this.listBoxUploadDirectory.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.listBoxUploadDirectory.Size = new System.Drawing.Size(480, 224);
+            this.listBoxUploadDirectory.Size = new System.Drawing.Size(480, 244);
             this.listBoxUploadDirectory.TabIndex = 4;
             this.listBoxUploadDirectory.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.listBoxUploadDirectory_DrawItem);
+            this.listBoxUploadDirectory.SelectedIndexChanged += new System.EventHandler(this.listBoxUploadDirectory_SelectedIndexChanged);
             // 
             // btnUploadDirectoryAdd
             // 
@@ -167,6 +174,20 @@
             this.btnUploadDirectoryRemove.UseVisualStyleBackColor = true;
             this.btnUploadDirectoryRemove.Click += new System.EventHandler(this.btnUploadDirectoryRemove_Click);
             // 
+            // contextLocalDirectory
+            // 
+            this.contextLocalDirectory.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.contextItemSetCanUpload});
+            this.contextLocalDirectory.Name = "contextLocalDirectory";
+            this.contextLocalDirectory.Size = new System.Drawing.Size(131, 26);
+            // 
+            // contextItemSetCanUpload
+            // 
+            this.contextItemSetCanUpload.Name = "contextItemSetCanUpload";
+            this.contextItemSetCanUpload.Size = new System.Drawing.Size(152, 22);
+            this.contextItemSetCanUpload.Text = "设为可上传";
+            this.contextItemSetCanUpload.Click += new System.EventHandler(this.contextItemSetCanUpload_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -186,6 +207,7 @@
             this.contextCategory.ResumeLayout(false);
             this.groupBoxLocalDirectory.ResumeLayout(false);
             this.groupBoxUploadDirectory.ResumeLayout(false);
+            this.contextLocalDirectory.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -205,6 +227,8 @@
         private System.Windows.Forms.Button btnUploadDirectoryAdd;
         private System.Windows.Forms.Button btnUploadDirectoryRemove;
         private System.Windows.Forms.ListBox listBoxUploadDirectory;
+        private System.Windows.Forms.ContextMenuStrip contextLocalDirectory;
+        private System.Windows.Forms.ToolStripMenuItem contextItemSetCanUpload;
         
     }
 }

@@ -20,6 +20,7 @@ namespace WinFormClient
         private IFileUpload _proxy;
         private FileServerInfo _fileServerInfo;
         private BLLCategoryTree _bllCategoryTree;
+        private BLLUpload _bllUpload;
 
         public FormMain()
         {
@@ -34,7 +35,7 @@ namespace WinFormClient
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                Application.Exit();
+                Environment.Exit(0);
             }
         }
 
@@ -50,6 +51,8 @@ namespace WinFormClient
             try
             {
                 ClientConfig.Init();
+
+                _bllUpload = new BLLUpload();
 
                 NetTcpBinding binding = new NetTcpBinding();
                 binding.TransferMode = TransferMode.Streamed;
@@ -128,6 +131,9 @@ namespace WinFormClient
                     foreach (string file in Directory.GetDirectories(category.LocalDirectoryPath))
                     {
                         FolderInfo localFolderInfo = new FolderInfo();
+                        localFolderInfo.Type = category.Type;
+                        localFolderInfo.IsExistVideo = category.IsExistVideo;
+                        localFolderInfo.IsExistVector = category.IsExistVector;
                         localFolderInfo.Name = Path.GetFileName(file);
                         localFolderInfo.Path = file;
                         listBoxLocalDirectory.Items.Add(localFolderInfo);
@@ -212,14 +218,14 @@ namespace WinFormClient
 
                 FolderInfo folderInfo = (sender as ListBox).Items[e.Index] as FolderInfo;
 
-                FileAttributes attributes = File.GetAttributes(folderInfo.Path);
-                if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                DirectoryInfo directoryInfo = new DirectoryInfo(folderInfo.Path);           
+                if ((directoryInfo.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
                 {
                     ListBoxDrawItem(e, "Images/SucessfulDirectory.ico", folderInfo.Name);
                 }
                 else
                 {
-                    ListBoxDrawItem(e, "Images/LocalDirectory.ico", folderInfo.Name);
+                    ListBoxDrawItem(e, "Images/UploadDirectory.ico", folderInfo.Name);
                 }
             }
             catch (Exception ex)
@@ -248,6 +254,68 @@ namespace WinFormClient
             }
         }
 
+        private void listBoxLocalDirectory_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if((sender as ListBox).SelectedItem == null)
+                {
+                    return;
+                }
+
+                FolderInfo folderInfo = (sender as ListBox).SelectedItem as FolderInfo;
+                statusLabel.Text = "本地目录：" + folderInfo.Path;
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void listBoxUploadDirectory_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if ((sender as ListBox).SelectedItem == null)
+                {
+                    return;
+                }
+
+                FolderInfo folderInfo = (sender as ListBox).SelectedItem as FolderInfo;
+                statusLabel.Text = "本地目录：" + folderInfo.Path;
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void contextItemSetCanUpload_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (MessageBox.Show("确定把已上传目录重置为允许上传？", "提示", MessageBoxButtons.YesNo) == DialogResult.No)
+                {
+                    return;
+                }
+
+                foreach (var item in listBoxLocalDirectory.SelectedItems)
+                {
+                    FolderInfo folderInfo = item as FolderInfo;
+                    DirectoryInfo directoryInfo = new DirectoryInfo(folderInfo.Path);
+                    directoryInfo.Attributes = FileAttributes.Normal & FileAttributes.Directory;               
+                }            
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+
         private bool IsItemExists(ListBox.ObjectCollection items, string findText)
         {
             foreach (var uploadItem in items)
@@ -263,6 +331,7 @@ namespace WinFormClient
             return false;
         }
 
+
         private void btnUploadDirectoryAdd_Click(object sender, EventArgs e)
         {
             try
@@ -270,19 +339,31 @@ namespace WinFormClient
                 foreach (var item in listBoxLocalDirectory.SelectedItems)
                 {
                     FolderInfo localFolderInfo = item as FolderInfo;
+
+                    if (IsItemExists(listBoxUploadDirectory.Items, localFolderInfo.Path))
+                    {
+                        continue;
+                    }
+
+                 
                     FileAttributes attributes = File.GetAttributes(localFolderInfo.Path);
                     if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
                     {
                         continue;
                     }
 
-                    if (!IsItemExists(listBoxUploadDirectory.Items, localFolderInfo.Path))
+                    string analyResult = _bllUpload.UploadDirectoryAnaly(localFolderInfo);
+                    if (!string.IsNullOrEmpty(analyResult))
                     {
-                        FolderInfo uploadFolderInfo = new FolderInfo();
-                        uploadFolderInfo.Name = localFolderInfo.Name;
-                        uploadFolderInfo.Path = localFolderInfo.Path;
-                        listBoxUploadDirectory.Items.Add(uploadFolderInfo);
+                        //记录不符合上传的信息
+                        continue;
                     }
+              
+                    FolderInfo uploadFolderInfo = new FolderInfo();
+                    uploadFolderInfo.Name = localFolderInfo.Name;
+                    uploadFolderInfo.Path = localFolderInfo.Path;
+                    listBoxUploadDirectory.Items.Add(uploadFolderInfo);
+                   
                 }
             }
             catch (Exception ex)
@@ -316,7 +397,9 @@ namespace WinFormClient
             }
         }
 
-        #endregion 本地目录|上传目录 操作
+    
+
+        #endregion 本地目录|上传目录 操作    
 
     }
 }

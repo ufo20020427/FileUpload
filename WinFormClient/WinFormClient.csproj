@@ -100,9 +100,6 @@
     <Content Include="Images\GalleryDetail.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Images\LocalDirectory.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Images\NoBind.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

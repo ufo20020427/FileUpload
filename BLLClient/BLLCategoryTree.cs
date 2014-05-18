@@ -119,7 +119,7 @@ namespace BLLClient
                 category.Name = drv[_indexName].ToString();
                 category.FolderName = drv[_indexFolderName].ToString();
                 category.ParentId = Convert.ToInt32(drv[_indexParentId]);
-                category.Type = Convert.ToByte(drv[_indexType]);
+                category.Type = (CategoryType)Convert.ToByte(drv[_indexType]);
                 category.IsExistVideo = Convert.ToBoolean(_indexIsExistVideo);
                 category.IsExistVector = Convert.ToBoolean(_indexIsExistVector);
                 category.StoreTableName = drv[_indexStoreTableName].ToString();
@@ -135,11 +135,11 @@ namespace BLLClient
                 {
                     indexImage = (int)ImageIndex.NoBind;
                 }
-                else if (category.Type == 1)
+                else if (category.Type == CategoryType.Picture)
                 {
                     indexImage = category.IsDetail ? (int)ImageIndex.PictureDetail : (int)ImageIndex.Picture;
                 }
-                else if (category.Type == 2)
+                else if (category.Type == CategoryType.Gallery)
                 {
                     indexImage = category.IsDetail ? (int)ImageIndex.GalleryDetail : (int)ImageIndex.Gallery;
                 }
