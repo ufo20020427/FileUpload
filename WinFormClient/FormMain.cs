@@ -20,9 +20,6 @@ namespace WinFormClient
         private IFileUpload _proxy;
         private FileServerInfo _fileServerInfo;
         private BLLCategoryTree _bllCategoryTree;
-      
-
-        private Color RowBackColorSel = Color.FromArgb(150, 200, 250);
 
         public FormMain()
         {
@@ -41,6 +38,13 @@ namespace WinFormClient
             }
         }
 
+        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            (_proxy as ICommunicationObject).Close();
+        }
+
+        #region 初始化
+
         private void Init()
         {
             try
@@ -51,7 +55,7 @@ namespace WinFormClient
                 binding.TransferMode = TransferMode.Streamed;
                 ChannelFactory<IFileUpload> channelFactory = new ChannelFactory<IFileUpload>(binding, ClientConfig.WCFAddress);
                 _proxy = channelFactory.CreateChannel();
-                (_proxy as ICommunicationObject).Open();             
+                (_proxy as ICommunicationObject).Open();
             }
             catch (Exception ex)
             {
@@ -106,10 +110,9 @@ namespace WinFormClient
             }
         }
 
-        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            (_proxy as ICommunicationObject).Close();
-        }
+        #endregion 初始化
+
+        #region 分类操作
 
         private void treeCategory_AfterSelect(object sender, TreeViewEventArgs e)
         {
@@ -121,20 +124,14 @@ namespace WinFormClient
 
                 if (category.IsDetail)
                 {
-                    List<LocalDirectory> listLocalDirectory = new List<LocalDirectory>();
-
+                    listBoxLocalDirectory.Items.Clear();
                     foreach (string file in Directory.GetDirectories(category.LocalDirectoryPath))
                     {
-                        LocalDirectory localDirectory = new LocalDirectory();
-                        localDirectory.FileName = Path.GetFileName(file);
-                        localDirectory.FilePath = file;
-                        listLocalDirectory.Add(localDirectory);
+                        FolderInfo localFolderInfo = new FolderInfo();
+                        localFolderInfo.Name = Path.GetFileName(file);
+                        localFolderInfo.Path = file;
+                        listBoxLocalDirectory.Items.Add(localFolderInfo);
                     }
-
-                    listBoxLocalDirectory.DisplayMember = "FileName";
-                    listBoxLocalDirectory.ValueMember = "FilePath";
-                    listBoxLocalDirectory.DataSource = listLocalDirectory;
-                    listBoxLocalDirectory.ClearSelected();
                 }
             }
             catch (Exception ex)
@@ -167,7 +164,129 @@ namespace WinFormClient
         private void ContextItemCategoryRefresh_Click(object sender, EventArgs e)
         {
             CategoryTreeLoad();
-        }       
+        }
+
+        #endregion 分类操作
+
+        #region 本地目录|上传目录 操作
+
+        private void ListBoxDrawItem(DrawItemEventArgs e, string iconFilePath, string text)
+        {
+            Brush myBrush = Brushes.Black;
+            if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
+            {
+                myBrush = new SolidBrush(Color.FromArgb(150, 200, 250));
+            }
+            else
+            {
+                myBrush = new SolidBrush(Color.White);
+            }
+
+            e.Graphics.FillRectangle(myBrush, e.Bounds);
+            e.DrawFocusRectangle();
+
+            Image image = Image.FromFile(iconFilePath);
+            Graphics graphics = e.Graphics;
+            Rectangle bounds = e.Bounds;
+            Rectangle imageRect = new Rectangle(bounds.X, bounds.Y, bounds.Height, bounds.Height);
+            Rectangle textRect = new Rectangle(imageRect.Right, bounds.Y, bounds.Width - imageRect.Right, bounds.Height);
+
+            if (image != null)
+            {
+                graphics.DrawImage(image, imageRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel);
+            }
+
+            StringFormat stringFormat = new StringFormat();
+            stringFormat.LineAlignment = StringAlignment.Center;
+            e.Graphics.DrawString(text, e.Font, new SolidBrush(e.ForeColor), textRect, stringFormat);
+        }
+
+        private void listBoxLocalDirectory_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            if (e.Index < 0)
+            {
+                return;
+            }
+
+            FolderInfo folderInfo = (sender as ListBox).Items[e.Index] as FolderInfo;
+            ListBoxDrawItem(e, "Images/LocalDirectory.ico", folderInfo.Name);
+        }
+
+        private void listBoxUploadDirectory_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            if (e.Index < 0)
+            {
+                return;
+            }
+
+            FolderInfo folderInfo = (sender as ListBox).Items[e.Index] as FolderInfo;
+            ListBoxDrawItem(e, "Images/UploadDirectory.ico", folderInfo.Path);
+        }
+
+        private bool IsItemExists(ListBox.ObjectCollection items, string findText)
+        {
+            foreach (var uploadItem in items)
+            {
+                FolderInfo folderInfo = uploadItem as FolderInfo;
+
+                if (string.Compare(folderInfo.Path, findText, true) == 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void btnUploadDirectoryAdd_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                foreach (var localItem in listBoxLocalDirectory.SelectedItems)
+                {
+                    FolderInfo localFolderInfo = localItem as FolderInfo;
+
+                    if (!IsItemExists(listBoxUploadDirectory.Items, localFolderInfo.Path))
+                    {
+                        FolderInfo uploadFolderInfo = new FolderInfo();
+                        uploadFolderInfo.Name = localFolderInfo.Name;
+                        uploadFolderInfo.Path = localFolderInfo.Path;
+                        listBoxUploadDirectory.Items.Add(uploadFolderInfo);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void btnUploadDirectoryRemove_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (listBoxUploadDirectory.SelectedItems.Count == 0)
+                {
+                    return;
+                }
+
+                for (int index = listBoxUploadDirectory.Items.Count - 1; index >= 0; index--)
+                {
+                    if (listBoxUploadDirectory.GetSelected(index))
+                    {
+                        listBoxUploadDirectory.Items.RemoveAt(index);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        #endregion 本地目录|上传目录 操作
 
     }
 }

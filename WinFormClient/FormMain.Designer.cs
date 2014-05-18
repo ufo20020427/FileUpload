@@ -36,19 +36,24 @@
             this.ContextMenuLocalDirectoryBind = new System.Windows.Forms.ToolStripMenuItem();
             this.ContextItemCategoryRefresh = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBoxLocalDirectory = new System.Windows.Forms.GroupBox();
-            this.listBoxLocalDirectory = new WinFormClient.ListBoxDirectory();
+            this.listBoxLocalDirectory = new System.Windows.Forms.ListBox();
+            this.groupBoxUploadDirectory = new System.Windows.Forms.GroupBox();
+            this.listBoxUploadDirectory = new System.Windows.Forms.ListBox();
+            this.btnUploadDirectoryAdd = new System.Windows.Forms.Button();
+            this.btnUploadDirectoryRemove = new System.Windows.Forms.Button();
             this.statusStrip.SuspendLayout();
             this.contextCategory.SuspendLayout();
             this.groupBoxLocalDirectory.SuspendLayout();
+            this.groupBoxUploadDirectory.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusLabel});
-            this.statusStrip.Location = new System.Drawing.Point(0, 453);
+            this.statusStrip.Location = new System.Drawing.Point(0, 551);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(794, 22);
+            this.statusStrip.Size = new System.Drawing.Size(1016, 22);
             this.statusStrip.TabIndex = 0;
             this.statusStrip.Text = "statusStrip1";
             // 
@@ -65,7 +70,7 @@
             this.treeCategory.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.treeCategory.Location = new System.Drawing.Point(0, 0);
             this.treeCategory.Name = "treeCategory";
-            this.treeCategory.Size = new System.Drawing.Size(219, 453);
+            this.treeCategory.Size = new System.Drawing.Size(200, 551);
             this.treeCategory.TabIndex = 1;
             this.treeCategory.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeCategory_AfterSelect);
             // 
@@ -93,12 +98,10 @@
             // 
             // groupBoxLocalDirectory
             // 
-            this.groupBoxLocalDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxLocalDirectory.Controls.Add(this.listBoxLocalDirectory);
-            this.groupBoxLocalDirectory.Location = new System.Drawing.Point(227, 4);
+            this.groupBoxLocalDirectory.Location = new System.Drawing.Point(210, 5);
             this.groupBoxLocalDirectory.Name = "groupBoxLocalDirectory";
-            this.groupBoxLocalDirectory.Size = new System.Drawing.Size(555, 207);
+            this.groupBoxLocalDirectory.Size = new System.Drawing.Size(250, 258);
             this.groupBoxLocalDirectory.TabIndex = 3;
             this.groupBoxLocalDirectory.TabStop = false;
             this.groupBoxLocalDirectory.Text = "本地目录";
@@ -114,15 +117,65 @@
             this.listBoxLocalDirectory.Name = "listBoxLocalDirectory";
             this.listBoxLocalDirectory.ScrollAlwaysVisible = true;
             this.listBoxLocalDirectory.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.listBoxLocalDirectory.Size = new System.Drawing.Size(472, 164);
+            this.listBoxLocalDirectory.Size = new System.Drawing.Size(225, 224);
             this.listBoxLocalDirectory.TabIndex = 3;
+            this.listBoxLocalDirectory.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.listBoxLocalDirectory_DrawItem);
+            // 
+            // groupBoxUploadDirectory
+            // 
+            this.groupBoxUploadDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxUploadDirectory.Controls.Add(this.listBoxUploadDirectory);
+            this.groupBoxUploadDirectory.Location = new System.Drawing.Point(504, 5);
+            this.groupBoxUploadDirectory.Name = "groupBoxUploadDirectory";
+            this.groupBoxUploadDirectory.Size = new System.Drawing.Size(505, 258);
+            this.groupBoxUploadDirectory.TabIndex = 4;
+            this.groupBoxUploadDirectory.TabStop = false;
+            this.groupBoxUploadDirectory.Text = "待上传目录";
+            // 
+            // listBoxUploadDirectory
+            // 
+            this.listBoxUploadDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listBoxUploadDirectory.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.listBoxUploadDirectory.FormattingEnabled = true;
+            this.listBoxUploadDirectory.ItemHeight = 20;
+            this.listBoxUploadDirectory.Location = new System.Drawing.Point(11, 20);
+            this.listBoxUploadDirectory.Name = "listBoxUploadDirectory";
+            this.listBoxUploadDirectory.ScrollAlwaysVisible = true;
+            this.listBoxUploadDirectory.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+            this.listBoxUploadDirectory.Size = new System.Drawing.Size(480, 224);
+            this.listBoxUploadDirectory.TabIndex = 4;
+            this.listBoxUploadDirectory.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.listBoxUploadDirectory_DrawItem);
+            // 
+            // btnUploadDirectoryAdd
+            // 
+            this.btnUploadDirectoryAdd.Location = new System.Drawing.Point(468, 77);
+            this.btnUploadDirectoryAdd.Name = "btnUploadDirectoryAdd";
+            this.btnUploadDirectoryAdd.Size = new System.Drawing.Size(30, 23);
+            this.btnUploadDirectoryAdd.TabIndex = 5;
+            this.btnUploadDirectoryAdd.Text = ">>";
+            this.btnUploadDirectoryAdd.UseVisualStyleBackColor = true;
+            this.btnUploadDirectoryAdd.Click += new System.EventHandler(this.btnUploadDirectoryAdd_Click);
+            // 
+            // btnUploadDirectoryRemove
+            // 
+            this.btnUploadDirectoryRemove.Location = new System.Drawing.Point(468, 137);
+            this.btnUploadDirectoryRemove.Name = "btnUploadDirectoryRemove";
+            this.btnUploadDirectoryRemove.Size = new System.Drawing.Size(30, 23);
+            this.btnUploadDirectoryRemove.TabIndex = 6;
+            this.btnUploadDirectoryRemove.Text = "<<";
+            this.btnUploadDirectoryRemove.UseVisualStyleBackColor = true;
+            this.btnUploadDirectoryRemove.Click += new System.EventHandler(this.btnUploadDirectoryRemove_Click);
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
-            this.ClientSize = new System.Drawing.Size(794, 475);
+            this.ClientSize = new System.Drawing.Size(1016, 573);
+            this.Controls.Add(this.btnUploadDirectoryRemove);
+            this.Controls.Add(this.btnUploadDirectoryAdd);
+            this.Controls.Add(this.groupBoxUploadDirectory);
             this.Controls.Add(this.groupBoxLocalDirectory);
             this.Controls.Add(this.treeCategory);
             this.Controls.Add(this.statusStrip);
@@ -132,6 +185,7 @@
             this.statusStrip.PerformLayout();
             this.contextCategory.ResumeLayout(false);
             this.groupBoxLocalDirectory.ResumeLayout(false);
+            this.groupBoxUploadDirectory.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -145,8 +199,12 @@
         private System.Windows.Forms.ToolStripStatusLabel statusLabel;
         private System.Windows.Forms.ToolStripMenuItem ContextMenuLocalDirectoryBind;
         private System.Windows.Forms.ToolStripMenuItem ContextItemCategoryRefresh;
-        private System.Windows.Forms.GroupBox groupBoxLocalDirectory;   
-        private ListBoxDirectory listBoxLocalDirectory;
+        private System.Windows.Forms.GroupBox groupBoxLocalDirectory;
+        private System.Windows.Forms.ListBox listBoxLocalDirectory;
+        private System.Windows.Forms.GroupBox groupBoxUploadDirectory;
+        private System.Windows.Forms.Button btnUploadDirectoryAdd;
+        private System.Windows.Forms.Button btnUploadDirectoryRemove;
+        private System.Windows.Forms.ListBox listBoxUploadDirectory;
         
     }
 }
