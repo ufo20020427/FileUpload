@@ -86,97 +86,97 @@ namespace BLLServer
             return isPermission;
         }
 
-        public CommonResponse DirectoryCreate(DirectoryCreateQuest requestMessage)
+        public CommonResponse DirectoryCreate(DirectoryCreateQuest request)
         {
-            CommonResponse responseMessage = new CommonResponse();
-            responseMessage.IsSuccessed = false;
+            CommonResponse response = new CommonResponse();
+            response.IsSuccessed = false;
       
             try
             {
-                bool isPermission = Authentication(requestMessage.Token, requestMessage.FileServerId, requestMessage.Account, requestMessage.PassWord);
+                bool isPermission = Authentication(request.Token, request.FileServerId, request.Account, request.PassWord);
                 if (!isPermission)
                 {
-                    responseMessage.IsSuccessed = false;
-                    responseMessage.ResultMessage = "您没有访问该文件服务器接口的权限!";
-                    return responseMessage;
+                    response.IsSuccessed = false;
+                    response.ResultMessage = "您没有访问该文件服务器接口的权限!";
+                    return response;
                 }
 
-                Directory.CreateDirectory(requestMessage.OriginalAbsoluteFileDirectory);
-                Directory.CreateDirectory(requestMessage.ThumbAbsoluteFileDirectory);
+                Directory.CreateDirectory(request.OriginalAbsoluteFileDirectory);
+                Directory.CreateDirectory(request.ThumbAbsoluteFileDirectory);
 
-                responseMessage.IsSuccessed = true;
-                responseMessage.ResultMessage = string.Empty;
+                response.IsSuccessed = true;
+                response.ResultMessage = string.Empty;
             }
             catch (Exception ex)
             {
-                responseMessage.IsSuccessed = false;
-                responseMessage.ResultMessage = ex.ToString();
+                response.IsSuccessed = false;
+                response.ResultMessage = ex.ToString();
                 Tools.LogWrite(ex.ToString());
             }
 
-            return responseMessage;
+            return response;
         }
 
-        private void GalleryCreateParamAdd(ref DbCommand cmd, GalleryCreateQuest requestMessage)
+        private void GalleryCreateParamAdd(ref DbCommand cmd, GalleryCreateQuest request)
         {
             DbParameter param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@CategoryId";
             param.DbType = DbType.Int32;
-            param.Value = requestMessage.CategoryId;
+            param.Value = request.CategoryId;
             cmd.Parameters.Add(param);
 
             param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@FileServerId";
             param.DbType = DbType.Int32;
-            param.Value = requestMessage.FileServerId;
+            param.Value = request.FileServerId;
             cmd.Parameters.Add(param);
 
             param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@GalleryName";
             param.DbType = DbType.String;
-            param.Value = requestMessage.GalleryName;
+            param.Value = request.GalleryName;
             cmd.Parameters.Add(param);
 
             param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@ConverRelativeFilePath";
             param.DbType = DbType.String;
-            param.Value = requestMessage.ConverRelativeFilePath;
+            param.Value = request.ConverRelativeFilePath;
             cmd.Parameters.Add(param);
 
             param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@BundlingRelativeFilePath";
             param.DbType = DbType.String;
-            param.Value = requestMessage.BundlingRelativeFilePath;
+            param.Value = request.BundlingRelativeFilePath;
             cmd.Parameters.Add(param);      
 
             param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@PageCount";
             param.DbType = DbType.Int32;
-            param.Value = requestMessage.PageCount;
+            param.Value = request.PageCount;
             cmd.Parameters.Add(param);
 
             param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@Introudce";
             param.DbType = DbType.String;
-            param.Value = requestMessage.Introudce;
+            param.Value = request.Introudce;
             cmd.Parameters.Add(param);
 
             param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@VideoRelativeFilePath";
             param.DbType = DbType.String;
-            param.Value = requestMessage.VideoRelativeFilePath;
+            param.Value = request.VideoRelativeFilePath;
             cmd.Parameters.Add(param);
 
             param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@Designer";
             param.DbType = DbType.String;
-            param.Value = requestMessage.Designer;
+            param.Value = request.Designer;
             cmd.Parameters.Add(param);
 
             param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@Address";
             param.DbType = DbType.String;
-            param.Value = requestMessage.Address;
+            param.Value = request.Address;
             cmd.Parameters.Add(param); 
 
             param = _dataBaseAccess.CreateParameter();
@@ -193,28 +193,28 @@ namespace BLLServer
             cmd.Parameters.Add(param);
         }  
 
-        public CommonResponse GalleryCreate(GalleryCreateQuest requestMessage)
+        public CommonResponse GalleryCreate(GalleryCreateQuest request)
         {
-            CommonResponse responseMessage = new CommonResponse();
-            responseMessage.IsSuccessed = false;
+            CommonResponse response = new CommonResponse();
+            response.IsSuccessed = false;
 
             try
             {
-                bool isPermission = Authentication(requestMessage.Token, requestMessage.FileServerId, requestMessage.Account, requestMessage.PassWord);
+                bool isPermission = Authentication(request.Token, request.FileServerId, request.Account, request.PassWord);
                 if (!isPermission)
                 {
-                    responseMessage.IsSuccessed = false;
-                    responseMessage.ResultMessage = "您没有访问该文件服务器接口的权限!";
-                    return responseMessage;
+                    response.IsSuccessed = false;
+                    response.ResultMessage = "您没有访问该文件服务器接口的权限!";
+                    return response;
                 }
 
-                Directory.CreateDirectory(requestMessage.OriginalAbsoluteFileDirectory);
-                Directory.CreateDirectory(requestMessage.ThumbAbsoluteFileDirectory);
+                Directory.CreateDirectory(request.OriginalAbsoluteFileDirectory);
+                Directory.CreateDirectory(request.ThumbAbsoluteFileDirectory);
 
                 DbCommand cmd = _dataBaseAccess.CreateCommand();
-                GalleryCreateParamAdd(ref cmd, requestMessage);
+                GalleryCreateParamAdd(ref cmd, request);
 
-                switch (requestMessage.StoreTableName)
+                switch (request.StoreTableName)
                 {
                     case "Album_Brand":    //品牌画册
                         {
@@ -238,9 +238,9 @@ namespace BLLServer
                         }
                     default:
                         {
-                            responseMessage.IsSuccessed = false;
-                            responseMessage.ResultMessage = string.Format("switch条件无法匹配数据表:{0}", requestMessage.StoreTableName);
-                            return responseMessage;
+                            response.IsSuccessed = false;
+                            response.ResultMessage = string.Format("switch条件无法匹配数据表:{0}", request.StoreTableName);
+                            return response;
                         }
                 }
 
@@ -248,93 +248,93 @@ namespace BLLServer
                 string galleryId = cmd.Parameters["@GalleryId"].Value.ToString();
                 string result = cmd.Parameters["@Result"].Value.ToString();
 
-                responseMessage.IsSuccessed = string.IsNullOrEmpty(result);
-                responseMessage.ResultMessage = responseMessage.IsSuccessed ? galleryId : result;
+                response.IsSuccessed = string.IsNullOrEmpty(result);
+                response.ResultMessage = response.IsSuccessed ? galleryId : result;
             }
             catch (Exception ex)
             {
-                responseMessage.IsSuccessed = false;
-                responseMessage.ResultMessage = ex.ToString();
+                response.IsSuccessed = false;
+                response.ResultMessage = ex.ToString();
                 Tools.LogWrite(ex.ToString());
             }
 
-            return responseMessage;
+            return response;
         }
 
-        private void FileInsertParamAdd(ref DbCommand cmd, FileUploadQuest requestMessage)
+        private void FileInsertParamAdd(ref DbCommand cmd, FileUploadQuest request)
         {
             DbParameter param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@StoreTableName";
             param.DbType = DbType.String;
-            param.Value = requestMessage.StoreTableName;
+            param.Value = request.StoreTableName;
             cmd.Parameters.Add(param);
 
             param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@CategoryId";
             param.DbType = DbType.Int32;
-            param.Value = requestMessage.CategoryId;
+            param.Value = request.CategoryId;
             cmd.Parameters.Add(param);
 
             param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@FileServerId";
             param.DbType = DbType.Int32;
-            param.Value = requestMessage.FileServerId;
+            param.Value = request.FileServerId;
             cmd.Parameters.Add(param);
 
             param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@ThumbRelativeFilePath";
             param.DbType = DbType.String;
-            param.Value = "Small" + requestMessage.CategoryRelativePath + "sm_" + requestMessage.FileName;
+            param.Value = "Small" + request.CategoryRelativePath + "sm_" + request.FileName;
             cmd.Parameters.Add(param);
 
             param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@OriginalRelativeFilePath";
             param.DbType = DbType.String;
-            param.Value = "Big" + requestMessage.CategoryRelativePath + requestMessage.FileName;
+            param.Value = "Big" + request.CategoryRelativePath + request.FileName;
             cmd.Parameters.Add(param);
 
             param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@CategoryName";
             param.DbType = DbType.String;
-            param.Value = requestMessage.CategoryName;
+            param.Value = request.CategoryName;
             cmd.Parameters.Add(param);
         }
 
-        public CommonResponse FileUpLoad(FileUploadQuest requestMessage)
+        public CommonResponse FileUpLoad(FileUploadQuest request)
         {
-            CommonResponse responseMessage = new CommonResponse();
-            responseMessage.IsSuccessed = false;
+            CommonResponse response = new CommonResponse();
+            response.IsSuccessed = false;
             string originalFileSavePath = string.Empty;
             string thumbFileSavePath = string.Empty;
             bool isOriginalFileExists = true;
 
             try
             {
-                bool isPermission = Authentication(requestMessage.Token, requestMessage.FileServerId, requestMessage.Account, requestMessage.PassWord);
+                bool isPermission = Authentication(request.Token, request.FileServerId, request.Account, request.PassWord);
                 if (!isPermission)
                 {
-                    responseMessage.IsSuccessed = false;
-                    responseMessage.ResultMessage = "您没有访问该文件服务器接口的权限!";
-                    return responseMessage;
+                    response.IsSuccessed = false;
+                    response.ResultMessage = "您没有访问该文件服务器接口的权限!";
+                    return response;
                 }
 
-                string fileName = requestMessage.FileName.ToLower();
+                string fileName = request.FileName.ToLower();
                 string fileExtenName = Path.GetExtension(fileName).ToLower();
 
-                originalFileSavePath = requestMessage.OriginalFileServerRootDirectory + requestMessage.CategoryAbsolutePath + fileName;
+                originalFileSavePath = request.OriginalFileServerRootDirectory + request.CategoryAbsolutePath + fileName;
 
                 isOriginalFileExists = File.Exists(originalFileSavePath);
 
                 if (fileName.Substring(0, 3) == "sm_") //缩略图
                 {
                     // 直接复制到缩略图路径       
-                    thumbFileSavePath = requestMessage.ThumbFileServerRootDirectory + requestMessage.CategoryAbsolutePath + fileName;
+                    thumbFileSavePath = request.ThumbFileServerRootDirectory + request.CategoryAbsolutePath + fileName;
                     using (FileStream outputStream = new FileStream(thumbFileSavePath, FileMode.OpenOrCreate, FileAccess.Write))
                     {
-                        requestMessage.FileData.CopyTo(outputStream);
+                        request.FileData.CopyTo(outputStream);
                         outputStream.Flush();
-                        responseMessage.IsSuccessed = true;
-                        responseMessage.ResultMessage = string.Empty;
+                        response.IsSuccessed = true;
+                        response.ResultMessage = string.Empty;
                     }
                 }
                 else if (fileName == "video.rar" || fileName == "cover.jpg" )
@@ -342,10 +342,10 @@ namespace BLLServer
                     //直接保存到原始图即可
                     using (FileStream outputStream = new FileStream(originalFileSavePath, FileMode.OpenOrCreate, FileAccess.Write))
                     {
-                        requestMessage.FileData.CopyTo(outputStream);
+                        request.FileData.CopyTo(outputStream);
                         outputStream.Flush();
-                        responseMessage.IsSuccessed = true;
-                        responseMessage.ResultMessage = string.Empty;
+                        response.IsSuccessed = true;
+                        response.ResultMessage = string.Empty;
                     }
                 }
                 else
@@ -353,16 +353,16 @@ namespace BLLServer
                     //即要保存原始图，又要生成并保存缩略图                  
                     using (FileStream outputStream = new FileStream(originalFileSavePath, FileMode.OpenOrCreate, FileAccess.Write))
                     {
-                        requestMessage.FileData.CopyTo(outputStream);
+                        request.FileData.CopyTo(outputStream);
                         outputStream.Flush();
-                        responseMessage.IsSuccessed = true;
-                        responseMessage.ResultMessage = string.Empty;
+                        response.IsSuccessed = true;
+                        response.ResultMessage = string.Empty;
                     }
 
                     //不是失量文件，则要生成缩略图
                     if (!ServerConfig.VectorPictureExtenName.ToLower().Contains(fileExtenName))
                     {                       
-                        thumbFileSavePath = requestMessage.ThumbFileServerRootDirectory + requestMessage.CategoryAbsolutePath + "sm_" + fileName;
+                        thumbFileSavePath = request.ThumbFileServerRootDirectory + request.CategoryAbsolutePath + "sm_" + fileName;
                         Tools.PictureProcess(originalFileSavePath, thumbFileSavePath, ServerConfig.ThumbPictureWidth, ServerConfig.ThumbPictureHeight);
                     }
 
@@ -371,7 +371,7 @@ namespace BLLServer
                     {
                         DbCommand cmd = _dataBaseAccess.CreateCommand();
                         cmd.CommandText = "Proc_Files_Insert";
-                        FileInsertParamAdd(ref cmd, requestMessage);
+                        FileInsertParamAdd(ref cmd, request);
                         _dataBaseAccess.ExecuteCommand(cmd);                        
                     }
                 }         
@@ -396,45 +396,45 @@ namespace BLLServer
                     Tools.LogWrite(exception.ToString());
                 }
 
-                responseMessage.IsSuccessed = false;
-                responseMessage.ResultMessage = ex.ToString();
+                response.IsSuccessed = false;
+                response.ResultMessage = ex.ToString();
             }
             finally
             {
-                requestMessage.FileData.Dispose();
+                request.FileData.Dispose();
             }
-            return responseMessage;
+            return response;
         }
 
-        public CommonResponse FileBundling(GalleryBundlingQuest requestMessage)
+        public CommonResponse FileBundling(GalleryBundlingQuest request)
         {
-            CommonResponse responseMessage = new CommonResponse();
-            responseMessage.IsSuccessed = false;
+            CommonResponse response = new CommonResponse();
+            response.IsSuccessed = false;
             string packageSavePath = string.Empty;
 
             try
             {
-                bool isPermission = Authentication(requestMessage.Token, requestMessage.FileServerId, requestMessage.Account, requestMessage.PassWord);
+                bool isPermission = Authentication(request.Token, request.FileServerId, request.Account, request.PassWord);
                 if (!isPermission)
                 {
-                    responseMessage.IsSuccessed = false;
-                    responseMessage.ResultMessage = "您没有访问该文件服务器接口的权限!";
-                    return responseMessage;
+                    response.IsSuccessed = false;
+                    response.ResultMessage = "您没有访问该文件服务器接口的权限!";
+                    return response;
                 }
 
-                if (!Directory.Exists(requestMessage.OriginalAbsoluteFileDirectory))
+                if (!Directory.Exists(request.OriginalAbsoluteFileDirectory))
                 {
-                    responseMessage.IsSuccessed = false;
-                    responseMessage.ResultMessage = string.Format("待打包目录:{0} 不存在!" , requestMessage.OriginalAbsoluteFileDirectory);
-                    return responseMessage;
+                    response.IsSuccessed = false;
+                    response.ResultMessage = string.Format("待打包目录:{0} 不存在!" , request.OriginalAbsoluteFileDirectory);
+                    return response;
                 }
 
-                packageSavePath = Path.Combine(requestMessage.OriginalAbsoluteFileDirectory, "Package.zip");
+                packageSavePath = Path.Combine(request.OriginalAbsoluteFileDirectory, "Package.zip");
                 File.Delete(packageSavePath);
 
                 string fileName = string.Empty;
                 List<string> listFile = new List<string>();                
-                foreach (string file in Directory.GetFiles(requestMessage.OriginalAbsoluteFileDirectory))
+                foreach (string file in Directory.GetFiles(request.OriginalAbsoluteFileDirectory))
                 {
                     fileName = Path.GetFileName(file).ToLower();
                     if (fileName != "video.rar" && fileName != "cover.jpg")
@@ -446,28 +446,28 @@ namespace BLLServer
                 if (listFile.Count > 0)
                 {
                     Tools.FileCompress(listFile, packageSavePath);
-                    responseMessage.IsSuccessed = true;
-                    responseMessage.ResultMessage = string.Empty;
+                    response.IsSuccessed = true;
+                    response.ResultMessage = string.Empty;
                 }
                 else
                 {
-                    responseMessage.IsSuccessed = false;
-                    responseMessage.ResultMessage = string.Format("待打包目录:{0} 为空目录!" ,requestMessage.OriginalAbsoluteFileDirectory);
+                    response.IsSuccessed = false;
+                    response.ResultMessage = string.Format("待打包目录:{0} 为空目录!" ,request.OriginalAbsoluteFileDirectory);
                 }
             }
             catch (Exception ex)
             {
-                responseMessage.IsSuccessed = false;
-                responseMessage.ResultMessage = ex.ToString();
+                response.IsSuccessed = false;
+                response.ResultMessage = ex.ToString();
                 Tools.LogWrite(ex.ToString());
             }
 
-            return responseMessage;
+            return response;
         }
 
         public DataTableResponse GetCategoryInfo(string token, int fileServerId, string account, string passWord)
         {
-            DataTableResponse responseMessage = new DataTableResponse();
+            DataTableResponse response = new DataTableResponse();
 
             DataTable dt = new DataTable();         
             
@@ -479,10 +479,10 @@ namespace BLLServer
                     dt.TableName = "Category";
                     dt.Columns.Add("Error", typeof(string));
 
-                    responseMessage.IsSuccessed = false;
-                    responseMessage.ResultMessage = "您没有访问该文件服务器接口的权限!";
-                    responseMessage.DataTable = dt;
-                    return responseMessage;
+                    response.IsSuccessed = false;
+                    response.ResultMessage = "您没有访问该文件服务器接口的权限!";
+                    response.DataTable = dt;
+                    return response;
                 }
 
                 DbCommand cmd = _dataBaseAccess.CreateCommand();
@@ -490,16 +490,16 @@ namespace BLLServer
                 dt = _dataBaseAccess.GetDataTable(cmd);
                 dt.TableName = "Category";
 
-                responseMessage.DataTable = dt;
+                response.DataTable = dt;
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    responseMessage.IsSuccessed = true;
-                    responseMessage.ResultMessage = string.Empty;
+                    response.IsSuccessed = true;
+                    response.ResultMessage = string.Empty;
                 }
                 else
                 {
-                    responseMessage.IsSuccessed = false;
-                    responseMessage.ResultMessage = "目录信息表为空!";
+                    response.IsSuccessed = false;
+                    response.ResultMessage = "目录信息表为空!";
                 }                
             }
             catch (Exception ex)
@@ -508,19 +508,18 @@ namespace BLLServer
                 dt.TableName = "Category";
                 dt.Columns.Add("Error", typeof(string));
 
-                responseMessage.IsSuccessed = false;
-                responseMessage.ResultMessage = ex.Message;
-                responseMessage.DataTable = dt;
+                response.IsSuccessed = false;
+                response.ResultMessage = ex.Message;
+                response.DataTable = dt;
                 Tools.LogWrite(ex.ToString());
             }
 
-            return responseMessage;
+            return response;
         }
-
 
         public DataTableResponse GetFileServerInfoByEndPoint(string token, string wcfAddress, string account, string passWord)
         {
-            DataTableResponse responseMessage = new DataTableResponse();
+            DataTableResponse response = new DataTableResponse();
 
             DataTable dt = new DataTable();
 
@@ -532,10 +531,10 @@ namespace BLLServer
                     dt.TableName = "FileServer";
                     dt.Columns.Add("Error", typeof(string));
 
-                    responseMessage.IsSuccessed = false;
-                    responseMessage.ResultMessage = "您没有访问该文件服务器接口的权限!";
-                    responseMessage.DataTable = dt;
-                    return responseMessage;
+                    response.IsSuccessed = false;
+                    response.ResultMessage = "您没有访问该文件服务器接口的权限!";
+                    response.DataTable = dt;
+                    return response;
                 }
 
                 DbCommand cmd = _dataBaseAccess.CreateCommand();
@@ -562,16 +561,16 @@ namespace BLLServer
                 dt = _dataBaseAccess.GetDataTable(cmd);
                 dt.TableName = "FileServer";
 
-                responseMessage.DataTable = dt;
+                response.DataTable = dt;
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    responseMessage.IsSuccessed = true;
-                    responseMessage.ResultMessage = string.Empty;
+                    response.IsSuccessed = true;
+                    response.ResultMessage = string.Empty;
                 }
                 else
                 {
-                    responseMessage.IsSuccessed = false;
-                    responseMessage.ResultMessage = string.Format("{0}从服务器信息表获取不到内容！", wcfAddress);
+                    response.IsSuccessed = false;
+                    response.ResultMessage = string.Format("{0}从服务器信息表获取不到内容！", wcfAddress);
                 }              
             }
             catch (Exception ex)
@@ -580,13 +579,13 @@ namespace BLLServer
                 dt.TableName = "FileServer";
                 dt.Columns.Add("Error", typeof(string));
 
-                responseMessage.IsSuccessed = false;
-                responseMessage.ResultMessage = ex.Message;
-                responseMessage.DataTable = dt;
+                response.IsSuccessed = false;
+                response.ResultMessage = ex.Message;
+                response.DataTable = dt;
                 Tools.LogWrite(ex.ToString());
             }
 
-            return responseMessage;
+            return response;
         }
     
     }

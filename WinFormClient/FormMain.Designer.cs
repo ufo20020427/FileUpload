@@ -80,19 +80,19 @@
             this.ContextMenuLocalDirectoryBind,
             this.ContextItemCategoryRefresh});
             this.contextCategory.Name = "contextCategory";
-            this.contextCategory.Size = new System.Drawing.Size(143, 48);
+            this.contextCategory.Size = new System.Drawing.Size(153, 70);
             // 
             // ContextMenuLocalDirectoryBind
             // 
             this.ContextMenuLocalDirectoryBind.Name = "ContextMenuLocalDirectoryBind";
-            this.ContextMenuLocalDirectoryBind.Size = new System.Drawing.Size(142, 22);
+            this.ContextMenuLocalDirectoryBind.Size = new System.Drawing.Size(152, 22);
             this.ContextMenuLocalDirectoryBind.Text = "关联本地目录";
             this.ContextMenuLocalDirectoryBind.Click += new System.EventHandler(this.ContextMenuLocalDirectoryBind_Click);
             // 
             // ContextItemCategoryRefresh
             // 
             this.ContextItemCategoryRefresh.Name = "ContextItemCategoryRefresh";
-            this.ContextItemCategoryRefresh.Size = new System.Drawing.Size(142, 22);
+            this.ContextItemCategoryRefresh.Size = new System.Drawing.Size(152, 22);
             this.ContextItemCategoryRefresh.Text = "刷新分类";
             this.ContextItemCategoryRefresh.Click += new System.EventHandler(this.ContextItemCategoryRefresh_Click);
             // 

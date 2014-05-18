@@ -115,6 +115,9 @@
     <Content Include="Images\root.gif">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Images\SucessfulDirectory.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\UnKnowType.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -203,24 +203,49 @@ namespace WinFormClient
 
         private void listBoxLocalDirectory_DrawItem(object sender, DrawItemEventArgs e)
         {
-            if (e.Index < 0)
+            try
             {
-                return;
-            }
+                if (e.Index < 0)
+                {
+                    return;
+                }
 
-            FolderInfo folderInfo = (sender as ListBox).Items[e.Index] as FolderInfo;
-            ListBoxDrawItem(e, "Images/LocalDirectory.ico", folderInfo.Name);
+                FolderInfo folderInfo = (sender as ListBox).Items[e.Index] as FolderInfo;
+
+                FileAttributes attributes = File.GetAttributes(folderInfo.Path);
+                if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                {
+                    ListBoxDrawItem(e, "Images/SucessfulDirectory.ico", folderInfo.Name);
+                }
+                else
+                {
+                    ListBoxDrawItem(e, "Images/LocalDirectory.ico", folderInfo.Name);
+                }
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void listBoxUploadDirectory_DrawItem(object sender, DrawItemEventArgs e)
         {
-            if (e.Index < 0)
+            try
             {
-                return;
-            }
+                if (e.Index < 0)
+                {
+                    return;
+                }
 
-            FolderInfo folderInfo = (sender as ListBox).Items[e.Index] as FolderInfo;
-            ListBoxDrawItem(e, "Images/UploadDirectory.ico", folderInfo.Path);
+                FolderInfo folderInfo = (sender as ListBox).Items[e.Index] as FolderInfo;
+                ListBoxDrawItem(e, "Images/UploadDirectory.ico", folderInfo.Path);
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private bool IsItemExists(ListBox.ObjectCollection items, string findText)
@@ -242,9 +267,14 @@ namespace WinFormClient
         {
             try
             {
-                foreach (var localItem in listBoxLocalDirectory.SelectedItems)
+                foreach (var item in listBoxLocalDirectory.SelectedItems)
                 {
-                    FolderInfo localFolderInfo = localItem as FolderInfo;
+                    FolderInfo localFolderInfo = item as FolderInfo;
+                    FileAttributes attributes = File.GetAttributes(localFolderInfo.Path);
+                    if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                    {
+                        continue;
+                    }
 
                     if (!IsItemExists(listBoxUploadDirectory.Items, localFolderInfo.Path))
                     {
