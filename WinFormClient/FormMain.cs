@@ -336,18 +336,27 @@ namespace WinFormClient
         {
             try
             {
-                foreach (var item in listBoxLocalDirectory.SelectedItems)
+                if (listBoxLocalDirectory.SelectedItems.Count == 0)
                 {
-                    FolderInfo localFolderInfo = item as FolderInfo;
+                    return;
+                }
 
-                    if (IsItemExists(listBoxUploadDirectory.Items, localFolderInfo.Path))
+                for (int index = listBoxLocalDirectory.Items.Count - 1; index >= 0; index--)
+                {
+                    if (!listBoxLocalDirectory.GetSelected(index))
                     {
                         continue;
                     }
 
-                 
+                    FolderInfo localFolderInfo = listBoxLocalDirectory.Items[index] as FolderInfo;                
+
                     FileAttributes attributes = File.GetAttributes(localFolderInfo.Path);
                     if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                    {
+                        continue;
+                    }
+
+                    if (IsItemExists(listBoxUploadDirectory.Items, localFolderInfo.Path))
                     {
                         continue;
                     }
@@ -358,12 +367,13 @@ namespace WinFormClient
                         //记录不符合上传的信息
                         continue;
                     }
-              
+
                     FolderInfo uploadFolderInfo = new FolderInfo();
                     uploadFolderInfo.Name = localFolderInfo.Name;
                     uploadFolderInfo.Path = localFolderInfo.Path;
                     listBoxUploadDirectory.Items.Add(uploadFolderInfo);
-                   
+
+                    listBoxLocalDirectory.Items.RemoveAt(index);
                 }
             }
             catch (Exception ex)
