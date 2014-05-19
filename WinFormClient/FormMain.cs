@@ -123,7 +123,12 @@ namespace WinFormClient
             {
                 TreeNode selectedNode = treeCategory.SelectedNode;
                 Category category = selectedNode.Tag as Category;
-                statusLabel.Text = "本地目录：" + category.LocalDirectoryPath;
+
+                string localDirectoryPath = "本地目录：" + category.LocalDirectoryPath;
+                string typeName = "类型：" + (category.Type == CategoryType.Picture ? "图片" : "相册");
+                string isExistVideo = "视频：" + (category.IsExistVideo ? "需要" : "不需");
+                string isExistVector = "失量图：" + (category.IsExistVector ? "需要" : "不需");
+                statusLabel.Text = string.Format("{0}   {1}   {2}   {3}", localDirectoryPath, typeName, isExistVideo, isExistVector);
 
                 if (category.IsDetail)
                 {
@@ -136,6 +141,7 @@ namespace WinFormClient
                         localFolderInfo.IsExistVector = category.IsExistVector;
                         localFolderInfo.Name = Path.GetFileName(file);
                         localFolderInfo.Path = file;
+                        localFolderInfo.StoreTableName = category.StoreTableName;
                         listBoxLocalDirectory.Items.Add(localFolderInfo);
                     }
                 }
@@ -264,7 +270,11 @@ namespace WinFormClient
                 }
 
                 FolderInfo folderInfo = (sender as ListBox).SelectedItem as FolderInfo;
-                statusLabel.Text = "本地目录：" + folderInfo.Path;
+                string localDirectoryPath = "本地目录：" + folderInfo.Path;
+                string typeName = "类型：" + (folderInfo.Type == CategoryType.Picture ? "图片" : "相册");
+                string isExistVideo = "视频：" + (folderInfo.IsExistVideo ? "需要" : "不需");
+                string isExistVector = "失量图：" + (folderInfo.IsExistVector ? "需要" : "不需");
+                statusLabel.Text = string.Format("{0}   {1}   {2}   {3}", localDirectoryPath, typeName, isExistVideo, isExistVector);
             }
             catch (Exception ex)
             {
@@ -283,7 +293,11 @@ namespace WinFormClient
                 }
 
                 FolderInfo folderInfo = (sender as ListBox).SelectedItem as FolderInfo;
-                statusLabel.Text = "本地目录：" + folderInfo.Path;
+                string localDirectoryPath = "本地目录：" + folderInfo.Path;
+                string typeName = "类型：" + (folderInfo.Type == CategoryType.Picture ? "图片" : "相册");
+                string isExistVideo = "视频：" + (folderInfo.IsExistVideo ? "需要" : "不需");
+                string isExistVector = "失量图：" + (folderInfo.IsExistVector ? "需要" : "不需");
+                statusLabel.Text = string.Format("{0}   {1}   {2}   {3}", localDirectoryPath, typeName, isExistVideo, isExistVector);
             }
             catch (Exception ex)
             {
@@ -336,6 +350,8 @@ namespace WinFormClient
         {
             try
             {
+                StringBuilder sbCheckResult = new StringBuilder();
+
                 if (listBoxLocalDirectory.SelectedItems.Count == 0)
                 {
                     return;
@@ -361,10 +377,10 @@ namespace WinFormClient
                         continue;
                     }
 
-                    string analyResult = _bllUpload.UploadDirectoryAnaly(localFolderInfo);
-                    if (!string.IsNullOrEmpty(analyResult))
+                    string checkResult = _bllUpload.UploadDirectoryCheck(localFolderInfo);
+                    if (!string.IsNullOrEmpty(checkResult))
                     {
-                        //记录不符合上传的信息
+                        sbCheckResult.Append(checkResult);
                         continue;
                     }
 
@@ -374,6 +390,12 @@ namespace WinFormClient
                     listBoxUploadDirectory.Items.Add(uploadFolderInfo);
 
                     listBoxLocalDirectory.Items.RemoveAt(index);
+                }
+
+                string finalResult = sbCheckResult.ToString();
+                if(!string.IsNullOrEmpty(finalResult))
+                {
+                    //显示出来
                 }
             }
             catch (Exception ex)

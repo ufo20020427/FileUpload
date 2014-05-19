@@ -239,7 +239,7 @@ namespace BLLServer
                     default:
                         {
                             response.IsSuccessed = false;
-                            response.ResultMessage = string.Format("switch条件无法匹配数据表:{0}", request.StoreTableName);
+                            response.ResultMessage = string.Format("业务逻辑无法识别该表:{0}", request.StoreTableName);
                             return response;
                         }
                 }

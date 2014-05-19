@@ -17,7 +17,7 @@ namespace Model
         public bool IsExistVector { get; set; }
         public string Name { get; set; }
         public string Path { get; set; }
-
+        public string StoreTableName { get; set; }
     }
 
 }

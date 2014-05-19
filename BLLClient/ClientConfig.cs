@@ -16,6 +16,7 @@ namespace BLLClient
                 _account = ConfigurationManager.AppSettings["Account"].ToString();
                 _passWord = ConfigurationManager.AppSettings["PassWord"].ToString();
                 _token = ConfigurationManager.AppSettings["Token"].ToString();
+                _vectorPictureExtenName = ConfigurationManager.AppSettings["VectorPictureExtenName"].ToString();
             }
             catch (Exception ex)
             {
@@ -28,6 +29,7 @@ namespace BLLClient
         private static string _account;
         private static string _passWord;
         private static string _token;
+        private static string _vectorPictureExtenName;
 
         public static string WCFAddress
         {
@@ -47,7 +49,12 @@ namespace BLLClient
         public static string Token
         {
             get { return _token; }
-        } 
+        }
+
+        public static string VectorPictureExtenName
+        {
+            get { return _vectorPictureExtenName; }
+        }
 
     }
 }
