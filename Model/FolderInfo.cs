@@ -18,6 +18,13 @@ namespace Model
         public string Name { get; set; }
         public string Path { get; set; }
         public string StoreTableName { get; set; }
+
+        public string GalleryName { get; set; }
+        public int PageCount { get; set; }
+        public string Introudce { get; set; }
+        public string Designer { get; set; }
+        public string Address { get; set; }
+       
     }
 
 }

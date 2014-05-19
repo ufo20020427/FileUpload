@@ -377,7 +377,7 @@ namespace WinFormClient
                         continue;
                     }
 
-                    string checkResult = _bllUpload.UploadDirectoryCheck(localFolderInfo);
+                    string checkResult = _bllUpload.UploadDirectoryCheck(ref localFolderInfo);
                     if (!string.IsNullOrEmpty(checkResult))
                     {
                         sbCheckResult.Append(checkResult);
