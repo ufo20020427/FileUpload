@@ -24,6 +24,8 @@ namespace Model
         public string Introudce { get; set; }
         public string Designer { get; set; }
         public string Address { get; set; }
+
+        public string CheckResult { get; set; }
        
     }
 

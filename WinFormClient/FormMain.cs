@@ -123,12 +123,11 @@ namespace WinFormClient
             {
                 TreeNode selectedNode = treeCategory.SelectedNode;
                 Category category = selectedNode.Tag as Category;
-
-                string localDirectoryPath = "本地目录：" + category.LocalDirectoryPath;
+             
                 string typeName = "类型：" + (category.Type == CategoryType.Picture ? "图片" : "相册");
                 string isExistVideo = "视频：" + (category.IsExistVideo ? "需要" : "不需");
                 string isExistVector = "失量图：" + (category.IsExistVector ? "需要" : "不需");
-                statusLabel.Text = string.Format("{0}   {1}   {2}   {3}", localDirectoryPath, typeName, isExistVideo, isExistVector);
+                statusLabel.Text = string.Format("{0}   {1}   {2}", typeName, isExistVideo, isExistVector);
 
                 if (category.IsDetail)
                 {
@@ -224,14 +223,20 @@ namespace WinFormClient
 
                 FolderInfo folderInfo = (sender as ListBox).Items[e.Index] as FolderInfo;
 
+                if(!string.IsNullOrEmpty(folderInfo.CheckResult))
+                {
+                    ListBoxDrawItem(e, "Images/CheckFail.ico", folderInfo.Path);
+                    return;
+                }
+
                 DirectoryInfo directoryInfo = new DirectoryInfo(folderInfo.Path);           
                 if ((directoryInfo.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
                 {
-                    ListBoxDrawItem(e, "Images/SucessfulDirectory.ico", folderInfo.Name);
+                    ListBoxDrawItem(e, "Images/SucessfulDirectory.ico", folderInfo.Path);
                 }
                 else
                 {
-                    ListBoxDrawItem(e, "Images/UploadDirectory.ico", folderInfo.Name);
+                    ListBoxDrawItem(e, "Images/UploadDirectory.ico", folderInfo.Path);
                 }
             }
             catch (Exception ex)
@@ -270,11 +275,10 @@ namespace WinFormClient
                 }
 
                 FolderInfo folderInfo = (sender as ListBox).SelectedItem as FolderInfo;
-                string localDirectoryPath = "本地目录：" + folderInfo.Path;
                 string typeName = "类型：" + (folderInfo.Type == CategoryType.Picture ? "图片" : "相册");
                 string isExistVideo = "视频：" + (folderInfo.IsExistVideo ? "需要" : "不需");
                 string isExistVector = "失量图：" + (folderInfo.IsExistVector ? "需要" : "不需");
-                statusLabel.Text = string.Format("{0}   {1}   {2}   {3}", localDirectoryPath, typeName, isExistVideo, isExistVector);
+                statusLabel.Text = string.Format("{0}   {1}   {2}", typeName, isExistVideo, isExistVector);
             }
             catch (Exception ex)
             {
@@ -292,12 +296,11 @@ namespace WinFormClient
                     return;
                 }
 
-                FolderInfo folderInfo = (sender as ListBox).SelectedItem as FolderInfo;
-                string localDirectoryPath = "本地目录：" + folderInfo.Path;
+                FolderInfo folderInfo = (sender as ListBox).SelectedItem as FolderInfo;             
                 string typeName = "类型：" + (folderInfo.Type == CategoryType.Picture ? "图片" : "相册");
                 string isExistVideo = "视频：" + (folderInfo.IsExistVideo ? "需要" : "不需");
                 string isExistVector = "失量图：" + (folderInfo.IsExistVector ? "需要" : "不需");
-                statusLabel.Text = string.Format("{0}   {1}   {2}   {3}", localDirectoryPath, typeName, isExistVideo, isExistVector);
+                statusLabel.Text = string.Format("{0}   {1}   {2}", typeName, isExistVideo, isExistVector);
             }
             catch (Exception ex)
             {
@@ -350,8 +353,6 @@ namespace WinFormClient
         {
             try
             {
-                StringBuilder sbCheckResult = new StringBuilder();
-
                 if (listBoxLocalDirectory.SelectedItems.Count == 0)
                 {
                     return;
@@ -377,10 +378,9 @@ namespace WinFormClient
                         continue;
                     }
 
-                    string checkResult = _bllUpload.UploadDirectoryCheck(ref localFolderInfo);
-                    if (!string.IsNullOrEmpty(checkResult))
-                    {
-                        sbCheckResult.Append(checkResult);
+                    _bllUpload.UploadDirectoryCheck(ref localFolderInfo);
+                    if (!string.IsNullOrEmpty(localFolderInfo.CheckResult))
+                    {                       
                         continue;
                     }
 
@@ -390,13 +390,7 @@ namespace WinFormClient
                     listBoxUploadDirectory.Items.Add(uploadFolderInfo);
 
                     listBoxLocalDirectory.Items.RemoveAt(index);
-                }
-
-                string finalResult = sbCheckResult.ToString();
-                if(!string.IsNullOrEmpty(finalResult))
-                {
-                    //显示出来
-                }
+                }            
             }
             catch (Exception ex)
             {

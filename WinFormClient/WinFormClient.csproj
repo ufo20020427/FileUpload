@@ -94,6 +94,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="Images\CheckFail.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\Gallery.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
