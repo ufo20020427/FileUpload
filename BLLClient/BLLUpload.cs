@@ -4,12 +4,98 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Windows.Forms;
+using Common;
 using Model;
 
 namespace BLLClient
 {
     public class BLLUpload
     {
+        private FileServerInfo _fileServerInfo;
+        private ListBox _listBoxUploadDirectory;
+        private ListBox _listBoxSucessfulDirectory;
+        private ListBox _listBoxFailDirectory;     
+
+        private Thread _threadUpload;
+        private bool _isStart;
+
+        public BLLUpload(FileServerInfo fileServerInfo, ListBox listBoxUploadDirectory, ListBox listBoxSucessfulDirectory, ListBox listBoxFailDirectory)
+        {
+            _fileServerInfo = fileServerInfo;
+            _listBoxUploadDirectory = listBoxUploadDirectory;
+            _listBoxSucessfulDirectory = listBoxSucessfulDirectory;
+            _listBoxFailDirectory = listBoxFailDirectory;
+            _isStart = false;
+        }
+
+        private void UpLoadProcess()
+        {
+            try
+            {
+                while (_isStart)
+                {
+                    foreach (var item in _listBoxUploadDirectory.Items)
+                    {
+                        try
+                        {
+                         //目录、相册创建
+                        //文件上传
+                        //文件属性置为只读
+                        //目录文件打包
+                        //目录属性置为只读
+                        }
+                        catch(Exception ex)
+                        {
+                            //转移到失败目录
+                        }       
+                    }
+                }
+            }
+            catch (ThreadInterruptedException)
+            {
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                Tools.LogWrite(ex.ToString());
+            }
+        }
+
+        public void Start()
+        {
+            try
+            {
+                _isStart = true;
+                _threadUpload = new Thread(UpLoadProcess);
+                _threadUpload.Start();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                Tools.LogWrite(ex.ToString());
+            }
+        }
+
+        public void Stop()
+        {
+            try
+            {
+                _isStart = false;
+
+                if (_threadUpload != null && _threadUpload.IsAlive)
+                {
+                    _threadUpload.Abort();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                Tools.LogWrite(ex.ToString());
+            }
+        }
+
         public void UploadDirectoryCheck(ref FolderInfo folderInfo)
         {
             try
@@ -28,7 +114,7 @@ namespace BLLClient
                     if (!File.Exists(checkFile))
                     {
                         folderInfo.CheckResult = "缺少描述文件info.txt";
-                        return;                      
+                        return;
                     }
 
                     if (folderInfo.IsExistVideo)
@@ -37,11 +123,11 @@ namespace BLLClient
                         if (!File.Exists(checkFile))
                         {
                             folderInfo.CheckResult = "缺少视频文件video.rar";
-                            return;        
+                            return;
                         }
                     }
 
-                    string infoContent = File.ReadAllText(Path.Combine(folderInfo.Path, "info.txt")).Trim().Replace("\r","").Replace("\n","");
+                    string infoContent = File.ReadAllText(Path.Combine(folderInfo.Path, "info.txt")).Trim().Replace("\r", "").Replace("\n", "");
                     string[] columns = infoContent.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
                     switch (folderInfo.StoreTableName)
                     {
@@ -95,7 +181,7 @@ namespace BLLClient
                         {
                             string directory = Path.GetDirectoryName(file);
                             string fileName = Path.GetFileNameWithoutExtension(file);
-                            string thumbFile = Path.Combine(directory, "sm_" + fileName + ".jpg");                           
+                            string thumbFile = Path.Combine(directory, "sm_" + fileName + ".jpg");
                             if (!File.Exists(thumbFile))
                             {
                                 folderInfo.CheckResult = string.Format("失量图缺少缩略图文件{0}", thumbFile);
@@ -103,15 +189,15 @@ namespace BLLClient
                             }
                         }
                     }
-                }             
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                folderInfo.CheckResult = "异常:"+ex.Message;
+                folderInfo.CheckResult = "异常:" + ex.Message;
                 return;
             }
 
-         
+
         }
     }
 }

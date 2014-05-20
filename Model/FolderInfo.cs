@@ -9,7 +9,7 @@ namespace Model
     {
         public FolderInfo()
         {
-
+            UploadResult = new StringBuilder();
         }
 
         public CategoryType Type { get; set; }
@@ -26,6 +26,7 @@ namespace Model
         public string Address { get; set; }
 
         public string CheckResult { get; set; }
+        public StringBuilder UploadResult { get; set; }
        
     }
 

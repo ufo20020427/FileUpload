@@ -46,6 +46,12 @@
             this.listBoxLocalDirectory = new System.Windows.Forms.ListBox();
             this.treeCategory = new System.Windows.Forms.TreeView();
             this.tabResult = new System.Windows.Forms.TabPage();
+            this.groupBoxFailFile = new System.Windows.Forms.GroupBox();
+            this.listBoxFailFile = new System.Windows.Forms.ListBox();
+            this.groupBoxFailDirectory = new System.Windows.Forms.GroupBox();
+            this.listBoxFailDirectory = new System.Windows.Forms.ListBox();
+            this.groupBoxSucessfulDirectory = new System.Windows.Forms.GroupBox();
+            this.listBoxSucessfulDirectory = new System.Windows.Forms.ListBox();
             this.statusStrip.SuspendLayout();
             this.contextCategory.SuspendLayout();
             this.contextLocalDirectory.SuspendLayout();
@@ -53,6 +59,10 @@
             this.tabUpload.SuspendLayout();
             this.groupBoxUploadDirectory.SuspendLayout();
             this.groupBoxLocalDirectory.SuspendLayout();
+            this.tabResult.SuspendLayout();
+            this.groupBoxFailFile.SuspendLayout();
+            this.groupBoxFailDirectory.SuspendLayout();
+            this.groupBoxSucessfulDirectory.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip
@@ -97,12 +107,12 @@
             this.contextLocalDirectory.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.contextItemSetCanUpload});
             this.contextLocalDirectory.Name = "contextLocalDirectory";
-            this.contextLocalDirectory.Size = new System.Drawing.Size(153, 48);
+            this.contextLocalDirectory.Size = new System.Drawing.Size(131, 26);
             // 
             // contextItemSetCanUpload
             // 
             this.contextItemSetCanUpload.Name = "contextItemSetCanUpload";
-            this.contextItemSetCanUpload.Size = new System.Drawing.Size(152, 22);
+            this.contextItemSetCanUpload.Size = new System.Drawing.Size(130, 22);
             this.contextItemSetCanUpload.Text = "设为可上传";
             this.contextItemSetCanUpload.Click += new System.EventHandler(this.contextItemSetCanUpload_Click);
             // 
@@ -223,6 +233,9 @@
             // 
             // tabResult
             // 
+            this.tabResult.Controls.Add(this.groupBoxFailFile);
+            this.tabResult.Controls.Add(this.groupBoxFailDirectory);
+            this.tabResult.Controls.Add(this.groupBoxSucessfulDirectory);
             this.tabResult.Location = new System.Drawing.Point(4, 22);
             this.tabResult.Name = "tabResult";
             this.tabResult.Padding = new System.Windows.Forms.Padding(3);
@@ -230,6 +243,87 @@
             this.tabResult.TabIndex = 1;
             this.tabResult.Text = "上传结果";
             this.tabResult.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxFailFile
+            // 
+            this.groupBoxFailFile.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.groupBoxFailFile.Controls.Add(this.listBoxFailFile);
+            this.groupBoxFailFile.Location = new System.Drawing.Point(601, 269);
+            this.groupBoxFailFile.Name = "groupBoxFailFile";
+            this.groupBoxFailFile.Size = new System.Drawing.Size(500, 250);
+            this.groupBoxFailFile.TabIndex = 7;
+            this.groupBoxFailFile.TabStop = false;
+            this.groupBoxFailFile.Text = "上传失败文件";
+            // 
+            // listBoxFailFile
+            // 
+            this.listBoxFailFile.ContextMenuStrip = this.contextLocalDirectory;
+            this.listBoxFailFile.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listBoxFailFile.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.listBoxFailFile.FormattingEnabled = true;
+            this.listBoxFailFile.HorizontalScrollbar = true;
+            this.listBoxFailFile.ItemHeight = 20;
+            this.listBoxFailFile.Location = new System.Drawing.Point(3, 17);
+            this.listBoxFailFile.Name = "listBoxFailFile";
+            this.listBoxFailFile.ScrollAlwaysVisible = true;
+            this.listBoxFailFile.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+            this.listBoxFailFile.Size = new System.Drawing.Size(494, 230);
+            this.listBoxFailFile.TabIndex = 3;
+            // 
+            // groupBoxFailDirectory
+            // 
+            this.groupBoxFailDirectory.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.groupBoxFailDirectory.Controls.Add(this.listBoxFailDirectory);
+            this.groupBoxFailDirectory.Location = new System.Drawing.Point(601, 6);
+            this.groupBoxFailDirectory.Name = "groupBoxFailDirectory";
+            this.groupBoxFailDirectory.Size = new System.Drawing.Size(500, 250);
+            this.groupBoxFailDirectory.TabIndex = 6;
+            this.groupBoxFailDirectory.TabStop = false;
+            this.groupBoxFailDirectory.Text = "上传失败目录";
+            // 
+            // listBoxFailDirectory
+            // 
+            this.listBoxFailDirectory.ContextMenuStrip = this.contextLocalDirectory;
+            this.listBoxFailDirectory.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listBoxFailDirectory.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.listBoxFailDirectory.FormattingEnabled = true;
+            this.listBoxFailDirectory.HorizontalScrollbar = true;
+            this.listBoxFailDirectory.ItemHeight = 20;
+            this.listBoxFailDirectory.Location = new System.Drawing.Point(3, 17);
+            this.listBoxFailDirectory.Name = "listBoxFailDirectory";
+            this.listBoxFailDirectory.ScrollAlwaysVisible = true;
+            this.listBoxFailDirectory.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+            this.listBoxFailDirectory.Size = new System.Drawing.Size(494, 230);
+            this.listBoxFailDirectory.TabIndex = 3;
+            this.listBoxFailDirectory.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.listBoxFailDirectory_DrawItem);
+            // 
+            // groupBoxSucessfulDirectory
+            // 
+            this.groupBoxSucessfulDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBoxSucessfulDirectory.Controls.Add(this.listBoxSucessfulDirectory);
+            this.groupBoxSucessfulDirectory.Location = new System.Drawing.Point(8, 6);
+            this.groupBoxSucessfulDirectory.Name = "groupBoxSucessfulDirectory";
+            this.groupBoxSucessfulDirectory.Size = new System.Drawing.Size(500, 515);
+            this.groupBoxSucessfulDirectory.TabIndex = 5;
+            this.groupBoxSucessfulDirectory.TabStop = false;
+            this.groupBoxSucessfulDirectory.Text = "上传成功目录";
+            // 
+            // listBoxSucessfulDirectory
+            // 
+            this.listBoxSucessfulDirectory.ContextMenuStrip = this.contextLocalDirectory;
+            this.listBoxSucessfulDirectory.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listBoxSucessfulDirectory.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.listBoxSucessfulDirectory.FormattingEnabled = true;
+            this.listBoxSucessfulDirectory.HorizontalScrollbar = true;
+            this.listBoxSucessfulDirectory.ItemHeight = 20;
+            this.listBoxSucessfulDirectory.Location = new System.Drawing.Point(3, 17);
+            this.listBoxSucessfulDirectory.Name = "listBoxSucessfulDirectory";
+            this.listBoxSucessfulDirectory.ScrollAlwaysVisible = true;
+            this.listBoxSucessfulDirectory.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+            this.listBoxSucessfulDirectory.Size = new System.Drawing.Size(494, 495);
+            this.listBoxSucessfulDirectory.TabIndex = 3;
+            this.listBoxSucessfulDirectory.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.listBoxSucessfulDirectory_DrawItem);
             // 
             // FormMain
             // 
@@ -251,6 +345,10 @@
             this.tabUpload.ResumeLayout(false);
             this.groupBoxUploadDirectory.ResumeLayout(false);
             this.groupBoxLocalDirectory.ResumeLayout(false);
+            this.tabResult.ResumeLayout(false);
+            this.groupBoxFailFile.ResumeLayout(false);
+            this.groupBoxFailDirectory.ResumeLayout(false);
+            this.groupBoxSucessfulDirectory.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -275,6 +373,12 @@
         private System.Windows.Forms.TabPage tabResult;
         private System.Windows.Forms.Button btnUploadDirectoryRemove;
         private System.Windows.Forms.Button btnUploadDirectoryAdd;
+        private System.Windows.Forms.GroupBox groupBoxSucessfulDirectory;
+        private System.Windows.Forms.ListBox listBoxSucessfulDirectory;
+        private System.Windows.Forms.GroupBox groupBoxFailDirectory;
+        private System.Windows.Forms.ListBox listBoxFailDirectory;
+        private System.Windows.Forms.GroupBox groupBoxFailFile;
+        private System.Windows.Forms.ListBox listBoxFailFile;
         
     }
 }

@@ -97,6 +97,9 @@
     <Content Include="Images\CheckFail.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Images\FailDirectory.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\Gallery.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

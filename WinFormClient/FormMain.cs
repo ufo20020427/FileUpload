@@ -31,6 +31,7 @@ namespace WinFormClient
                 Init();
                 FileServerInfoLoad();
                 CategoryTreeLoad();
+                _bllUpload.Start();
             }
             catch (Exception ex)
             {
@@ -41,6 +42,7 @@ namespace WinFormClient
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
+            _bllUpload.Stop();
             (_proxy as ICommunicationObject).Close();          
         }
 
@@ -52,7 +54,7 @@ namespace WinFormClient
             {
                 ClientConfig.Init();
 
-                _bllUpload = new BLLUpload();
+                _bllUpload = new BLLUpload(_fileServerInfo, listBoxUploadDirectory, listBoxSucessfulDirectory, listBoxFailDirectory);
 
                 NetTcpBinding binding = new NetTcpBinding();
                 binding.TransferMode = TransferMode.Streamed;
@@ -115,7 +117,7 @@ namespace WinFormClient
 
         #endregion 初始化
 
-        #region 分类操作
+        #region 分类
 
         private void treeCategory_AfterSelect(object sender, TreeViewEventArgs e)
         {
@@ -177,10 +179,9 @@ namespace WinFormClient
             CategoryTreeLoad();
         }
 
-        #endregion 分类操作
+        #endregion 分类
 
-        #region 本地目录|上传目录 操作
-     
+        #region 公共
 
         private void ListBoxDrawItem(DrawItemEventArgs e, string iconFilePath, string text)
         {
@@ -189,7 +190,7 @@ namespace WinFormClient
             {
                 myBrush = new SolidBrush(Color.FromArgb(150, 200, 250));
             }
-            else if(e.Index % 2== 0)
+            else if (e.Index % 2 == 0)
             {
                 myBrush = new SolidBrush(Color.FromArgb(244, 244, 244));
             }
@@ -216,6 +217,26 @@ namespace WinFormClient
             stringFormat.LineAlignment = StringAlignment.Center;
             e.Graphics.DrawString(text, e.Font, new SolidBrush(e.ForeColor), textRect, stringFormat);
         }
+
+        private bool IsItemExists(ListBox.ObjectCollection items, string findText)
+        {
+            foreach (var uploadItem in items)
+            {
+                FolderInfo folderInfo = uploadItem as FolderInfo;
+
+                if (string.Compare(folderInfo.Path, findText, true) == 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        #endregion 公共
+
+
+        #region 本地目录|上传目录
 
         private void listBoxLocalDirectory_DrawItem(object sender, DrawItemEventArgs e)
         {
@@ -328,7 +349,10 @@ namespace WinFormClient
                 {
                     FolderInfo folderInfo = item as FolderInfo;
                     DirectoryInfo directoryInfo = new DirectoryInfo(folderInfo.Path);
-                    directoryInfo.Attributes = FileAttributes.Normal & FileAttributes.Directory;               
+                    if ((directoryInfo.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                    {
+                        directoryInfo.Attributes = FileAttributes.Normal & FileAttributes.Directory;
+                    }
                 }            
             }
             catch (Exception ex)
@@ -337,23 +361,6 @@ namespace WinFormClient
                 MessageBox.Show(ex.Message);
             }
         }
-
-
-        private bool IsItemExists(ListBox.ObjectCollection items, string findText)
-        {
-            foreach (var uploadItem in items)
-            {
-                FolderInfo folderInfo = uploadItem as FolderInfo;
-
-                if (string.Compare(folderInfo.Path, findText, true) == 0)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
 
         private void btnUploadDirectoryAdd_Click(object sender, EventArgs e)
         {
@@ -430,10 +437,53 @@ namespace WinFormClient
                 Tools.LogWrite(ex.ToString());
                 MessageBox.Show(ex.Message);
             }
+        }    
+
+        #endregion 本地目录|上传目录     
+
+   
+        #region 上传结果
+
+        private void listBoxSucessfulDirectory_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            try
+            {
+                if (e.Index < 0)
+                {
+                    return;
+                }
+
+                FolderInfo folderInfo = (sender as ListBox).Items[e.Index] as FolderInfo;
+                ListBoxDrawItem(e, "Images/SucessfulDirectory.ico", folderInfo.Path);
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
         }
 
-    
+        private void listBoxFailDirectory_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            try
+            {
+                if (e.Index < 0)
+                {
+                    return;
+                }
 
-        #endregion 本地目录|上传目录 操作     
+                FolderInfo folderInfo = (sender as ListBox).Items[e.Index] as FolderInfo;
+                ListBoxDrawItem(e, "Images/FailDirectory.ico", folderInfo.Path);
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        #endregion 上传结果
+
+      
     }
 }
