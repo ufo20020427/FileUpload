@@ -41,7 +41,7 @@ namespace WinFormClient
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            (_proxy as ICommunicationObject).Close();
+            (_proxy as ICommunicationObject).Close();          
         }
 
         #region 初始化
@@ -180,6 +180,7 @@ namespace WinFormClient
         #endregion 分类操作
 
         #region 本地目录|上传目录 操作
+     
 
         private void ListBoxDrawItem(DrawItemEventArgs e, string iconFilePath, string text)
         {
@@ -187,6 +188,10 @@ namespace WinFormClient
             if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
             {
                 myBrush = new SolidBrush(Color.FromArgb(150, 200, 250));
+            }
+            else if(e.Index % 2== 0)
+            {
+                myBrush = new SolidBrush(Color.FromArgb(244, 244, 244));
             }
             else
             {
@@ -278,7 +283,8 @@ namespace WinFormClient
                 string typeName = "类型：" + (folderInfo.Type == CategoryType.Picture ? "图片" : "相册");
                 string isExistVideo = "视频：" + (folderInfo.IsExistVideo ? "需要" : "不需");
                 string isExistVector = "失量图：" + (folderInfo.IsExistVector ? "需要" : "不需");
-                statusLabel.Text = string.Format("{0}   {1}   {2}", typeName, isExistVideo, isExistVector);
+                string checkResult = string.IsNullOrEmpty(folderInfo.CheckResult) ? string.Empty : "检查结果：" + folderInfo.CheckResult;
+                statusLabel.Text = string.Format("{0}   {1}   {2}   {3}", typeName, isExistVideo, isExistVector, checkResult);
             }
             catch (Exception ex)
             {
@@ -425,7 +431,6 @@ namespace WinFormClient
 
     
 
-        #endregion 本地目录|上传目录 操作    
-
+        #endregion 本地目录|上传目录 操作     
     }
 }

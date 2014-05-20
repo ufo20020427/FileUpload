@@ -40,7 +40,7 @@ namespace BLLClient
                         }
                     }
 
-                    string infoContent = File.ReadAllText(Path.Combine(folderInfo.Path, "info.txt")).Trim();
+                    string infoContent = File.ReadAllText(Path.Combine(folderInfo.Path, "info.txt")).Trim().Replace("\r","").Replace("\n","");
                     string[] columns = infoContent.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
                     switch (folderInfo.StoreTableName)
                     {
@@ -86,10 +86,11 @@ namespace BLLClient
 
                 if (folderInfo.IsExistVector)
                 {
+                    string vectorPictureExtenName = ClientConfig.VectorPictureExtenName.ToLower();
                     foreach (string file in Directory.GetFiles(folderInfo.Path))
                     {
-                        string fileExtenName = Path.GetExtension(file);
-                        if (ClientConfig.VectorPictureExtenName.ToLower().Contains(fileExtenName))
+                        string fileExtenName = Path.GetExtension(file).ToLower();
+                        if (vectorPictureExtenName.Contains(fileExtenName))
                         {
                             string directory = Path.GetDirectoryName(file);
                             string thumbFile = Path.Combine(directory, ".jpg");

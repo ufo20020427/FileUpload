@@ -97,12 +97,12 @@
             this.contextLocalDirectory.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.contextItemSetCanUpload});
             this.contextLocalDirectory.Name = "contextLocalDirectory";
-            this.contextLocalDirectory.Size = new System.Drawing.Size(131, 26);
+            this.contextLocalDirectory.Size = new System.Drawing.Size(153, 48);
             // 
             // contextItemSetCanUpload
             // 
             this.contextItemSetCanUpload.Name = "contextItemSetCanUpload";
-            this.contextItemSetCanUpload.Size = new System.Drawing.Size(130, 22);
+            this.contextItemSetCanUpload.Size = new System.Drawing.Size(152, 22);
             this.contextItemSetCanUpload.Text = "设为可上传";
             this.contextItemSetCanUpload.Click += new System.EventHandler(this.contextItemSetCanUpload_Click);
             // 
@@ -226,7 +226,7 @@
             this.tabResult.Location = new System.Drawing.Point(4, 22);
             this.tabResult.Name = "tabResult";
             this.tabResult.Padding = new System.Windows.Forms.Padding(3);
-            this.tabResult.Size = new System.Drawing.Size(1008, 525);
+            this.tabResult.Size = new System.Drawing.Size(1186, 527);
             this.tabResult.TabIndex = 1;
             this.tabResult.Text = "上传结果";
             this.tabResult.UseVisualStyleBackColor = true;

@@ -284,13 +284,13 @@ namespace BLLServer
             param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@ThumbRelativeFilePath";
             param.DbType = DbType.String;
-            param.Value = "Small" + request.CategoryRelativePath + "sm_" + request.FileName;
+            param.Value = "/Small" + request.CategoryRelativePath + "sm_" + request.FileName;
             cmd.Parameters.Add(param);
 
             param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@OriginalRelativeFilePath";
             param.DbType = DbType.String;
-            param.Value = "Big" + request.CategoryRelativePath + request.FileName;
+            param.Value = "/Big" + request.CategoryRelativePath + request.FileName;
             cmd.Parameters.Add(param);
 
             param = _dataBaseAccess.CreateParameter();

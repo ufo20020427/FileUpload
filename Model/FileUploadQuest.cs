@@ -25,8 +25,8 @@ namespace Model
         [MessageHeader]
         public int FileServerId;    
 
-         // Big/一级目录/二级目录/130506/文件名.jpg
-         // Small/一级目录/二级目录/130506/sm_文件名.jpg
+         // /Big/一级目录/二级目录/130506/文件名.jpg
+         // /Small/一级目录/二级目录/130506/sm_文件名.jpg
         //  f:\\素材\\Big\\一级目录\\二级目录\\130506\\文件名.jpg
         //  f:\\素材\\Small\\一级目录\\二级目录\\130506\\sm_文件名.jpg
 
