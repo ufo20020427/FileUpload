@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Model;
 
 namespace BLLClient
@@ -26,7 +27,7 @@ namespace BLLClient
                     checkFile = Path.Combine(folderInfo.Path, "info.txt");
                     if (!File.Exists(checkFile))
                     {
-                        folderInfo.CheckResult = "缺少封面文件描述文件info.txt";
+                        folderInfo.CheckResult = "缺少描述文件info.txt";
                         return;                      
                     }
 
@@ -78,7 +79,7 @@ namespace BLLClient
                             }
                         default:
                             {
-                                folderInfo.CheckResult = string.Format("业务无法识别该表:{0}", folderInfo.StoreTableName);
+                                folderInfo.CheckResult = string.Format("无法识别该表:{0}", folderInfo.StoreTableName);
                                 return;
                             }
                     }
@@ -93,10 +94,11 @@ namespace BLLClient
                         if (vectorPictureExtenName.Contains(fileExtenName))
                         {
                             string directory = Path.GetDirectoryName(file);
-                            string thumbFile = Path.Combine(directory, ".jpg");
+                            string fileName = Path.GetFileNameWithoutExtension(file);
+                            string thumbFile = Path.Combine(directory, "sm_" + fileName + ".jpg");                           
                             if (!File.Exists(thumbFile))
-                            {                      
-                                folderInfo.CheckResult = string.Format("失量图文件{0}缺少缩略图文件{1}", file, thumbFile);
+                            {
+                                folderInfo.CheckResult = string.Format("失量图缺少缩略图文件{0}", thumbFile);
                                 return;
                             }
                         }

@@ -384,6 +384,7 @@ namespace WinFormClient
                         continue;
                     }
 
+                    localFolderInfo.CheckResult = string.Empty;
                     _bllUpload.UploadDirectoryCheck(ref localFolderInfo);
                     if (!string.IsNullOrEmpty(localFolderInfo.CheckResult))
                     {                       
@@ -396,7 +397,9 @@ namespace WinFormClient
                     listBoxUploadDirectory.Items.Add(uploadFolderInfo);
 
                     listBoxLocalDirectory.Items.RemoveAt(index);
-                }            
+                }
+
+                listBoxLocalDirectory.Invalidate();
             }
             catch (Exception ex)
             {
