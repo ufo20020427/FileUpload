@@ -12,13 +12,14 @@ namespace Model
             UploadResult = new StringBuilder();
         }
 
-        public CategoryType Type { get; set; }
-        public bool IsExistVideo { get; set; }
-        public bool IsExistVector { get; set; }     
-        public string LocalPath { get; set; }
-        public string StoreTableName { get; set; }
-        public string LevelPath { get; set; }
         public int CategoryId { get; set; }
+        public CategoryType CategoryType { get; set; }
+        public bool IsExistVideo { get; set; }
+        public bool IsExistVector { get; set; }
+        public string StoreTableName { get; set; }
+        public string LocalPath { get; set; }       
+        public string LevelPath { get; set; }
+        
 
         public string GalleryName { get; set; }
         public int PageCount { get; set; }
@@ -28,6 +29,10 @@ namespace Model
 
         public string CheckResult { get; set; }
         public StringBuilder UploadResult { get; set; }
+
+        public int GalleryId { get; set; } //数据库返回的GalleryId
+
+ 
        
     }
 

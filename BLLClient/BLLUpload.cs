@@ -21,6 +21,61 @@ namespace BLLClient
         private Thread _threadUpload;
         private bool _isStart;
 
+        private delegate void DirectoryTurnDelegate(FolderInfo uploadFolderInfo, int itemIndex);
+        private DirectoryTurnDelegate _turnToSucessful;
+        private DirectoryTurnDelegate _turnToFail;
+
+        private void UploadDirectoryTurnToSucessful(FolderInfo uploadFolderInfo, int itemIndex)
+        {
+            if (_listBoxUploadDirectory.InvokeRequired)
+            {
+                _listBoxUploadDirectory.Invoke(_turnToSucessful, uploadFolderInfo, itemIndex);                
+            }
+            else
+            {
+                FolderInfo sucessfulFolderInfo = new FolderInfo();
+                sucessfulFolderInfo.CategoryId = uploadFolderInfo.CategoryId;
+                sucessfulFolderInfo.CategoryType = uploadFolderInfo.CategoryType;
+                sucessfulFolderInfo.IsExistVideo = uploadFolderInfo.IsExistVideo;
+                sucessfulFolderInfo.IsExistVector = uploadFolderInfo.IsExistVector;
+                sucessfulFolderInfo.StoreTableName = uploadFolderInfo.StoreTableName;
+                sucessfulFolderInfo.LocalPath = uploadFolderInfo.LocalPath;
+                sucessfulFolderInfo.LevelPath = uploadFolderInfo.LevelPath;      
+
+                _listBoxSucessfulDirectory.Items.Add(sucessfulFolderInfo);
+                _listBoxUploadDirectory.Items.RemoveAt(itemIndex);
+            }
+        }
+
+        private void UploadDirectoryTurnToFail(FolderInfo uploadFolderInfo, int itemIndex)
+        {
+            if (_listBoxUploadDirectory.InvokeRequired)
+            {
+                _listBoxUploadDirectory.Invoke(_turnToFail, uploadFolderInfo, itemIndex);
+            }
+            else
+            {
+                FolderInfo failFolderInfo = new FolderInfo();
+                failFolderInfo.CategoryId = uploadFolderInfo.CategoryId;
+                failFolderInfo.CategoryType = uploadFolderInfo.CategoryType;
+                failFolderInfo.IsExistVideo = uploadFolderInfo.IsExistVideo;
+                failFolderInfo.IsExistVector = uploadFolderInfo.IsExistVector;
+                failFolderInfo.StoreTableName = uploadFolderInfo.StoreTableName;
+                failFolderInfo.LocalPath = uploadFolderInfo.LocalPath;                
+                failFolderInfo.LevelPath = uploadFolderInfo.LevelPath;
+              
+
+                failFolderInfo.GalleryName = uploadFolderInfo.GalleryName;
+                failFolderInfo.PageCount = uploadFolderInfo.PageCount;
+                failFolderInfo.Introudce = uploadFolderInfo.Introudce;
+                failFolderInfo.Designer = uploadFolderInfo.Designer;
+                failFolderInfo.Address = uploadFolderInfo.Address;
+            
+                _listBoxFailDirectory.Items.Add(failFolderInfo);
+                _listBoxUploadDirectory.Items.RemoveAt(itemIndex);
+            }
+        }
+
         public BLLUpload(IFileUpload proxy, FileServerInfo fileServerInfo, ListBox listBoxUploadDirectory, ListBox listBoxSucessfulDirectory, ListBox listBoxFailDirectory)
         {
             _proxy = proxy;
@@ -29,6 +84,9 @@ namespace BLLClient
             _listBoxSucessfulDirectory = listBoxSucessfulDirectory;
             _listBoxFailDirectory = listBoxFailDirectory;
             _isStart = false;
+
+            _turnToSucessful = new DirectoryTurnDelegate(UploadDirectoryTurnToSucessful);
+            _turnToFail = new DirectoryTurnDelegate(UploadDirectoryTurnToFail);
         }
 
         private CommonResponse DirectoryCreate(FolderInfo uploadFolderInfo)
@@ -77,20 +135,20 @@ namespace BLLClient
         private bool DirectoryProcess(int itemIndex, FolderInfo uploadFolderInfo)
         {
             CommonResponse response;
-            if (uploadFolderInfo.Type == CategoryType.Picture)
+            if (uploadFolderInfo.CategoryType == CategoryType.Picture)
             {
                 response = DirectoryCreate(uploadFolderInfo);
             }
             else
             {
                 response = GalleryCreate(uploadFolderInfo);
+                uploadFolderInfo.GalleryId = int.Parse(response.ResultMessage);
             }
 
             if (!response.IsSuccessful)
             {
                 uploadFolderInfo.UploadResult.AppendLine(response.ResultMessage);
-                _listBoxFailDirectory.Items.Add(uploadFolderInfo);
-                _listBoxUploadDirectory.Items.RemoveAt(itemIndex);
+                UploadDirectoryTurnToFail(uploadFolderInfo, itemIndex);                
             }
 
             return response.IsSuccessful;
@@ -118,14 +176,15 @@ namespace BLLClient
                            }
 
                             //文件上传
+                           //相册的@StoreTableName要转换Album_Book为Photo_Book
+
                             //文件属性置为只读
                             //相册文件打包
                           
-
                             //目录属性置为只读
 
-                            _listBoxSucessfulDirectory.Items.Add(uploadFolderInfo);
-                            _listBoxUploadDirectory.Items.RemoveAt(index);
+
+                           UploadDirectoryTurnToSucessful(uploadFolderInfo, index);                            
                         }
                         catch (ThreadInterruptedException)
                         {
@@ -135,15 +194,14 @@ namespace BLLClient
                         {
                             //转移到失败目录
                             uploadFolderInfo.UploadResult.AppendLine(ex.Message);
-                            _listBoxFailDirectory.Items.Add(uploadFolderInfo);
-                            _listBoxUploadDirectory.Items.RemoveAt(index);
+                            UploadDirectoryTurnToFail(uploadFolderInfo, index);   
                         }
                     }
 
                     Thread.Sleep(5000);
                 }
             }
-            catch (ThreadInterruptedException)
+            catch (ThreadAbortException)
             {
 
             }
@@ -180,7 +238,7 @@ namespace BLLClient
                     _threadUpload.Abort();
                 }
             }
-            catch (Exception ex)
+            catch (ThreadAbortException ex)
             {
                 MessageBox.Show(ex.Message);
                 Tools.LogWrite(ex.ToString());
@@ -192,7 +250,7 @@ namespace BLLClient
             try
             {
                 string checkFile = string.Empty;
-                if (folderInfo.Type == CategoryType.Gallery)
+                if (folderInfo.CategoryType == CategoryType.Gallery)
                 {
                     checkFile = Path.Combine(folderInfo.LocalPath, "cover.jpg");
                     if (!File.Exists(checkFile))

@@ -300,6 +300,7 @@ namespace BLLServer
             cmd.Parameters.Add(param);
         }
 
+
         public CommonResponse FileUpLoad(FileUploadRequest request)
         {
             CommonResponse response = new CommonResponse();
@@ -380,6 +381,7 @@ namespace BLLServer
                         {
                             DbCommand cmd = _dataBaseAccess.CreateCommand();
                             cmd.CommandText = "Proc_GalleryFiles_Insert";
+                            FileInsertParamAdd(ref cmd, request);
                             _dataBaseAccess.ExecuteCommand(cmd);  
                         }
                     }

@@ -57,7 +57,5 @@ namespace Model
 
         [MessageBodyMember]
         public Stream FileData;
-
-
     }
 }

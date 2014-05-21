@@ -142,7 +142,7 @@ namespace WinFormClient
                     {
                         FolderInfo localFolderInfo = new FolderInfo();
                         localFolderInfo.CategoryId = category.Id;
-                        localFolderInfo.Type = category.Type;
+                        localFolderInfo.CategoryType = category.Type;
                         localFolderInfo.LevelPath = category.LevelPath;
                         localFolderInfo.StoreTableName = category.StoreTableName;
                         localFolderInfo.IsExistVideo = category.IsExistVideo;
@@ -307,7 +307,7 @@ namespace WinFormClient
                 }
 
                 FolderInfo folderInfo = (sender as ListBox).SelectedItem as FolderInfo;
-                string typeName = "类型：" + (folderInfo.Type == CategoryType.Picture ? "图片" : "相册");
+                string typeName = "类型：" + (folderInfo.CategoryType == CategoryType.Picture ? "图片" : "相册");
                 string isExistVideo = "视频：" + (folderInfo.IsExistVideo ? "需要" : "不需");
                 string isExistVector = "失量图：" + (folderInfo.IsExistVector ? "需要" : "不需");
                 string checkResult = string.IsNullOrEmpty(folderInfo.CheckResult) ? string.Empty : "检查结果：" + folderInfo.CheckResult;
@@ -330,7 +330,7 @@ namespace WinFormClient
                 }
 
                 FolderInfo folderInfo = (sender as ListBox).SelectedItem as FolderInfo;             
-                string typeName = "类型：" + (folderInfo.Type == CategoryType.Picture ? "图片" : "相册");
+                string typeName = "类型：" + (folderInfo.CategoryType == CategoryType.Picture ? "图片" : "相册");
                 string isExistVideo = "视频：" + (folderInfo.IsExistVideo ? "需要" : "不需");
                 string isExistVector = "失量图：" + (folderInfo.IsExistVector ? "需要" : "不需");
                 statusLabel.Text = string.Format("{0}   {1}   {2}", typeName, isExistVideo, isExistVector);
@@ -407,7 +407,7 @@ namespace WinFormClient
                     FolderInfo uploadFolderInfo = new FolderInfo();
                     uploadFolderInfo.CategoryId = localFolderInfo.CategoryId;
                     uploadFolderInfo.LocalPath = localFolderInfo.LocalPath;
-                    uploadFolderInfo.Type = localFolderInfo.Type;
+                    uploadFolderInfo.CategoryType = localFolderInfo.CategoryType;
                     uploadFolderInfo.StoreTableName = localFolderInfo.StoreTableName;
                     uploadFolderInfo.LevelPath = localFolderInfo.LevelPath;
                     listBoxUploadDirectory.Items.Add(uploadFolderInfo);
