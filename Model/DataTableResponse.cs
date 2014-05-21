@@ -10,7 +10,7 @@ namespace Model
     public class DataTableResponse
     {
         [MessageHeader]
-        public bool IsSuccessed;
+        public bool IsSuccessful;
 
         [MessageHeader]
         public string ResultMessage;

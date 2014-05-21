@@ -13,16 +13,16 @@ namespace Model
     public interface IFileUpload
     {
         [OperationContract]
-        CommonResponse FileUpLoad(FileUploadQuest request);
+        CommonResponse FileUpLoad(FileUploadRequest request);
 
         [OperationContract]
-        CommonResponse DirectoryCreate(DirectoryCreateQuest request);
+        CommonResponse DirectoryCreate(DirectoryCreateRequest request);
 
         [OperationContract]
-        CommonResponse GalleryCreate(GalleryCreateQuest request);
+        CommonResponse GalleryCreate(GalleryCreateRequest request);
 
         [OperationContract]
-        CommonResponse FileBundling(GalleryBundlingQuest request);
+        CommonResponse FileBundling(GalleryBundlingRequest request);
 
         [OperationContract]
         DataTableResponse GetCategoryInfo(string token, int fileServerId, string account, string passWord);

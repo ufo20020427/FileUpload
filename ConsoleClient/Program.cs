@@ -25,7 +25,7 @@ namespace Client
             string file = "E:\\项目前期资料\\佛山三期资料\\固定费统计分析\\输入\\201312\\abc.jpg";
             using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read))
             {
-                FileUploadQuest request = new FileUploadQuest();
+                FileUploadRequest request = new FileUploadRequest();
                 request.Token = "1qaz2wsx";
                 request.Account = "account1";
                 request.PassWord = "pass1";
@@ -40,7 +40,7 @@ namespace Client
                 request.StoreTableName = "Files_Boy";
                 request.FileData = fs;
                 CommonResponse response = _proxy.FileUpLoad(request);
-                Console.WriteLine(response.IsSuccessed);
+                Console.WriteLine(response.IsSuccessful);
                 Console.WriteLine(response.ResultMessage);
             }    
         }
@@ -58,7 +58,7 @@ namespace Client
                 (_proxy as ICommunicationObject).Open();
 
                 DataTableResponse response = _proxy.GetFileServerInfoByEndPoint(ClientConfig.Token, ClientConfig.WCFAddress, "account1", "pass1");
-                Console.WriteLine(response.IsSuccessed.ToString());
+                Console.WriteLine(response.IsSuccessful.ToString());
                 Console.WriteLine(response.ResultMessage);
                 DataTable dt = response.DataTable;
                 Console.WriteLine(dt.Rows.Count.ToString());

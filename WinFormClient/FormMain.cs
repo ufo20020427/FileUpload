@@ -31,7 +31,7 @@ namespace WinFormClient
                 Init();
                 FileServerInfoLoad();
                 CategoryTreeLoad();
-                _bllUpload.Start();
+                UploadProcess();
             }
             catch (Exception ex)
             {
@@ -54,13 +54,11 @@ namespace WinFormClient
             {
                 ClientConfig.Init();
 
-                _bllUpload = new BLLUpload(_fileServerInfo, listBoxUploadDirectory, listBoxSucessfulDirectory, listBoxFailDirectory);
-
                 NetTcpBinding binding = new NetTcpBinding();
                 binding.TransferMode = TransferMode.Streamed;
                 ChannelFactory<IFileUpload> channelFactory = new ChannelFactory<IFileUpload>(binding, ClientConfig.WCFAddress);
                 _proxy = channelFactory.CreateChannel();
-                (_proxy as ICommunicationObject).Open();
+                (_proxy as ICommunicationObject).Open();  
             }
             catch (Exception ex)
             {
@@ -115,6 +113,12 @@ namespace WinFormClient
             }
         }
 
+        private void UploadProcess()
+        {
+            _bllUpload = new BLLUpload(_proxy, _fileServerInfo, listBoxUploadDirectory, listBoxSucessfulDirectory, listBoxFailDirectory);
+            _bllUpload.Start();
+        }
+
         #endregion 初始化
 
         #region 分类
@@ -134,15 +138,17 @@ namespace WinFormClient
                 if (category.IsDetail)
                 {
                     listBoxLocalDirectory.Items.Clear();
-                    foreach (string file in Directory.GetDirectories(category.LocalDirectoryPath))
+                    foreach (string localFile in Directory.GetDirectories(category.LocalDirectoryPath))
                     {
                         FolderInfo localFolderInfo = new FolderInfo();
+                        localFolderInfo.CategoryId = category.Id;
                         localFolderInfo.Type = category.Type;
-                        localFolderInfo.IsExistVideo = category.IsExistVideo;
-                        localFolderInfo.IsExistVector = category.IsExistVector;
-                        localFolderInfo.Name = Path.GetFileName(file);
-                        localFolderInfo.Path = file;
+                        localFolderInfo.LevelPath = category.LevelPath;
                         localFolderInfo.StoreTableName = category.StoreTableName;
+                        localFolderInfo.IsExistVideo = category.IsExistVideo;
+                        localFolderInfo.IsExistVector = category.IsExistVector;                     
+                        localFolderInfo.LocalPath = localFile;                      
+                        
                         listBoxLocalDirectory.Items.Add(localFolderInfo);
                     }
                 }
@@ -224,7 +230,7 @@ namespace WinFormClient
             {
                 FolderInfo folderInfo = uploadItem as FolderInfo;
 
-                if (string.Compare(folderInfo.Path, findText, true) == 0)
+                if (string.Compare(folderInfo.LocalPath, findText, true) == 0)
                 {
                     return true;
                 }
@@ -251,18 +257,18 @@ namespace WinFormClient
 
                 if(!string.IsNullOrEmpty(folderInfo.CheckResult))
                 {
-                    ListBoxDrawItem(e, "Images/CheckFail.ico", folderInfo.Path);
+                    ListBoxDrawItem(e, "Images/CheckFail.ico", folderInfo.LocalPath);
                     return;
                 }
 
-                DirectoryInfo directoryInfo = new DirectoryInfo(folderInfo.Path);           
+                DirectoryInfo directoryInfo = new DirectoryInfo(folderInfo.LocalPath);           
                 if ((directoryInfo.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
                 {
-                    ListBoxDrawItem(e, "Images/SucessfulDirectory.ico", folderInfo.Path);
+                    ListBoxDrawItem(e, "Images/SucessfulDirectory.ico", folderInfo.LocalPath);
                 }
                 else
                 {
-                    ListBoxDrawItem(e, "Images/UploadDirectory.ico", folderInfo.Path);
+                    ListBoxDrawItem(e, "Images/UploadDirectory.ico", folderInfo.LocalPath);
                 }
             }
             catch (Exception ex)
@@ -282,7 +288,7 @@ namespace WinFormClient
                 }
 
                 FolderInfo folderInfo = (sender as ListBox).Items[e.Index] as FolderInfo;
-                ListBoxDrawItem(e, "Images/UploadDirectory.ico", folderInfo.Path);
+                ListBoxDrawItem(e, "Images/UploadDirectory.ico", folderInfo.LocalPath);
             }
             catch (Exception ex)
             {
@@ -348,7 +354,7 @@ namespace WinFormClient
                 foreach (var item in listBoxLocalDirectory.SelectedItems)
                 {
                     FolderInfo folderInfo = item as FolderInfo;
-                    DirectoryInfo directoryInfo = new DirectoryInfo(folderInfo.Path);
+                    DirectoryInfo directoryInfo = new DirectoryInfo(folderInfo.LocalPath);
                     if ((directoryInfo.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
                     {
                         directoryInfo.Attributes = FileAttributes.Normal & FileAttributes.Directory;
@@ -380,13 +386,13 @@ namespace WinFormClient
 
                     FolderInfo localFolderInfo = listBoxLocalDirectory.Items[index] as FolderInfo;                
 
-                    FileAttributes attributes = File.GetAttributes(localFolderInfo.Path);
+                    FileAttributes attributes = File.GetAttributes(localFolderInfo.LocalPath);
                     if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
                     {
                         continue;
                     }
 
-                    if (IsItemExists(listBoxUploadDirectory.Items, localFolderInfo.Path))
+                    if (IsItemExists(listBoxUploadDirectory.Items, localFolderInfo.LocalPath))
                     {
                         continue;
                     }
@@ -396,11 +402,14 @@ namespace WinFormClient
                     if (!string.IsNullOrEmpty(localFolderInfo.CheckResult))
                     {                       
                         continue;
-                    }
+                    }                    
 
                     FolderInfo uploadFolderInfo = new FolderInfo();
-                    uploadFolderInfo.Name = localFolderInfo.Name;
-                    uploadFolderInfo.Path = localFolderInfo.Path;
+                    uploadFolderInfo.CategoryId = localFolderInfo.CategoryId;
+                    uploadFolderInfo.LocalPath = localFolderInfo.LocalPath;
+                    uploadFolderInfo.Type = localFolderInfo.Type;
+                    uploadFolderInfo.StoreTableName = localFolderInfo.StoreTableName;
+                    uploadFolderInfo.LevelPath = localFolderInfo.LevelPath;
                     listBoxUploadDirectory.Items.Add(uploadFolderInfo);
 
                     listBoxLocalDirectory.Items.RemoveAt(index);
@@ -454,7 +463,7 @@ namespace WinFormClient
                 }
 
                 FolderInfo folderInfo = (sender as ListBox).Items[e.Index] as FolderInfo;
-                ListBoxDrawItem(e, "Images/SucessfulDirectory.ico", folderInfo.Path);
+                ListBoxDrawItem(e, "Images/SucessfulDirectory.ico", folderInfo.LocalPath);
             }
             catch (Exception ex)
             {
@@ -473,7 +482,7 @@ namespace WinFormClient
                 }
 
                 FolderInfo folderInfo = (sender as ListBox).Items[e.Index] as FolderInfo;
-                ListBoxDrawItem(e, "Images/FailDirectory.ico", folderInfo.Path);
+                ListBoxDrawItem(e, "Images/FailDirectory.ico", folderInfo.LocalPath);
             }
             catch (Exception ex)
             {

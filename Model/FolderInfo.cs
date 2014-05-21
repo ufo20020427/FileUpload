@@ -14,10 +14,11 @@ namespace Model
 
         public CategoryType Type { get; set; }
         public bool IsExistVideo { get; set; }
-        public bool IsExistVector { get; set; }
-        public string Name { get; set; }
-        public string Path { get; set; }
+        public bool IsExistVector { get; set; }     
+        public string LocalPath { get; set; }
         public string StoreTableName { get; set; }
+        public string LevelPath { get; set; }
+        public int CategoryId { get; set; }
 
         public string GalleryName { get; set; }
         public int PageCount { get; set; }

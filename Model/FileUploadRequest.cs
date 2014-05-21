@@ -8,8 +8,11 @@ using System.Text;
 namespace Model
 {
     [MessageContract]
-    public class FileUploadQuest
+    public class FileUploadRequest
     {
+        [MessageHeader]
+        public CategoryType CategoryType;
+
         [MessageHeader]
         public string Token;
 
