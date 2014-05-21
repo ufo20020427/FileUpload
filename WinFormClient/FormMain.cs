@@ -492,9 +492,35 @@ namespace WinFormClient
                 Tools.LogWrite(ex.ToString());
                 MessageBox.Show(ex.Message);
             }
-        } 
+        }
+
+        private void listBoxFailDirectory_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if ((sender as ListBox).SelectedItem == null)
+                {
+                    return;
+                }
+
+
+                FolderInfoStatusShow(sender);
+
+                FolderInfo folderInfo = (sender as ListBox).SelectedItem as FolderInfo;
+
+                textBoxFailDetail.Clear();
+                textBoxFailDetail.Text = folderInfo.UploadResult.ToString();            
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
+        }
 
         #endregion 上传结果     
+
+    
       
     }
 }

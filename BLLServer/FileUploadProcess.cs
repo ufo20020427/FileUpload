@@ -92,7 +92,7 @@ namespace BLLServer
             response.IsSuccessful = false;
       
             try
-            {
+            {              
                 bool isPermission = Authentication(request.Token, request.FileServerId, request.Account, request.PassWord);
                 if (!isPermission)
                 {
