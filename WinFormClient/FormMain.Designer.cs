@@ -324,6 +324,7 @@
             this.listBoxSucessfulDirectory.Size = new System.Drawing.Size(494, 495);
             this.listBoxSucessfulDirectory.TabIndex = 3;
             this.listBoxSucessfulDirectory.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.listBoxSucessfulDirectory_DrawItem);
+            this.listBoxSucessfulDirectory.SelectedIndexChanged += new System.EventHandler(this.listBoxSucessfulDirectory_SelectedIndexChanged);
             // 
             // FormMain
             // 

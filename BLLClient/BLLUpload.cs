@@ -19,7 +19,7 @@ namespace BLLClient
         private ListBox _listBoxFailDirectory;
 
         private Thread _threadUpload;
-        private bool _isStart;
+        private bool _isRun;
 
         private delegate void DirectoryTurnDelegate(FolderInfo uploadFolderInfo, int itemIndex);
         private DirectoryTurnDelegate _turnToSucessful;
@@ -33,16 +33,7 @@ namespace BLLClient
             }
             else
             {
-                FolderInfo sucessfulFolderInfo = new FolderInfo();
-                sucessfulFolderInfo.CategoryId = uploadFolderInfo.CategoryId;
-                sucessfulFolderInfo.CategoryType = uploadFolderInfo.CategoryType;
-                sucessfulFolderInfo.IsExistVideo = uploadFolderInfo.IsExistVideo;
-                sucessfulFolderInfo.IsExistVector = uploadFolderInfo.IsExistVector;
-                sucessfulFolderInfo.StoreTableName = uploadFolderInfo.StoreTableName;
-                sucessfulFolderInfo.LocalPath = uploadFolderInfo.LocalPath;
-                sucessfulFolderInfo.LevelPath = uploadFolderInfo.LevelPath;      
-
-                _listBoxSucessfulDirectory.Items.Add(sucessfulFolderInfo);
+                _listBoxSucessfulDirectory.Items.Add(uploadFolderInfo);
                 _listBoxUploadDirectory.Items.RemoveAt(itemIndex);
             }
         }
@@ -55,23 +46,7 @@ namespace BLLClient
             }
             else
             {
-                FolderInfo failFolderInfo = new FolderInfo();
-                failFolderInfo.CategoryId = uploadFolderInfo.CategoryId;
-                failFolderInfo.CategoryType = uploadFolderInfo.CategoryType;
-                failFolderInfo.IsExistVideo = uploadFolderInfo.IsExistVideo;
-                failFolderInfo.IsExistVector = uploadFolderInfo.IsExistVector;
-                failFolderInfo.StoreTableName = uploadFolderInfo.StoreTableName;
-                failFolderInfo.LocalPath = uploadFolderInfo.LocalPath;                
-                failFolderInfo.LevelPath = uploadFolderInfo.LevelPath;
-              
-
-                failFolderInfo.GalleryName = uploadFolderInfo.GalleryName;
-                failFolderInfo.PageCount = uploadFolderInfo.PageCount;
-                failFolderInfo.Introudce = uploadFolderInfo.Introudce;
-                failFolderInfo.Designer = uploadFolderInfo.Designer;
-                failFolderInfo.Address = uploadFolderInfo.Address;
-            
-                _listBoxFailDirectory.Items.Add(failFolderInfo);
+                _listBoxFailDirectory.Items.Add(uploadFolderInfo);
                 _listBoxUploadDirectory.Items.RemoveAt(itemIndex);
             }
         }
@@ -83,7 +58,7 @@ namespace BLLClient
             _listBoxUploadDirectory = listBoxUploadDirectory;
             _listBoxSucessfulDirectory = listBoxSucessfulDirectory;
             _listBoxFailDirectory = listBoxFailDirectory;
-            _isStart = false;
+            _isRun = false;
 
             _turnToSucessful = new DirectoryTurnDelegate(UploadDirectoryTurnToSucessful);
             _turnToFail = new DirectoryTurnDelegate(UploadDirectoryTurnToFail);
@@ -158,11 +133,17 @@ namespace BLLClient
         {
             try
             {
-                while (_isStart)
+                while (_isRun)
                 {
                     FolderInfo uploadFolderInfo = new FolderInfo();
+                    int uploadDirectoryCount = 0;
 
-                    for (int index = 0; index < _listBoxUploadDirectory.Items.Count; index++)
+                    lock(_listBoxUploadDirectory)
+                    {
+                        uploadDirectoryCount = _listBoxUploadDirectory.Items.Count - 1;
+                    }
+
+                    for (int index = uploadDirectoryCount; index >= 0; index--)
                     {
                         try
                         {
@@ -183,7 +164,6 @@ namespace BLLClient
                           
                             //目录属性置为只读
 
-
                            UploadDirectoryTurnToSucessful(uploadFolderInfo, index);                            
                         }
                         catch (ThreadInterruptedException)
@@ -199,7 +179,7 @@ namespace BLLClient
                     }
 
                     Thread.Sleep(5000);
-                }
+                } //  while (_isRun)
             }
             catch (ThreadAbortException)
             {
@@ -216,7 +196,7 @@ namespace BLLClient
         {
             try
             {
-                _isStart = true;
+                _isRun = true;
                 _threadUpload = new Thread(UpLoadProcess);
                 _threadUpload.Start();
             }
@@ -231,7 +211,7 @@ namespace BLLClient
         {
             try
             {
-                _isStart = false;
+                _isRun = false;
 
                 if (_threadUpload != null && _threadUpload.IsAlive)
                 {

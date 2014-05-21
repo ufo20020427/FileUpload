@@ -198,7 +198,7 @@ namespace WinFormClient
             }
             else if (e.Index % 2 == 0)
             {
-                myBrush = new SolidBrush(Color.FromArgb(244, 244, 244));
+                myBrush = new SolidBrush(Color.FromArgb(200, 200, 200));
             }
             else
             {
@@ -237,6 +237,22 @@ namespace WinFormClient
             }
 
             return false;
+        }
+
+        private void FolderInfoStatusShow(object sender)
+        {
+            if ((sender as ListBox).SelectedItem == null)
+            {
+                return;
+            }
+
+            FolderInfo folderInfo = (sender as ListBox).SelectedItem as FolderInfo;
+
+            string typeName = "类型：" + (folderInfo.CategoryType == CategoryType.Picture ? "图片" : "相册");
+            string isExistVideo = "视频：" + (folderInfo.IsExistVideo ? "需要" : "不需");
+            string isExistVector = "失量图：" + (folderInfo.IsExistVector ? "需要" : "不需");
+            string checkResult = string.IsNullOrEmpty(folderInfo.CheckResult) ? string.Empty : "检查结果：" + folderInfo.CheckResult;
+            statusLabel.Text = string.Format("{0}   {1}   {2}   {3}", typeName, isExistVideo, isExistVector, checkResult);
         }
 
         #endregion 公共
@@ -301,17 +317,7 @@ namespace WinFormClient
         {
             try
             {
-                if((sender as ListBox).SelectedItem == null)
-                {
-                    return;
-                }
-
-                FolderInfo folderInfo = (sender as ListBox).SelectedItem as FolderInfo;
-                string typeName = "类型：" + (folderInfo.CategoryType == CategoryType.Picture ? "图片" : "相册");
-                string isExistVideo = "视频：" + (folderInfo.IsExistVideo ? "需要" : "不需");
-                string isExistVector = "失量图：" + (folderInfo.IsExistVector ? "需要" : "不需");
-                string checkResult = string.IsNullOrEmpty(folderInfo.CheckResult) ? string.Empty : "检查结果：" + folderInfo.CheckResult;
-                statusLabel.Text = string.Format("{0}   {1}   {2}   {3}", typeName, isExistVideo, isExistVector, checkResult);
+                FolderInfoStatusShow(sender);
             }
             catch (Exception ex)
             {
@@ -324,49 +330,14 @@ namespace WinFormClient
         {
             try
             {
-                if ((sender as ListBox).SelectedItem == null)
-                {
-                    return;
-                }
-
-                FolderInfo folderInfo = (sender as ListBox).SelectedItem as FolderInfo;             
-                string typeName = "类型：" + (folderInfo.CategoryType == CategoryType.Picture ? "图片" : "相册");
-                string isExistVideo = "视频：" + (folderInfo.IsExistVideo ? "需要" : "不需");
-                string isExistVector = "失量图：" + (folderInfo.IsExistVector ? "需要" : "不需");
-                statusLabel.Text = string.Format("{0}   {1}   {2}", typeName, isExistVideo, isExistVector);
+                FolderInfoStatusShow(sender);
             }
             catch (Exception ex)
             {
                 Tools.LogWrite(ex.ToString());
                 MessageBox.Show(ex.Message);
             }
-        }
-
-        private void contextItemSetCanUpload_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (MessageBox.Show("确定把已上传目录重置为允许上传？", "提示", MessageBoxButtons.YesNo) == DialogResult.No)
-                {
-                    return;
-                }
-
-                foreach (var item in listBoxLocalDirectory.SelectedItems)
-                {
-                    FolderInfo folderInfo = item as FolderInfo;
-                    DirectoryInfo directoryInfo = new DirectoryInfo(folderInfo.LocalPath);
-                    if ((directoryInfo.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
-                    {
-                        directoryInfo.Attributes = FileAttributes.Normal & FileAttributes.Directory;
-                    }
-                }            
-            }
-            catch (Exception ex)
-            {
-                Tools.LogWrite(ex.ToString());
-                MessageBox.Show(ex.Message);
-            }
-        }
+        }  
 
         private void btnUploadDirectoryAdd_Click(object sender, EventArgs e)
         {
@@ -402,16 +373,9 @@ namespace WinFormClient
                     if (!string.IsNullOrEmpty(localFolderInfo.CheckResult))
                     {                       
                         continue;
-                    }                    
-
-                    FolderInfo uploadFolderInfo = new FolderInfo();
-                    uploadFolderInfo.CategoryId = localFolderInfo.CategoryId;
-                    uploadFolderInfo.LocalPath = localFolderInfo.LocalPath;
-                    uploadFolderInfo.CategoryType = localFolderInfo.CategoryType;
-                    uploadFolderInfo.StoreTableName = localFolderInfo.StoreTableName;
-                    uploadFolderInfo.LevelPath = localFolderInfo.LevelPath;
-                    listBoxUploadDirectory.Items.Add(uploadFolderInfo);
-
+                    }   
+               
+                    listBoxUploadDirectory.Items.Add(localFolderInfo);
                     listBoxLocalDirectory.Items.RemoveAt(index);
                 }
 
@@ -446,7 +410,33 @@ namespace WinFormClient
                 Tools.LogWrite(ex.ToString());
                 MessageBox.Show(ex.Message);
             }
-        }    
+        }
+
+        private void contextItemSetCanUpload_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (MessageBox.Show("确定把已上传目录重置为允许上传？", "提示", MessageBoxButtons.YesNo) == DialogResult.No)
+                {
+                    return;
+                }
+
+                foreach (var item in listBoxLocalDirectory.SelectedItems)
+                {
+                    FolderInfo folderInfo = item as FolderInfo;
+                    DirectoryInfo directoryInfo = new DirectoryInfo(folderInfo.LocalPath);
+                    if ((directoryInfo.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                    {
+                        directoryInfo.Attributes = FileAttributes.Normal & FileAttributes.Directory;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
+        }
 
         #endregion 本地目录|上传目录     
 
@@ -491,8 +481,20 @@ namespace WinFormClient
             }
         }
 
-        #endregion 上传结果
+        private void listBoxSucessfulDirectory_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                FolderInfoStatusShow(sender);
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
+        } 
 
+        #endregion 上传结果     
       
     }
 }
