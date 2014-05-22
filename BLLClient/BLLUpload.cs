@@ -107,7 +107,7 @@ namespace BLLClient
             return response;
         }
 
-        private bool DirectoryProcess(int itemIndex, ref FolderInfo uploadFolderInfo)
+        private bool RemoteDirectoryCreateProcess(ref FolderInfo uploadFolderInfo,int itemIndex)
         {
             CommonResponse response;
             if (uploadFolderInfo.CategoryType == CategoryType.Picture)
@@ -129,6 +129,59 @@ namespace BLLClient
             return response.IsSuccessful;
         }
 
+        private void FileUploadProcess(FolderInfo uploadFolderInfo, int itemIndex)
+        {
+            foreach (string file in Directory.GetFiles(uploadFolderInfo.LocalPath))
+            {
+                if ((File.GetAttributes(file) & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                {
+                    continue;
+                }
+
+                //文件上传时，如果是相册类型StoreName要转化
+
+                //文件属性置为只读                              
+
+            } 
+        }
+
+        private bool FileBundlingProcess(FolderInfo uploadFolderInfo, int itemIndex)
+        {
+            string[] paths = uploadFolderInfo.LocalPath.Split(new char[] { '\\' });
+            string localDirectory = paths[paths.Length - 1];
+
+            GalleryBundlingRequest request = new GalleryBundlingRequest();
+            request.FileServerId = _fileServerInfo.Id;
+            request.Token = ClientConfig.Token;
+            request.Account = ClientConfig.Account;
+            request.PassWord = ClientConfig.PassWord;
+            request.OriginalAbsoluteFileDirectory = _fileServerInfo.OriginalFileServerRootDirectory + uploadFolderInfo.LevelPath.Replace("|", "\\\\") + "\\\\" + localDirectory;
+            CommonResponse response = _proxy.FileBundling(request);        
+
+            if (!response.IsSuccessful)
+            {
+                uploadFolderInfo.UploadResult.AppendLine(response.ResultMessage);
+                UploadDirectoryTurnToFail(uploadFolderInfo, itemIndex);
+            }
+
+            return response.IsSuccessful;
+        }
+
+        private void DirectorySetReadOnlyProcess(FolderInfo uploadFolderInfo, int itemIndex)
+        {
+            if (string.IsNullOrEmpty(uploadFolderInfo.UploadResult.ToString()))
+            {
+                DirectoryInfo directoryInfo = new DirectoryInfo(uploadFolderInfo.LocalPath);
+                directoryInfo.Attributes = FileAttributes.ReadOnly & FileAttributes.Directory;
+
+                UploadDirectoryTurnToSucessful(uploadFolderInfo, itemIndex);
+            }
+            else
+            {
+                UploadDirectoryTurnToFail(uploadFolderInfo, itemIndex);
+            }
+        }     
+
         private void UpLoadProcess()
         {
             try
@@ -148,23 +201,27 @@ namespace BLLClient
                         try
                         {
                             uploadFolderInfo = _listBoxUploadDirectory.Items[index] as FolderInfo;
-                            uploadFolderInfo.UploadResult = new StringBuilder();
+                            uploadFolderInfo.UploadResult.Clear();
 
                             //目录、相册创建                        
-                           if (!DirectoryProcess(index, ref uploadFolderInfo))
+                            if (!RemoteDirectoryCreateProcess(ref uploadFolderInfo, index))
                            {
                                continue;
                            }
 
-                            //文件上传
-                           //相册的@StoreTableName要转换Album_Book为Photo_Book
+                           //文件上传
+                            FileUploadProcess(uploadFolderInfo, index);    
 
-                            //文件属性置为只读
+                            //while(当所有文件上传完毕)
+                           
                             //相册文件打包
-                          
-                            //目录属性置为只读
+                           if (!FileBundlingProcess(uploadFolderInfo, index))
+                           {
+                               continue;
+                           }
 
-                           UploadDirectoryTurnToSucessful(uploadFolderInfo, index);                            
+                           //目录属性置为只读
+                           DirectorySetReadOnlyProcess(uploadFolderInfo, index);                     
                         }
                         catch (ThreadInterruptedException)
                         {

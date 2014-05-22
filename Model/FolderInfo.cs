@@ -30,9 +30,7 @@ namespace Model
         public string CheckResult { get; set; }
         public StringBuilder UploadResult { get; set; }
 
-        public int GalleryId { get; set; } //数据库返回的GalleryId
-
- 
+        public int GalleryId { get; set; } //数据库返回的GalleryId 
        
     }
 

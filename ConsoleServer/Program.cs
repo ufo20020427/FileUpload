@@ -14,13 +14,12 @@ namespace Server
     class Program
     {
         static void Main(string[] args)
-        {
-          
+        {          
             try
             {
                 ServerConfig.Init();
                 using (ServiceHost host = new ServiceHost(typeof(FileUploadProcess)))
-                {
+                {                   
                     host.Open();
                     Console.WriteLine("服务已启动。");
                     Console.ReadKey();
@@ -30,7 +29,7 @@ namespace Server
             catch (Exception ex)
             {
                 Tools.LogWrite(ex.ToString());
-            }
+            }           
         }
     }
 }

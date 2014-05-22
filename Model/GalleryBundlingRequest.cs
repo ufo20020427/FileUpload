@@ -10,10 +10,10 @@ namespace Model
     public class GalleryBundlingRequest
     {
         [MessageHeader]
-        public string Token;
+        public int FileServerId;  
 
         [MessageHeader]
-        public int FileServerId;   
+        public string Token;
 
         [MessageHeader]
         public string Account;

@@ -37,6 +37,7 @@
             this.ContextItemCategoryRefresh = new System.Windows.Forms.ToolStripMenuItem();
             this.contextLocalDirectory = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.contextItemSetCanUpload = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextItemLocalDirectoryOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.tabs = new System.Windows.Forms.TabControl();
             this.tabUpload = new System.Windows.Forms.TabPage();
             this.btnUploadDirectoryRemove = new System.Windows.Forms.Button();
@@ -53,7 +54,6 @@
             this.listBoxFailDirectory = new System.Windows.Forms.ListBox();
             this.groupBoxSucessfulDirectory = new System.Windows.Forms.GroupBox();
             this.listBoxSucessfulDirectory = new System.Windows.Forms.ListBox();
-            this.contextItemLocalDirectoryOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             this.contextCategory.SuspendLayout();
             this.contextLocalDirectory.SuspendLayout();
@@ -110,14 +110,21 @@
             this.contextItemSetCanUpload,
             this.contextItemLocalDirectoryOpen});
             this.contextLocalDirectory.Name = "contextLocalDirectory";
-            this.contextLocalDirectory.Size = new System.Drawing.Size(153, 70);
+            this.contextLocalDirectory.Size = new System.Drawing.Size(131, 48);
             // 
             // contextItemSetCanUpload
             // 
             this.contextItemSetCanUpload.Name = "contextItemSetCanUpload";
-            this.contextItemSetCanUpload.Size = new System.Drawing.Size(152, 22);
+            this.contextItemSetCanUpload.Size = new System.Drawing.Size(130, 22);
             this.contextItemSetCanUpload.Text = "设为可上传";
             this.contextItemSetCanUpload.Click += new System.EventHandler(this.contextItemSetCanUpload_Click);
+            // 
+            // contextItemLocalDirectoryOpen
+            // 
+            this.contextItemLocalDirectoryOpen.Name = "contextItemLocalDirectoryOpen";
+            this.contextItemLocalDirectoryOpen.Size = new System.Drawing.Size(130, 22);
+            this.contextItemLocalDirectoryOpen.Text = "打开目录";
+            this.contextItemLocalDirectoryOpen.Click += new System.EventHandler(this.contextItemLocalDirectoryOpen_Click);
             // 
             // tabs
             // 
@@ -280,7 +287,6 @@
             // 
             // listBoxFailDirectory
             // 
-            this.listBoxFailDirectory.ContextMenuStrip = this.contextLocalDirectory;
             this.listBoxFailDirectory.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listBoxFailDirectory.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.listBoxFailDirectory.FormattingEnabled = true;
@@ -309,7 +315,6 @@
             // 
             // listBoxSucessfulDirectory
             // 
-            this.listBoxSucessfulDirectory.ContextMenuStrip = this.contextLocalDirectory;
             this.listBoxSucessfulDirectory.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listBoxSucessfulDirectory.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.listBoxSucessfulDirectory.FormattingEnabled = true;
@@ -323,13 +328,6 @@
             this.listBoxSucessfulDirectory.TabIndex = 3;
             this.listBoxSucessfulDirectory.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.listBoxSucessfulDirectory_DrawItem);
             this.listBoxSucessfulDirectory.SelectedIndexChanged += new System.EventHandler(this.listBoxSucessfulDirectory_SelectedIndexChanged);
-            // 
-            // contextItemLocalDirectoryOpen
-            // 
-            this.contextItemLocalDirectoryOpen.Name = "contextItemLocalDirectoryOpen";
-            this.contextItemLocalDirectoryOpen.Size = new System.Drawing.Size(152, 22);
-            this.contextItemLocalDirectoryOpen.Text = "打开目录";
-            this.contextItemLocalDirectoryOpen.Click += new System.EventHandler(this.contextItemLocalDirectoryOpen_Click);
             // 
             // FormMain
             // 

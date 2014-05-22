@@ -56,6 +56,7 @@ namespace WinFormClient
 
                 NetTcpBinding binding = new NetTcpBinding();
                 binding.TransferMode = TransferMode.Streamed;
+                binding.SendTimeout = new TimeSpan(0,5,0);
                 ChannelFactory<IFileUpload> channelFactory = new ChannelFactory<IFileUpload>(binding, ClientConfig.WCFAddress);
                 _proxy = channelFactory.CreateChannel();
                 (_proxy as ICommunicationObject).Open();  
@@ -430,7 +431,7 @@ namespace WinFormClient
                 foreach (var item in listBoxLocalDirectory.SelectedItems)
                 {
                     FolderInfo folderInfo = item as FolderInfo;
-                    DirectoryInfo directoryInfo = new DirectoryInfo(folderInfo.LocalPath);
+                    DirectoryInfo directoryInfo = new DirectoryInfo(folderInfo.LocalPath);                   
                     if ((directoryInfo.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
                     {
                         directoryInfo.Attributes = FileAttributes.Normal & FileAttributes.Directory;
