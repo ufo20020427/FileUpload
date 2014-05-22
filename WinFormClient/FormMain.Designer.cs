@@ -48,11 +48,12 @@
             this.treeCategory = new System.Windows.Forms.TreeView();
             this.tabResult = new System.Windows.Forms.TabPage();
             this.groupBoxFailFile = new System.Windows.Forms.GroupBox();
+            this.textBoxFailDetail = new System.Windows.Forms.TextBox();
             this.groupBoxFailDirectory = new System.Windows.Forms.GroupBox();
             this.listBoxFailDirectory = new System.Windows.Forms.ListBox();
             this.groupBoxSucessfulDirectory = new System.Windows.Forms.GroupBox();
             this.listBoxSucessfulDirectory = new System.Windows.Forms.ListBox();
-            this.textBoxFailDetail = new System.Windows.Forms.TextBox();
+            this.contextItemLocalDirectoryOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             this.contextCategory.SuspendLayout();
             this.contextLocalDirectory.SuspendLayout();
@@ -106,14 +107,15 @@
             // contextLocalDirectory
             // 
             this.contextLocalDirectory.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.contextItemSetCanUpload});
+            this.contextItemSetCanUpload,
+            this.contextItemLocalDirectoryOpen});
             this.contextLocalDirectory.Name = "contextLocalDirectory";
-            this.contextLocalDirectory.Size = new System.Drawing.Size(131, 26);
+            this.contextLocalDirectory.Size = new System.Drawing.Size(153, 70);
             // 
             // contextItemSetCanUpload
             // 
             this.contextItemSetCanUpload.Name = "contextItemSetCanUpload";
-            this.contextItemSetCanUpload.Size = new System.Drawing.Size(130, 22);
+            this.contextItemSetCanUpload.Size = new System.Drawing.Size(152, 22);
             this.contextItemSetCanUpload.Text = "设为可上传";
             this.contextItemSetCanUpload.Click += new System.EventHandler(this.contextItemSetCanUpload_Click);
             // 
@@ -256,6 +258,15 @@
             this.groupBoxFailFile.TabStop = false;
             this.groupBoxFailFile.Text = "上传失败明细";
             // 
+            // textBoxFailDetail
+            // 
+            this.textBoxFailDetail.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBoxFailDetail.Location = new System.Drawing.Point(3, 17);
+            this.textBoxFailDetail.Multiline = true;
+            this.textBoxFailDetail.Name = "textBoxFailDetail";
+            this.textBoxFailDetail.Size = new System.Drawing.Size(576, 282);
+            this.textBoxFailDetail.TabIndex = 0;
+            // 
             // groupBoxFailDirectory
             // 
             this.groupBoxFailDirectory.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -313,14 +324,12 @@
             this.listBoxSucessfulDirectory.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.listBoxSucessfulDirectory_DrawItem);
             this.listBoxSucessfulDirectory.SelectedIndexChanged += new System.EventHandler(this.listBoxSucessfulDirectory_SelectedIndexChanged);
             // 
-            // textBoxFailDetail
+            // contextItemLocalDirectoryOpen
             // 
-            this.textBoxFailDetail.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBoxFailDetail.Location = new System.Drawing.Point(3, 17);
-            this.textBoxFailDetail.Multiline = true;
-            this.textBoxFailDetail.Name = "textBoxFailDetail";
-            this.textBoxFailDetail.Size = new System.Drawing.Size(576, 282);
-            this.textBoxFailDetail.TabIndex = 0;
+            this.contextItemLocalDirectoryOpen.Name = "contextItemLocalDirectoryOpen";
+            this.contextItemLocalDirectoryOpen.Size = new System.Drawing.Size(152, 22);
+            this.contextItemLocalDirectoryOpen.Text = "打开目录";
+            this.contextItemLocalDirectoryOpen.Click += new System.EventHandler(this.contextItemLocalDirectoryOpen_Click);
             // 
             // FormMain
             // 
@@ -378,6 +387,7 @@
         private System.Windows.Forms.ListBox listBoxFailDirectory;
         private System.Windows.Forms.GroupBox groupBoxFailFile;
         private System.Windows.Forms.TextBox textBoxFailDetail;
+        private System.Windows.Forms.ToolStripMenuItem contextItemLocalDirectoryOpen;
         
     }
 }

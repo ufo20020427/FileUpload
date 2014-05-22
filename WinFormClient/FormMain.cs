@@ -137,6 +137,11 @@ namespace WinFormClient
 
                 if (category.IsDetail)
                 {
+                    if (string.IsNullOrEmpty(category.LocalDirectoryPath) || !Directory.Exists(category.LocalDirectoryPath))
+                    {
+                        return;
+                    }
+
                     listBoxLocalDirectory.Items.Clear();
                     foreach (string localFile in Directory.GetDirectories(category.LocalDirectoryPath))
                     {
@@ -170,6 +175,7 @@ namespace WinFormClient
                     {
                         _bllCategoryTree.LocalDirectoryBind(treeCategory.SelectedNode, string.Empty, folderBrowserDialog.SelectedPath);
                         _bllCategoryTree.LocalDirectoryBindSave();
+                        CategoryTreeLoad();
                     }
                 }
             }
@@ -438,6 +444,28 @@ namespace WinFormClient
             }
         }
 
+        private void contextItemLocalDirectoryOpen_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (listBoxLocalDirectory.SelectedItems.Count != 1)
+                {
+                    MessageBox.Show("请选择一个目录!");
+                    return;
+                }
+
+                FolderInfo folderInfo = listBoxLocalDirectory.SelectedItem as FolderInfo;
+                System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo("Explorer.exe");
+                processStartInfo.Arguments = "/e," + folderInfo.LocalPath;
+                System.Diagnostics.Process.Start(processStartInfo);
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
+        }
+
         #endregion 本地目录|上传目录     
 
    
@@ -519,6 +547,8 @@ namespace WinFormClient
         }
 
         #endregion 上传结果     
+
+    
 
     
       

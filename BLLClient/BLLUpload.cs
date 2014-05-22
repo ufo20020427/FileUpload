@@ -92,8 +92,8 @@ namespace BLLClient
             request.CategoryId = uploadFolderInfo.CategoryId;
             request.FileServerId = _fileServerInfo.Id;
             request.GalleryName = uploadFolderInfo.GalleryName;
-            request.ConverRelativeFilePath = "/Small" + uploadFolderInfo.LevelPath.Replace("|", "/") + "/Cover.jpg";            
-            request.BundlingRelativeFilePath = "/Big" + uploadFolderInfo.LevelPath.Replace("|", "/") + "/Package.zip";
+            request.ConverRelativeFilePath = "/Small" + uploadFolderInfo.LevelPath.Replace("|", "/") + "/" + localDirectory + "/Cover.jpg";
+            request.BundlingRelativeFilePath = "/Big" + uploadFolderInfo.LevelPath.Replace("|", "/") + "/" + localDirectory + "/Package.zip";
             request.PageCount = uploadFolderInfo.PageCount;
             request.Introudce = uploadFolderInfo.Introudce;
             request.VideoRelativeFilePath = "/Big" + uploadFolderInfo.LevelPath.Replace("|", "/") + "/video.rar";
@@ -107,7 +107,7 @@ namespace BLLClient
             return response;
         }
 
-        private bool DirectoryProcess(int itemIndex, FolderInfo uploadFolderInfo)
+        private bool DirectoryProcess(int itemIndex, ref FolderInfo uploadFolderInfo)
         {
             CommonResponse response;
             if (uploadFolderInfo.CategoryType == CategoryType.Picture)
@@ -151,7 +151,7 @@ namespace BLLClient
                             uploadFolderInfo.UploadResult = new StringBuilder();
 
                             //目录、相册创建                        
-                           if (!DirectoryProcess(index, uploadFolderInfo))
+                           if (!DirectoryProcess(index, ref uploadFolderInfo))
                            {
                                continue;
                            }
@@ -256,7 +256,7 @@ namespace BLLClient
                         }
                     }
 
-                    string infoContent = File.ReadAllText(Path.Combine(folderInfo.LocalPath, "info.txt")).Trim().Replace("\r", "").Replace("\n", "");
+                    string infoContent = File.ReadAllText(Path.Combine(folderInfo.LocalPath, "info.txt"), Encoding.GetEncoding("gb2312")).Trim().Replace("\r", "").Replace("\n", "");
                     string[] columns = infoContent.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
                     switch (folderInfo.StoreTableName)
                     {
