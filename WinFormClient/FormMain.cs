@@ -72,19 +72,8 @@ namespace WinFormClient
         {
             try
             {
-                DataTableResponse response = _proxy.GetFileServerInfoByEndPoint(ClientConfig.Token, ClientConfig.WCFAddress, ClientConfig.Account, ClientConfig.PassWord);
-                DataTable dt = response.DataTable;
-
-                if (dt == null || dt.Rows.Count == 0)
-                {
-                    throw new Exception("加载文件服务器信息失败!");
-                }
-
-                _fileServerInfo = new FileServerInfo();
-                _fileServerInfo.Id = Convert.ToInt32(dt.Rows[0]["FSID"]);
-                _fileServerInfo.Name = dt.Rows[0]["FSName"].ToString();
-                _fileServerInfo.OriginalFileServerRootDirectory = dt.Rows[0]["OrgFilePath"].ToString();
-                _fileServerInfo.ThumbFileServerRootDirectory = dt.Rows[0]["ThumbFilePath"].ToString();
+                BLLFileServer bllFileServer = new BLLFileServer(_proxy);
+                _fileServerInfo = bllFileServer.FileServerInfoLoad();
 
                 this.Text = string.Format("素材上传 已连上:{0}({1})", ClientConfig.WCFAddress, _fileServerInfo.Name);
             }
@@ -99,11 +88,11 @@ namespace WinFormClient
         {
             try
             {
-                DataTableResponse response = _proxy.GetCategoryInfo(ClientConfig.Token, 1, "account1", "pass1");
-                _bllCategoryTree = new BLLCategoryTree(treeCategory);
-
+                DataTableResponse response = _proxy.GetCategoryInfo(ClientConfig.Token, 1, ClientConfig.Account, ClientConfig.PassWord);
+   
                 if (response.DataTable != null || response.DataTable.Rows.Count > 1)
                 {
+                    _bllCategoryTree = new BLLCategoryTree(treeCategory);
                     _bllCategoryTree.CategoryLoad(response.DataTable);
                 }
             }
@@ -262,8 +251,28 @@ namespace WinFormClient
             statusLabel.Text = string.Format("{0}   {1}   {2}   {3}", typeName, isExistVideo, isExistVector, checkResult);
         }
 
-        #endregion 公共
+        private void ListBoxSelectedItemsRemove(ListBox listBox)
+        {
+            if (listBox.SelectedItems.Count == 0)
+            {
+                return;
+            }
 
+            if (MessageBox.Show("确定移除选中目录？", "提示", MessageBoxButtons.YesNo) == DialogResult.No)
+            {
+                return;
+            }
+
+            for (int index = listBox.Items.Count - 1; index >= 0; index--)
+            {
+                if (listBox.GetSelected(index))
+                {
+                    listBox.Items.RemoveAt(index);
+                }
+            }
+        }
+
+        #endregion 公共
 
         #region 本地目录|上传目录
 
@@ -344,9 +353,9 @@ namespace WinFormClient
                 Tools.LogWrite(ex.ToString());
                 MessageBox.Show(ex.Message);
             }
-        }  
+        }
 
-        private void btnUploadDirectoryAdd_Click(object sender, EventArgs e)
+        private void contextItemSetCanUpload_Click(object sender, EventArgs e)
         {
             try
             {
@@ -355,74 +364,6 @@ namespace WinFormClient
                     return;
                 }
 
-                for (int index = listBoxLocalDirectory.Items.Count - 1; index >= 0; index--)
-                {
-                    if (!listBoxLocalDirectory.GetSelected(index))
-                    {
-                        continue;
-                    }
-
-                    FolderInfo localFolderInfo = listBoxLocalDirectory.Items[index] as FolderInfo;                
-
-                    FileAttributes attributes = File.GetAttributes(localFolderInfo.LocalPath);
-                    if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
-                    {
-                        continue;
-                    }
-
-                    if (IsItemExists(listBoxUploadDirectory.Items, localFolderInfo.LocalPath))
-                    {
-                        continue;
-                    }
-
-                    localFolderInfo.CheckResult = string.Empty;
-                    _bllUpload.UploadDirectoryCheck(ref localFolderInfo);
-                    if (!string.IsNullOrEmpty(localFolderInfo.CheckResult))
-                    {                       
-                        continue;
-                    }   
-               
-                    listBoxUploadDirectory.Items.Add(localFolderInfo);
-                    listBoxLocalDirectory.Items.RemoveAt(index);
-                }
-
-                listBoxLocalDirectory.Invalidate();
-            }
-            catch (Exception ex)
-            {
-                Tools.LogWrite(ex.ToString());
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void btnUploadDirectoryRemove_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (listBoxUploadDirectory.SelectedItems.Count == 0)
-                {
-                    return;
-                }
-
-                for (int index = listBoxUploadDirectory.Items.Count - 1; index >= 0; index--)
-                {
-                    if (listBoxUploadDirectory.GetSelected(index))
-                    {
-                        listBoxUploadDirectory.Items.RemoveAt(index);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Tools.LogWrite(ex.ToString());
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void contextItemSetCanUpload_Click(object sender, EventArgs e)
-        {
-            try
-            {
                 if (MessageBox.Show("确定把已上传目录重置为允许上传？", "提示", MessageBoxButtons.YesNo) == DialogResult.No)
                 {
                     return;
@@ -451,7 +392,7 @@ namespace WinFormClient
             {
                 if (listBoxLocalDirectory.SelectedItems.Count != 1)
                 {
-                    MessageBox.Show("请选择一个目录!");
+                    MessageBox.Show("只能选中一个目录！");
                     return;
                 }
 
@@ -467,8 +408,74 @@ namespace WinFormClient
             }
         }
 
-        #endregion 本地目录|上传目录     
+        private void contextItemUploadDirectoryAdd_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (listBoxLocalDirectory.SelectedItems.Count == 0)
+                {
+                    return;
+                }
 
+                if (MessageBox.Show("确定上传选中目录？", "提示", MessageBoxButtons.YesNo) == DialogResult.No)
+                {
+                    return;
+                }
+
+                for (int index = listBoxLocalDirectory.Items.Count - 1; index >= 0; index--)
+                {
+                    if (!listBoxLocalDirectory.GetSelected(index))
+                    {
+                        continue;
+                    }
+
+                    FolderInfo localFolderInfo = listBoxLocalDirectory.Items[index] as FolderInfo;
+
+                    FileAttributes attributes = File.GetAttributes(localFolderInfo.LocalPath);
+                    if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                    {
+                        continue;
+                    }
+
+                    if (IsItemExists(listBoxUploadDirectory.Items, localFolderInfo.LocalPath))
+                    {
+                        continue;
+                    }
+
+                    localFolderInfo.CheckResult = string.Empty;
+                    _bllUpload.UploadDirectoryCheck(ref localFolderInfo);
+                    if (!string.IsNullOrEmpty(localFolderInfo.CheckResult))
+                    {
+                        continue;
+                    }
+
+                    listBoxUploadDirectory.Items.Add(localFolderInfo);
+                    listBoxLocalDirectory.Items.RemoveAt(index);
+                }
+
+                listBoxLocalDirectory.Invalidate();
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void contextItemUploadDirectoryRemove_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ListBoxSelectedItemsRemove(listBoxUploadDirectory);
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        #endregion 本地目录|上传目录     
    
         #region 上传结果
 
@@ -532,7 +539,6 @@ namespace WinFormClient
                     return;
                 }
 
-
                 FolderInfoStatusShow(sender);
 
                 FolderInfo folderInfo = (sender as ListBox).SelectedItem as FolderInfo;
@@ -547,11 +553,79 @@ namespace WinFormClient
             }
         }
 
-        #endregion 上传结果     
+        private void contextItemSucessfulDirectoryRemove_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ListBoxSelectedItemsRemove(listBoxSucessfulDirectory);    
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
+        }
 
-    
+        private void contextItemFailDirectoryRemove_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ListBoxSelectedItemsRemove(listBoxFailDirectory);
+                textBoxFailDetail.Clear();
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
+        }
 
-    
-      
+        private void contextItemFailDirectoryReUpload_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (listBoxFailDirectory.SelectedItems.Count == 0)
+                {
+                    return;
+                }
+
+                if (MessageBox.Show("确定上传选中目录？", "提示", MessageBoxButtons.YesNo) == DialogResult.No)
+                {
+                    return;
+                }       
+
+                for (int index = listBoxFailDirectory.Items.Count - 1; index >= 0; index--)
+                {
+                    if (!listBoxFailDirectory.GetSelected(index))
+                    {
+                        continue;
+                    }
+
+                    FolderInfo failFolderInfo = listBoxFailDirectory.Items[index] as FolderInfo;
+
+                    if (IsItemExists(listBoxUploadDirectory.Items, failFolderInfo.LocalPath))
+                    {
+                        continue;
+                    }
+
+                    failFolderInfo.CheckResult = string.Empty;
+                    _bllUpload.UploadDirectoryCheck(ref failFolderInfo);
+                    if (!string.IsNullOrEmpty(failFolderInfo.CheckResult))
+                    {
+                        continue;
+                    }
+
+                    listBoxUploadDirectory.Items.Add(failFolderInfo);
+                    listBoxFailDirectory.Items.RemoveAt(index);
+                }                
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        #endregion 上传结果          
     }
 }

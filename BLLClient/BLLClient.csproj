@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BLLCategoryTree.cs" />
+    <Compile Include="BLLFileServer.cs" />
     <Compile Include="BLLUpload.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ClientConfig.cs" />
