@@ -39,6 +39,7 @@
             this.contextItemUploadDirectoryAdd = new System.Windows.Forms.ToolStripMenuItem();
             this.contextItemLocalDirectoryOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.contextItemSetCanUpload = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextItemFileSetCanUpload = new System.Windows.Forms.ToolStripMenuItem();
             this.tabs = new System.Windows.Forms.TabControl();
             this.tabUpload = new System.Windows.Forms.TabPage();
             this.groupBoxUploadDirectory = new System.Windows.Forms.GroupBox();
@@ -61,6 +62,7 @@
             this.contextSucessfulDirectory = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.contextItemSucessfulDirectoryRemove = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.contextItemFailDirectoryOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             this.contextCategory.SuspendLayout();
             this.contextLocalDirectory.SuspendLayout();
@@ -119,31 +121,39 @@
             this.contextLocalDirectory.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.contextItemUploadDirectoryAdd,
             this.contextItemLocalDirectoryOpen,
-            this.contextItemSetCanUpload});
+            this.contextItemSetCanUpload,
+            this.contextItemFileSetCanUpload});
             this.contextLocalDirectory.Name = "contextLocalDirectory";
-            this.contextLocalDirectory.Size = new System.Drawing.Size(167, 70);
+            this.contextLocalDirectory.Size = new System.Drawing.Size(227, 92);
             this.contextLocalDirectory.Text = "上传选中目录";
             // 
             // contextItemUploadDirectoryAdd
             // 
             this.contextItemUploadDirectoryAdd.Name = "contextItemUploadDirectoryAdd";
-            this.contextItemUploadDirectoryAdd.Size = new System.Drawing.Size(166, 22);
+            this.contextItemUploadDirectoryAdd.Size = new System.Drawing.Size(226, 22);
             this.contextItemUploadDirectoryAdd.Text = "上传选中目录";
             this.contextItemUploadDirectoryAdd.Click += new System.EventHandler(this.contextItemUploadDirectoryAdd_Click);
             // 
             // contextItemLocalDirectoryOpen
             // 
             this.contextItemLocalDirectoryOpen.Name = "contextItemLocalDirectoryOpen";
-            this.contextItemLocalDirectoryOpen.Size = new System.Drawing.Size(166, 22);
+            this.contextItemLocalDirectoryOpen.Size = new System.Drawing.Size(226, 22);
             this.contextItemLocalDirectoryOpen.Text = "打开选中目录";
             this.contextItemLocalDirectoryOpen.Click += new System.EventHandler(this.contextItemLocalDirectoryOpen_Click);
             // 
             // contextItemSetCanUpload
             // 
             this.contextItemSetCanUpload.Name = "contextItemSetCanUpload";
-            this.contextItemSetCanUpload.Size = new System.Drawing.Size(166, 22);
-            this.contextItemSetCanUpload.Text = "目录重置为可上传";
+            this.contextItemSetCanUpload.Size = new System.Drawing.Size(226, 22);
+            this.contextItemSetCanUpload.Text = "目录重置为可上传(仅目录）";
             this.contextItemSetCanUpload.Click += new System.EventHandler(this.contextItemSetCanUpload_Click);
+            // 
+            // contextItemFileSetCanUpload
+            // 
+            this.contextItemFileSetCanUpload.Name = "contextItemFileSetCanUpload";
+            this.contextItemFileSetCanUpload.Size = new System.Drawing.Size(226, 22);
+            this.contextItemFileSetCanUpload.Text = "目录及其下文件重置为可上传";
+            this.contextItemFileSetCanUpload.Click += new System.EventHandler(this.contextItemFileSetCanUpload_Click);
             // 
             // tabs
             // 
@@ -319,9 +329,10 @@
             // 
             this.contextFailDirectory.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.contextItemFailDirectoryRemove,
-            this.contextItemFailDirectoryReUpload});
+            this.contextItemFailDirectoryReUpload,
+            this.contextItemFailDirectoryOpen});
             this.contextFailDirectory.Name = "contextUploadDirectory";
-            this.contextFailDirectory.Size = new System.Drawing.Size(167, 48);
+            this.contextFailDirectory.Size = new System.Drawing.Size(167, 92);
             // 
             // contextItemFailDirectoryRemove
             // 
@@ -385,6 +396,13 @@
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             this.notifyIcon.Text = "素材上传";
             this.notifyIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseClick);
+            // 
+            // contextItemFailDirectoryOpen
+            // 
+            this.contextItemFailDirectoryOpen.Name = "contextItemFailDirectoryOpen";
+            this.contextItemFailDirectoryOpen.Size = new System.Drawing.Size(166, 22);
+            this.contextItemFailDirectoryOpen.Text = "打开选中目录";
+            this.contextItemFailDirectoryOpen.Click += new System.EventHandler(this.contextItemFailDirectoryOpen_Click);
             // 
             // FormMain
             // 
@@ -455,6 +473,8 @@
         private System.Windows.Forms.ToolStripMenuItem contextItemFailDirectoryRemove;
         private System.Windows.Forms.ToolStripMenuItem contextItemFailDirectoryReUpload;
         private System.Windows.Forms.NotifyIcon notifyIcon;
+        private System.Windows.Forms.ToolStripMenuItem contextItemFileSetCanUpload;
+        private System.Windows.Forms.ToolStripMenuItem contextItemFailDirectoryOpen;
         
     }
 }

@@ -102,7 +102,7 @@ namespace WinFormClient
 
                 NetTcpBinding binding = new NetTcpBinding();
                 binding.TransferMode = TransferMode.Streamed;
-                binding.SendTimeout = new TimeSpan(0,5,0);
+                binding.SendTimeout = new TimeSpan(0,0,5);
                 ChannelFactory<IFileUpload> channelFactory = new ChannelFactory<IFileUpload>(binding, ClientConfig.WCFAddress);
                 _proxy = channelFactory.CreateChannel();
                 (_proxy as ICommunicationObject).Open();  
@@ -238,11 +238,7 @@ namespace WinFormClient
             if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
             {
                 myBrush = new SolidBrush(Color.FromArgb(150, 200, 250));
-            }
-            else if (e.Index % 2 == 0)
-            {
-                myBrush = new SolidBrush(Color.FromArgb(200, 200, 200));
-            }
+            }      
             else
             {
                 myBrush = new SolidBrush(Color.White);
@@ -317,6 +313,20 @@ namespace WinFormClient
                     listBox.Items.RemoveAt(index);
                 }
             }
+        }
+
+        private void DirectoryOpen(ListBox listBox)
+        {
+            if (listBox.SelectedItems.Count != 1)
+            {
+                MessageBox.Show("只能选中一个目录！");
+                return;
+            }
+
+            FolderInfo folderInfo = listBox.SelectedItem as FolderInfo;
+            System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo("Explorer.exe");
+            processStartInfo.Arguments = "/e," + folderInfo.LocalPath;
+            System.Diagnostics.Process.Start(processStartInfo);
         }
 
         #endregion 公共
@@ -433,20 +443,48 @@ namespace WinFormClient
             }
         }
 
+        private void contextItemFileSetCanUpload_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+                if (listBoxLocalDirectory.SelectedItems.Count == 0)
+                {
+                    return;
+                }
+
+                if (MessageBox.Show("确定把已上传目录及其下所有文件重置为允许上传？", "提示", MessageBoxButtons.YesNo) == DialogResult.No)
+                {
+                    return;
+                }
+
+                foreach (var item in listBoxLocalDirectory.SelectedItems)
+                {
+                    FolderInfo folderInfo = item as FolderInfo;
+                    DirectoryInfo directoryInfo = new DirectoryInfo(folderInfo.LocalPath);
+                    if ((directoryInfo.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                    {
+                        directoryInfo.Attributes = FileAttributes.Normal;
+                    }
+
+                    foreach(string file in Directory.GetFiles(folderInfo.LocalPath))
+                    {
+                        File.SetAttributes(file, FileAttributes.Normal);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
+        }
+
         private void contextItemLocalDirectoryOpen_Click(object sender, EventArgs e)
         {
             try
             {
-                if (listBoxLocalDirectory.SelectedItems.Count != 1)
-                {
-                    MessageBox.Show("只能选中一个目录！");
-                    return;
-                }
-
-                FolderInfo folderInfo = listBoxLocalDirectory.SelectedItem as FolderInfo;
-                System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo("Explorer.exe");
-                processStartInfo.Arguments = "/e," + folderInfo.LocalPath;
-                System.Diagnostics.Process.Start(processStartInfo);
+                DirectoryOpen(listBoxLocalDirectory);              
             }
             catch (Exception ex)
             {
@@ -481,6 +519,7 @@ namespace WinFormClient
                     FileAttributes attributes = File.GetAttributes(localFolderInfo.LocalPath);
                     if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
                     {
+                        MessageBox.Show("该目录已上传过，如要重新上传，请执行“目录重置为可上传”");
                         continue;
                     }
 
@@ -673,7 +712,24 @@ namespace WinFormClient
             }
         }
 
+        private void contextItemFailDirectoryOpen_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DirectoryOpen(listBoxFailDirectory);
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
+        }
+
         #endregion 上传结果          
+
+    
+
+   
 
     
 

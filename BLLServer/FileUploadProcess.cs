@@ -312,6 +312,11 @@ namespace BLLServer
                     response.ResultMessage = "您没有访问该文件服务器接口的权限!";
                     return response;
                 }
+#warning 别忘了这里
+                if(request.FileName=="01.jpg")
+                {
+                    Thread.Sleep(8000);
+                }
 
                 string fileName = request.FileName.ToLower();
                 string fileExtenName = Path.GetExtension(fileName).ToLower();
@@ -343,9 +348,8 @@ namespace BLLServer
                         response.ResultMessage = string.Empty;
                     }
                 }
-                else
-                {
-                    //即要保存原始图，又要生成并保存缩略图                  
+                else  //即要保存原始图，又要生成缩略图      
+                {                               
                     using (FileStream outputStream = new FileStream(originalFileSavePath, FileMode.OpenOrCreate, FileAccess.Write))
                     {
                         request.FileData.CopyTo(outputStream);

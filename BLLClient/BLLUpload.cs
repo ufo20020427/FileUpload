@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Common;
 using Model;
@@ -100,6 +101,12 @@ namespace BLLClient
         {
             try
             {
+                if(Directory.GetFiles(folderInfo.LocalPath).Count() == 0)
+                {
+                    folderInfo.CheckResult = "待上传目录为空";
+                    return;
+                }
+
                 string checkFile = string.Empty;
                 if (folderInfo.CategoryType == CategoryType.Gallery)
                 {
@@ -242,7 +249,6 @@ namespace BLLClient
                             {
                                 continue;
                             }
-
                             
                             UploadDirectoryTurnProcess(uploadFolderInfo, index);
                         }
@@ -337,16 +343,19 @@ namespace BLLClient
             return response.IsSuccessful;
         }
 
-        private void FileUpload(FolderInfo uploadFolderInfo, string file)
+        private void FileUpload(object folderInfo)
         {
+            FolderInfo uploadFolderInfo = null;
             try
             {
+                uploadFolderInfo = folderInfo as FolderInfo;
+
                 string[] paths = uploadFolderInfo.LocalPath.Split(new char[] { '\\' });
                 string localDirectory = paths[paths.Length - 1];
 
                 //文件上传时，如果是相册类型StoreName要转化
                 CommonResponse response = new CommonResponse();
-                using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read))
+                using (FileStream fs = new FileStream(uploadFolderInfo.FilePath, FileMode.Open, FileAccess.Read))
                 {
                     FileUploadRequest request = new FileUploadRequest();
                     request.Token = ClientConfig.Token;
@@ -371,8 +380,8 @@ namespace BLLClient
                     {
                         request.StoreTableName = uploadFolderInfo.StoreTableName;
                     }
-                   
-                    request.FileName = Path.GetFileName(file);
+
+                    request.FileName = Path.GetFileName(uploadFolderInfo.FilePath);
                     request.FileData = fs;
                     response = _proxy.FileUpLoad(request);
                 }
@@ -380,17 +389,17 @@ namespace BLLClient
                 if (response.IsSuccessful)
                 {
                     //文件属性置为只读 
-                    File.SetAttributes(file, FileAttributes.ReadOnly);
+                    File.SetAttributes(uploadFolderInfo.FilePath, FileAttributes.ReadOnly);
                 }
                 else
                 {
-                    string uploadResult = string.Format("{0},{1}", Path.GetFileName(file), response.ResultMessage);
+                    string uploadResult = string.Format("{0},{1}", Path.GetFileName(uploadFolderInfo.FilePath), response.ResultMessage);
                     uploadFolderInfo.UploadResult.AppendLine(uploadResult);
                 }
             }
             catch(Exception ex)
             {
-                string uploadResult = string.Format("{0},{1}", Path.GetFileName(file), ex.Message);
+                string uploadResult = string.Format("{0},{1}", Path.GetFileName(uploadFolderInfo.FilePath), ex.Message);
                 uploadFolderInfo.UploadResult.AppendLine(uploadResult);
             }
         }
@@ -399,12 +408,22 @@ namespace BLLClient
         {
             foreach (string file in Directory.GetFiles(uploadFolderInfo.LocalPath))
             {
-                if ((File.GetAttributes(file) & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                try
                 {
-                    continue;
+                    if ((File.GetAttributes(file) & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                    {
+                        continue;
+                    }
+                    uploadFolderInfo.FilePath = file;
+                    //if 线程五个以内
+                    Task task = new Task(FileUpload, uploadFolderInfo);
+                    task.Start();
                 }
-
-                FileUpload(uploadFolderInfo, file);  
+                catch (Exception ex)
+                {
+                    string uploadResult = string.Format("{0},{1}", Path.GetFileName(uploadFolderInfo.FilePath), ex.Message);
+                    uploadFolderInfo.UploadResult.AppendLine(uploadResult);
+                }
             } 
         }
 
@@ -435,7 +454,7 @@ namespace BLLClient
             if (string.IsNullOrEmpty(uploadFolderInfo.UploadResult.ToString()))
             {
                 DirectoryInfo directoryInfo = new DirectoryInfo(uploadFolderInfo.LocalPath);
-                directoryInfo.Attributes = FileAttributes.ReadOnly & FileAttributes.Directory;
+                directoryInfo.Attributes = FileAttributes.ReadOnly;        
 
                 UploadDirectoryTurnToSucessful(uploadFolderInfo, itemIndex);
             }
