@@ -291,13 +291,7 @@ namespace BLLServer
             param.ParameterName = "@OriginalRelativeFilePath";
             param.DbType = DbType.String;
             param.Value = "/Big" + request.CategoryRelativePath + request.FileName;
-            cmd.Parameters.Add(param);
-
-            param = _dataBaseAccess.CreateParameter();
-            param.ParameterName = "@CategoryName";
-            param.DbType = DbType.String;
-            param.Value = request.CategoryName;
-            cmd.Parameters.Add(param);
+            cmd.Parameters.Add(param);       
         }
 
 
@@ -375,6 +369,13 @@ namespace BLLServer
                             DbCommand cmd = _dataBaseAccess.CreateCommand();
                             cmd.CommandText = "Proc_PictureFiles_Insert";
                             FileInsertParamAdd(ref cmd, request);
+
+                            DbParameter param = _dataBaseAccess.CreateParameter();
+                            param.ParameterName = "@LevelCategoryName";
+                            param.DbType = DbType.String;
+                            param.Value = request.LevelCategoryName;
+                            cmd.Parameters.Add(param);
+
                             _dataBaseAccess.ExecuteCommand(cmd);  
                         }
                         else if (request.CategoryType == CategoryType.Gallery)
@@ -382,6 +383,13 @@ namespace BLLServer
                             DbCommand cmd = _dataBaseAccess.CreateCommand();
                             cmd.CommandText = "Proc_GalleryFiles_Insert";
                             FileInsertParamAdd(ref cmd, request);
+
+                            DbParameter param = _dataBaseAccess.CreateParameter();
+                            param.ParameterName = "@FileName";
+                            param.DbType = DbType.String;
+                            param.Value = request.FileName;
+                            cmd.Parameters.Add(param);
+
                             _dataBaseAccess.ExecuteCommand(cmd);  
                         }
                     }

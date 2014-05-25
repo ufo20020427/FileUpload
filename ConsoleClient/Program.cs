@@ -35,7 +35,7 @@ namespace Client
                 request.ThumbFileServerRootDirectory = "F:\\素材\\Small";
                 request.CategoryAbsolutePath = "\\男装一级目录\\男装二级目录\\201405\\";
                 request.CategoryRelativePath = "/男装一级目录/男装二级目录/201405/";
-                request.CategoryName = "品牌画册二级目录";
+                request.LevelCategoryName = "品牌画册二级目录";
                 request.FileName = "abc.jpg";
                 request.StoreTableName = "Files_Boy";
                 request.FileData = fs;

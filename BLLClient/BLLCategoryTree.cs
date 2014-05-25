@@ -72,8 +72,7 @@ namespace BLLClient
                     columns = categoryMap.Split('|');
                     dicCategoryMap.Add(int.Parse(columns[0]), columns[1]);
                 }              
-            }
-            
+            }            
 
             _indexId = dt.Columns.IndexOf("CID");
             _indexName = dt.Columns.IndexOf("CName");
@@ -88,6 +87,7 @@ namespace BLLClient
             Category categoryRoot = new Category();
             categoryRoot.Id = 0;
             categoryRoot.LevelPath = string.Empty;
+            categoryRoot.LevelCategory = string.Empty;
             categoryRoot.FolderName = string.Empty;
 
             string localDirectoryPath;
@@ -125,6 +125,7 @@ namespace BLLClient
                 category.StoreTableName = drv[_indexStoreTableName].ToString();
                 category.IsDetail = Convert.ToBoolean(drv[_indexIsDetail]);
                 category.LevelPath = (parentNode.Tag as Category).LevelPath + "|" + category.FolderName;
+                category.LevelCategory = (parentNode.Tag as Category).LevelCategory + "_" + category.Name;
 
                 string localDirectoryPath;
                 dicCategoryMap.TryGetValue(category.Id, out localDirectoryPath);

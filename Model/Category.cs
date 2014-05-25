@@ -24,6 +24,7 @@ namespace Model
         public bool IsDetail { get; set; }
 
         public string LevelPath { get; set; }
+        public string LevelCategory { get; set; }
         public string LocalDirectoryPath { get; set; }
     }
 }

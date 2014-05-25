@@ -47,7 +47,7 @@ namespace Model
         public string CategoryRelativePath; // /一级目录/二级目录/130506/
 
         [MessageHeader]
-        public string CategoryName;     // 二级目录
+        public string LevelCategoryName;     //  一级目录_二级目录_三级目录
 
         [MessageHeader]
         public string StoreTableName; //Files_Boy

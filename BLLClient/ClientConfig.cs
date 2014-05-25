@@ -17,6 +17,10 @@ namespace BLLClient
                 _passWord = ConfigurationManager.AppSettings["PassWord"].ToString();
                 _token = ConfigurationManager.AppSettings["Token"].ToString();
                 _vectorPictureExtenName = ConfigurationManager.AppSettings["VectorPictureExtenName"].ToString();
+
+                string[] restHours = ConfigurationManager.AppSettings["RestHours"].ToString().Split('-');
+                _restHourStart = int.Parse(restHours[0]);
+                _restHourEnd = int.Parse(restHours[1]);
             }
             catch (Exception ex)
             {
@@ -30,6 +34,8 @@ namespace BLLClient
         private static string _passWord;
         private static string _token;
         private static string _vectorPictureExtenName;
+        private static int _restHourStart;
+        private static int _restHourEnd;
 
         public static string WCFAddress
         {
@@ -54,6 +60,16 @@ namespace BLLClient
         public static string VectorPictureExtenName
         {
             get { return _vectorPictureExtenName; }
+        }
+
+        public static int RestHourStart
+        {
+            get { return _restHourStart; }
+        }
+
+        public static int RestHourEnd
+        {
+            get { return _restHourEnd; }
         }
 
     }

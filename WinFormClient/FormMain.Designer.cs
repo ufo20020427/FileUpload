@@ -53,13 +53,13 @@
             this.textBoxFailDetail = new System.Windows.Forms.TextBox();
             this.groupBoxFailDirectory = new System.Windows.Forms.GroupBox();
             this.listBoxFailDirectory = new System.Windows.Forms.ListBox();
+            this.contextFailDirectory = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.contextItemFailDirectoryRemove = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextItemFailDirectoryReUpload = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBoxSucessfulDirectory = new System.Windows.Forms.GroupBox();
             this.listBoxSucessfulDirectory = new System.Windows.Forms.ListBox();
             this.contextSucessfulDirectory = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.contextItemSucessfulDirectoryRemove = new System.Windows.Forms.ToolStripMenuItem();
-            this.contextFailDirectory = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.contextItemFailDirectoryRemove = new System.Windows.Forms.ToolStripMenuItem();
-            this.contextItemFailDirectoryReUpload = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             this.contextCategory.SuspendLayout();
             this.contextLocalDirectory.SuspendLayout();
@@ -71,9 +71,9 @@
             this.tabResult.SuspendLayout();
             this.groupBoxFailFile.SuspendLayout();
             this.groupBoxFailDirectory.SuspendLayout();
+            this.contextFailDirectory.SuspendLayout();
             this.groupBoxSucessfulDirectory.SuspendLayout();
             this.contextSucessfulDirectory.SuspendLayout();
-            this.contextFailDirectory.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip
@@ -116,11 +116,11 @@
             // contextLocalDirectory
             // 
             this.contextLocalDirectory.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.contextItemSetCanUpload,
+            this.contextItemUploadDirectoryAdd,
             this.contextItemLocalDirectoryOpen,
-            this.contextItemUploadDirectoryAdd});
+            this.contextItemSetCanUpload});
             this.contextLocalDirectory.Name = "contextLocalDirectory";
-            this.contextLocalDirectory.Size = new System.Drawing.Size(167, 70);
+            this.contextLocalDirectory.Size = new System.Drawing.Size(167, 92);
             this.contextLocalDirectory.Text = "上传选中目录";
             // 
             // contextItemSetCanUpload
@@ -313,6 +313,28 @@
             this.listBoxFailDirectory.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.listBoxFailDirectory_DrawItem);
             this.listBoxFailDirectory.SelectedIndexChanged += new System.EventHandler(this.listBoxFailDirectory_SelectedIndexChanged);
             // 
+            // contextFailDirectory
+            // 
+            this.contextFailDirectory.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.contextItemFailDirectoryRemove,
+            this.contextItemFailDirectoryReUpload});
+            this.contextFailDirectory.Name = "contextUploadDirectory";
+            this.contextFailDirectory.Size = new System.Drawing.Size(167, 48);
+            // 
+            // contextItemFailDirectoryRemove
+            // 
+            this.contextItemFailDirectoryRemove.Name = "contextItemFailDirectoryRemove";
+            this.contextItemFailDirectoryRemove.Size = new System.Drawing.Size(166, 22);
+            this.contextItemFailDirectoryRemove.Text = "移除选中目录";
+            this.contextItemFailDirectoryRemove.Click += new System.EventHandler(this.contextItemFailDirectoryRemove_Click);
+            // 
+            // contextItemFailDirectoryReUpload
+            // 
+            this.contextItemFailDirectoryReUpload.Name = "contextItemFailDirectoryReUpload";
+            this.contextItemFailDirectoryReUpload.Size = new System.Drawing.Size(166, 22);
+            this.contextItemFailDirectoryReUpload.Text = "重新上传选中目录";
+            this.contextItemFailDirectoryReUpload.Click += new System.EventHandler(this.contextItemFailDirectoryReUpload_Click);
+            // 
             // groupBoxSucessfulDirectory
             // 
             this.groupBoxSucessfulDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -356,28 +378,6 @@
             this.contextItemSucessfulDirectoryRemove.Text = "移除选中目录";
             this.contextItemSucessfulDirectoryRemove.Click += new System.EventHandler(this.contextItemSucessfulDirectoryRemove_Click);
             // 
-            // contextFailDirectory
-            // 
-            this.contextFailDirectory.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.contextItemFailDirectoryRemove,
-            this.contextItemFailDirectoryReUpload});
-            this.contextFailDirectory.Name = "contextUploadDirectory";
-            this.contextFailDirectory.Size = new System.Drawing.Size(167, 70);
-            // 
-            // contextItemFailDirectoryRemove
-            // 
-            this.contextItemFailDirectoryRemove.Name = "contextItemFailDirectoryRemove";
-            this.contextItemFailDirectoryRemove.Size = new System.Drawing.Size(166, 22);
-            this.contextItemFailDirectoryRemove.Text = "移除选中目录";
-            this.contextItemFailDirectoryRemove.Click += new System.EventHandler(this.contextItemFailDirectoryRemove_Click);
-            // 
-            // contextItemFailDirectoryReUpload
-            // 
-            this.contextItemFailDirectoryReUpload.Name = "contextItemFailDirectoryReUpload";
-            this.contextItemFailDirectoryReUpload.Size = new System.Drawing.Size(166, 22);
-            this.contextItemFailDirectoryReUpload.Text = "重新上传选中目录";
-            this.contextItemFailDirectoryReUpload.Click += new System.EventHandler(this.contextItemFailDirectoryReUpload_Click);
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -404,9 +404,9 @@
             this.groupBoxFailFile.ResumeLayout(false);
             this.groupBoxFailFile.PerformLayout();
             this.groupBoxFailDirectory.ResumeLayout(false);
+            this.contextFailDirectory.ResumeLayout(false);
             this.groupBoxSucessfulDirectory.ResumeLayout(false);
             this.contextSucessfulDirectory.ResumeLayout(false);
-            this.contextFailDirectory.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 

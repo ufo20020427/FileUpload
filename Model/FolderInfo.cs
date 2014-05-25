@@ -19,6 +19,7 @@ namespace Model
         public string StoreTableName { get; set; }
         public string LocalPath { get; set; }       
         public string LevelPath { get; set; }
+        public string LevelCategory { get; set; }
         
 
         public string GalleryName { get; set; }

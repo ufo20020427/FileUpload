@@ -139,6 +139,7 @@ namespace WinFormClient
                         localFolderInfo.CategoryId = category.Id;
                         localFolderInfo.CategoryType = category.Type;
                         localFolderInfo.LevelPath = category.LevelPath;
+                        localFolderInfo.LevelCategory = category.LevelCategory.Remove(0,1);
                         localFolderInfo.StoreTableName = category.StoreTableName;
                         localFolderInfo.IsExistVideo = category.IsExistVideo;
                         localFolderInfo.IsExistVector = category.IsExistVector;                     

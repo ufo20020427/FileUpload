@@ -19,17 +19,16 @@ namespace BLLClient
         private ListBox _listBoxFailDirectory;
 
         private Thread _threadUpload;
-        private bool _isRun;
-
-        private delegate void DirectoryTurnDelegate(FolderInfo uploadFolderInfo, int itemIndex);
-        private DirectoryTurnDelegate _turnToSucessful;
-        private DirectoryTurnDelegate _turnToFail;
+        private bool _isRun;        
+ 
+        private Action<FolderInfo, int> _delegateTurnToSucessful;
+        private Action<FolderInfo, int> _delegateTurnToFail;
 
         private void UploadDirectoryTurnToSucessful(FolderInfo uploadFolderInfo, int itemIndex)
         {
             if (_listBoxUploadDirectory.InvokeRequired)
             {
-                _listBoxUploadDirectory.Invoke(_turnToSucessful, uploadFolderInfo, itemIndex);                
+                _listBoxUploadDirectory.Invoke(_delegateTurnToSucessful, uploadFolderInfo, itemIndex);                
             }
             else
             {
@@ -42,7 +41,7 @@ namespace BLLClient
         {
             if (_listBoxUploadDirectory.InvokeRequired)
             {
-                _listBoxUploadDirectory.Invoke(_turnToFail, uploadFolderInfo, itemIndex);
+                _listBoxUploadDirectory.Invoke(_delegateTurnToFail, uploadFolderInfo, itemIndex);
             }
             else
             {
@@ -60,8 +59,8 @@ namespace BLLClient
             _listBoxFailDirectory = listBoxFailDirectory;
             _isRun = false;
 
-            _turnToSucessful = new DirectoryTurnDelegate(UploadDirectoryTurnToSucessful);
-            _turnToFail = new DirectoryTurnDelegate(UploadDirectoryTurnToFail);
+            _delegateTurnToSucessful = UploadDirectoryTurnToSucessful;
+            _delegateTurnToFail = UploadDirectoryTurnToFail;
         }
 
         private CommonResponse DirectoryCreate(FolderInfo uploadFolderInfo)
@@ -186,7 +185,7 @@ namespace BLLClient
         {
             try
             {
-                while (_isRun)
+                while (_isRun && (DateTime.Now.Hour < ClientConfig.RestHourStart || DateTime.Now.Hour > ClientConfig.RestHourEnd) )
                 {
                     FolderInfo uploadFolderInfo = new FolderInfo();
                     int uploadDirectoryCount = 0;
