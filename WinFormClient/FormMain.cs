@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using BLLClient;
 using Common;
@@ -21,6 +22,9 @@ namespace WinFormClient
         private FileServerInfo _fileServerInfo;
         private BLLCategoryTree _bllCategoryTree;
         private BLLUpload _bllUpload;
+        private static Mutex mutexRun; 
+
+        #region 窗体
 
         public FormMain()
         {
@@ -42,9 +46,50 @@ namespace WinFormClient
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
+
+            if (MessageBox.Show("您确定要关闭程序？", "提示", MessageBoxButtons.YesNo) == DialogResult.No)
+            {
+                e.Cancel = true;
+                return;
+            }   
+
             _bllUpload.Stop();
             (_proxy as ICommunicationObject).Close();          
         }
+
+        private void notifyIcon_MouseClick(object sender, MouseEventArgs e)
+        {
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
+            this.notifyIcon.Visible = false;      
+        }
+
+        private void FormMain_SizeChanged(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Hide();
+                this.notifyIcon.Visible = true;
+            }
+        }
+
+        static void ProgramRepeatCheck()
+        {
+            bool noRun = false;
+            mutexRun = new Mutex(true, ClientConfig.WCFAddress, out noRun);
+
+            if (noRun)
+            {
+                mutexRun.ReleaseMutex();
+            }
+            else
+            {
+                MessageBox.Show("请不要重复启动程序!");
+                Environment.Exit(0);
+            }
+        }
+
+        #endregion 窗体
 
         #region 初始化
 
@@ -53,6 +98,7 @@ namespace WinFormClient
             try
             {
                 ClientConfig.Init();
+                ProgramRepeatCheck();
 
                 NetTcpBinding binding = new NetTcpBinding();
                 binding.TransferMode = TransferMode.Streamed;
@@ -628,5 +674,10 @@ namespace WinFormClient
         }
 
         #endregion 上传结果          
+
+    
+
+     
+    
     }
 }
