@@ -11,9 +11,6 @@ namespace Model
     public class FileUploadRequest
     {
         [MessageHeader]
-        public CategoryType CategoryType;
-
-        [MessageHeader]
         public string Token;
 
         [MessageHeader]
@@ -21,6 +18,9 @@ namespace Model
 
         [MessageHeader]
         public string PassWord;
+
+        [MessageHeader]
+        public CategoryType CategoryType;
 
         [MessageHeader]
         public int CategoryId;
@@ -51,6 +51,9 @@ namespace Model
 
         [MessageHeader]
         public string StoreTableName; //Files_Boy
+
+        [MessageHeader]
+        public bool IsVectorPicture;
 
         [MessageHeader]
         public string FileName;

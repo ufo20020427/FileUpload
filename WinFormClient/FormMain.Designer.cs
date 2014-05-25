@@ -283,6 +283,7 @@
             this.textBoxFailDetail.Location = new System.Drawing.Point(3, 17);
             this.textBoxFailDetail.Multiline = true;
             this.textBoxFailDetail.Name = "textBoxFailDetail";
+            this.textBoxFailDetail.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxFailDetail.Size = new System.Drawing.Size(576, 282);
             this.textBoxFailDetail.TabIndex = 0;
             // 

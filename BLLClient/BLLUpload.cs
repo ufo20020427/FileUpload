@@ -63,191 +63,6 @@ namespace BLLClient
             _delegateTurnToFail = UploadDirectoryTurnToFail;
         }
 
-        private CommonResponse DirectoryCreate(FolderInfo uploadFolderInfo)
-        {
-            string[] paths = uploadFolderInfo.LocalPath.Split(new char[] { '\\' });
-            string localDirectory = paths[paths.Length - 1];
-
-            DirectoryCreateRequest request = new DirectoryCreateRequest();
-            request.FileServerId = _fileServerInfo.Id;
-            request.Token = ClientConfig.Token;            
-            request.Account = ClientConfig.Account;
-            request.PassWord = ClientConfig.PassWord;
-            request.OriginalAbsoluteFileDirectory = _fileServerInfo.OriginalFileServerRootDirectory + uploadFolderInfo.LevelPath.Replace("|", "\\\\") + "\\\\" + localDirectory;
-            request.ThumbAbsoluteFileDirectory = _fileServerInfo.ThumbFileServerRootDirectory + uploadFolderInfo.LevelPath.Replace("|", "\\\\") + "\\\\" + localDirectory;
-            CommonResponse response = _proxy.DirectoryCreate(request);
-            return response;
-        }
-
-        private CommonResponse GalleryCreate(FolderInfo uploadFolderInfo)
-        {
-            string[] paths = uploadFolderInfo.LocalPath.Split(new char[] { '\\' });
-            string localDirectory = paths[paths.Length - 1];
-
-            GalleryCreateRequest request = new GalleryCreateRequest();
-            request.Token = ClientConfig.Token;
-            request.Account = ClientConfig.Account;
-            request.PassWord = ClientConfig.PassWord;
-            request.CategoryId = uploadFolderInfo.CategoryId;
-            request.FileServerId = _fileServerInfo.Id;
-            request.GalleryName = uploadFolderInfo.GalleryName;
-            request.ConverRelativeFilePath = "/Small" + uploadFolderInfo.LevelPath.Replace("|", "/") + "/" + localDirectory + "/Cover.jpg";
-            request.BundlingRelativeFilePath = "/Big" + uploadFolderInfo.LevelPath.Replace("|", "/") + "/" + localDirectory + "/Package.zip";
-            request.PageCount = uploadFolderInfo.PageCount;
-            request.Introudce = uploadFolderInfo.Introudce;
-            request.VideoRelativeFilePath = "/Big" + uploadFolderInfo.LevelPath.Replace("|", "/") + "/video.rar";
-            request.Designer = uploadFolderInfo.Designer;
-            request.Address = uploadFolderInfo.Address;
-            request.OriginalAbsoluteFileDirectory = _fileServerInfo.OriginalFileServerRootDirectory + uploadFolderInfo.LevelPath.Replace("|", "\\\\") + "\\\\" + localDirectory;
-            request.ThumbAbsoluteFileDirectory = _fileServerInfo.ThumbFileServerRootDirectory + uploadFolderInfo.LevelPath.Replace("|", "\\\\") + "\\\\" + localDirectory;
-            request.StoreTableName = uploadFolderInfo.StoreTableName;
-
-            CommonResponse response = _proxy.GalleryCreate(request);
-            return response;
-        }
-
-        private bool RemoteDirectoryCreateProcess(ref FolderInfo uploadFolderInfo,int itemIndex)
-        {
-            CommonResponse response;
-            if (uploadFolderInfo.CategoryType == CategoryType.Picture)
-            {
-                response = DirectoryCreate(uploadFolderInfo);
-            }
-            else
-            {
-                response = GalleryCreate(uploadFolderInfo);
-                uploadFolderInfo.GalleryId = int.Parse(response.ResultMessage);
-            }
-
-            if (!response.IsSuccessful)
-            {
-                uploadFolderInfo.UploadResult.AppendLine(response.ResultMessage);
-                UploadDirectoryTurnToFail(uploadFolderInfo, itemIndex);                
-            }
-
-            return response.IsSuccessful;
-        }
-
-        private void FileUploadProcess(FolderInfo uploadFolderInfo, int itemIndex)
-        {
-            foreach (string file in Directory.GetFiles(uploadFolderInfo.LocalPath))
-            {
-                if ((File.GetAttributes(file) & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
-                {
-                    continue;
-                }
-
-                //文件上传时，如果是相册类型StoreName要转化
-
-                //文件属性置为只读                              
-
-            } 
-        }
-
-        private bool FileBundlingProcess(FolderInfo uploadFolderInfo, int itemIndex)
-        {
-            string[] paths = uploadFolderInfo.LocalPath.Split(new char[] { '\\' });
-            string localDirectory = paths[paths.Length - 1];
-
-            GalleryBundlingRequest request = new GalleryBundlingRequest();
-            request.FileServerId = _fileServerInfo.Id;
-            request.Token = ClientConfig.Token;
-            request.Account = ClientConfig.Account;
-            request.PassWord = ClientConfig.PassWord;
-            request.OriginalAbsoluteFileDirectory = _fileServerInfo.OriginalFileServerRootDirectory + uploadFolderInfo.LevelPath.Replace("|", "\\\\") + "\\\\" + localDirectory;
-            CommonResponse response = _proxy.FileBundling(request);        
-
-            if (!response.IsSuccessful)
-            {
-                uploadFolderInfo.UploadResult.AppendLine(response.ResultMessage);
-                UploadDirectoryTurnToFail(uploadFolderInfo, itemIndex);
-            }
-
-            return response.IsSuccessful;
-        }
-
-        private void DirectorySetReadOnlyProcess(FolderInfo uploadFolderInfo, int itemIndex)
-        {
-            if (string.IsNullOrEmpty(uploadFolderInfo.UploadResult.ToString()))
-            {
-                DirectoryInfo directoryInfo = new DirectoryInfo(uploadFolderInfo.LocalPath);
-                directoryInfo.Attributes = FileAttributes.ReadOnly & FileAttributes.Directory;
-
-                UploadDirectoryTurnToSucessful(uploadFolderInfo, itemIndex);
-            }
-            else
-            {
-                UploadDirectoryTurnToFail(uploadFolderInfo, itemIndex);
-            }
-        }     
-
-        private void UpLoadProcess()
-        {
-            try
-            {
-                while (_isRun && (DateTime.Now.Hour < ClientConfig.RestHourStart || DateTime.Now.Hour > ClientConfig.RestHourEnd) )
-                {
-                    FolderInfo uploadFolderInfo = new FolderInfo();
-                    int uploadDirectoryCount = 0;
-
-                    lock(_listBoxUploadDirectory)
-                    {
-                        uploadDirectoryCount = _listBoxUploadDirectory.Items.Count - 1;
-                    }
-
-                    for (int index = uploadDirectoryCount; index >= 0; index--)
-                    {
-                        try
-                        {
-                            uploadFolderInfo = _listBoxUploadDirectory.Items[index] as FolderInfo;
-                            uploadFolderInfo.UploadResult.Clear();
-
-                            //目录、相册创建                        
-                            if (!RemoteDirectoryCreateProcess(ref uploadFolderInfo, index))
-                           {
-                               continue;
-                           }
-
-                           //文件上传
-                            FileUploadProcess(uploadFolderInfo, index);    
-
-                            //while(当所有文件上传完毕)
-                           
-                            //相册文件打包
-                           if (!FileBundlingProcess(uploadFolderInfo, index))
-                           {
-                               continue;
-                           }
-
-                           //目录属性置为只读
-                           DirectorySetReadOnlyProcess(uploadFolderInfo, index);                     
-                        }
-                        catch (ThreadInterruptedException)
-                        {
-
-                        }
-                        catch (Exception ex)
-                        {
-                            //转移到失败目录
-                            uploadFolderInfo.UploadResult.AppendLine(ex.Message);
-                            UploadDirectoryTurnToFail(uploadFolderInfo, index);   
-                        }
-                    }
-
-                    Thread.Sleep(5000);
-                } //  while (_isRun)
-            }
-            catch (ThreadAbortException)
-            {
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                Tools.LogWrite(ex.ToString());
-            }
-        }
-
         public void Start()
         {
             try
@@ -356,12 +171,15 @@ namespace BLLClient
                     }
                 }
 
-                if (folderInfo.IsExistVector)
+                string vectorPictureExtenName = ClientConfig.VectorPictureExtenName.ToLower();
+                string pictureExtenName = ClientConfig.PictureExtenName.ToLower();
+
+                foreach (string file in Directory.GetFiles(folderInfo.LocalPath))
                 {
-                    string vectorPictureExtenName = ClientConfig.VectorPictureExtenName.ToLower();
-                    foreach (string file in Directory.GetFiles(folderInfo.LocalPath))
+                    string fileExtenName = Path.GetExtension(file).ToLower();
+
+                    if (folderInfo.IsExistVector)
                     {
-                        string fileExtenName = Path.GetExtension(file).ToLower();
                         if (vectorPictureExtenName.Contains(fileExtenName))
                         {
                             string directory = Path.GetDirectoryName(file);
@@ -374,6 +192,12 @@ namespace BLLClient
                             }
                         }
                     }
+
+                    if(!pictureExtenName.Contains(fileExtenName))
+                    {
+                        folderInfo.CheckResult = string.Format("{0}不是图片文件", file);
+                        return;
+                    }
                 }
             }
             catch (Exception ex)
@@ -381,8 +205,241 @@ namespace BLLClient
                 folderInfo.CheckResult = "异常:" + ex.Message;
                 return;
             }
-
-
         }
+
+        private void UpLoadProcess()
+        {
+            try
+            {
+                while (_isRun && (DateTime.Now.Hour < ClientConfig.RestHourStart || DateTime.Now.Hour > ClientConfig.RestHourEnd))
+                {
+                    FolderInfo uploadFolderInfo = new FolderInfo();
+                    int uploadDirectoryCount = 0;
+
+                    lock (_listBoxUploadDirectory)
+                    {
+                        uploadDirectoryCount = _listBoxUploadDirectory.Items.Count - 1;
+                    }
+
+                    for (int index = uploadDirectoryCount; index >= 0; index--)
+                    {
+                        try
+                        {
+                            uploadFolderInfo = _listBoxUploadDirectory.Items[index] as FolderInfo;
+                            uploadFolderInfo.UploadResult.Clear();
+
+                            //目录、相册创建                        
+                            if (!RemoteDirectoryCreateProcess(ref uploadFolderInfo, index))
+                            {
+                                continue;
+                            }
+
+                            //文件上传
+                            FileUploadProcess(uploadFolderInfo, index);                       
+
+                            //相册文件打包
+                            if (!FileBundlingProcess(uploadFolderInfo, index))
+                            {
+                                continue;
+                            }
+
+                            
+                            UploadDirectoryTurnProcess(uploadFolderInfo, index);
+                        }
+                        catch (ThreadInterruptedException)
+                        {
+
+                        }
+                        catch (Exception ex)
+                        {
+                            //转移到失败目录
+                            uploadFolderInfo.UploadResult.AppendLine(ex.Message);
+                            UploadDirectoryTurnToFail(uploadFolderInfo, index);
+                        }
+                    }
+
+                    Thread.Sleep(5000);
+                } //  while (_isRun)
+            }
+            catch (ThreadAbortException)
+            {
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                Tools.LogWrite(ex.ToString());
+            }
+        }
+
+        private CommonResponse DirectoryCreate(FolderInfo uploadFolderInfo)
+        {
+            string[] paths = uploadFolderInfo.LocalPath.Split(new char[] { '\\' });
+            string localDirectory = paths[paths.Length - 1];
+
+            DirectoryCreateRequest request = new DirectoryCreateRequest();
+            request.FileServerId = _fileServerInfo.Id;
+            request.Token = ClientConfig.Token;            
+            request.Account = ClientConfig.Account;
+            request.PassWord = ClientConfig.PassWord;
+            request.OriginalAbsoluteFileDirectory = _fileServerInfo.OriginalFileServerRootDirectory + uploadFolderInfo.LevelPath.Replace("|", "\\\\") + "\\\\" + localDirectory;
+            request.ThumbAbsoluteFileDirectory = _fileServerInfo.ThumbFileServerRootDirectory + uploadFolderInfo.LevelPath.Replace("|", "\\\\") + "\\\\" + localDirectory;
+            CommonResponse response = _proxy.DirectoryCreate(request);
+            return response;
+        }
+
+        private CommonResponse GalleryCreate(FolderInfo uploadFolderInfo)
+        {
+            string[] paths = uploadFolderInfo.LocalPath.Split(new char[] { '\\' });
+            string localDirectory = paths[paths.Length - 1];
+
+            GalleryCreateRequest request = new GalleryCreateRequest();
+            request.Token = ClientConfig.Token;
+            request.Account = ClientConfig.Account;
+            request.PassWord = ClientConfig.PassWord;
+            request.CategoryId = uploadFolderInfo.CategoryId;
+            request.FileServerId = _fileServerInfo.Id;
+            request.GalleryName = uploadFolderInfo.GalleryName;
+            request.ConverRelativeFilePath = "/Small" + uploadFolderInfo.LevelPath.Replace("|", "/") + "/" + localDirectory + "/Cover.jpg";
+            request.BundlingRelativeFilePath = "/Big" + uploadFolderInfo.LevelPath.Replace("|", "/") + "/" + localDirectory + "/Package.zip";
+            request.PageCount = uploadFolderInfo.PageCount;
+            request.Introudce = uploadFolderInfo.Introudce;
+            request.VideoRelativeFilePath = "/Big" + uploadFolderInfo.LevelPath.Replace("|", "/") + "/video.rar";
+            request.Designer = uploadFolderInfo.Designer;
+            request.Address = uploadFolderInfo.Address;
+            request.OriginalAbsoluteFileDirectory = _fileServerInfo.OriginalFileServerRootDirectory + uploadFolderInfo.LevelPath.Replace("|", "\\\\") + "\\\\" + localDirectory;
+            request.ThumbAbsoluteFileDirectory = _fileServerInfo.ThumbFileServerRootDirectory + uploadFolderInfo.LevelPath.Replace("|", "\\\\") + "\\\\" + localDirectory;
+            request.StoreTableName = uploadFolderInfo.StoreTableName;
+
+            CommonResponse response = _proxy.GalleryCreate(request);
+            return response;
+        }
+
+        private bool RemoteDirectoryCreateProcess(ref FolderInfo uploadFolderInfo,int itemIndex)
+        {
+            CommonResponse response;
+            if (uploadFolderInfo.CategoryType == CategoryType.Picture)
+            {
+                response = DirectoryCreate(uploadFolderInfo);
+            }
+            else
+            {
+                response = GalleryCreate(uploadFolderInfo);
+                uploadFolderInfo.GalleryId = int.Parse(response.ResultMessage);
+            }
+
+            if (!response.IsSuccessful)
+            {
+                uploadFolderInfo.UploadResult.AppendLine(response.ResultMessage);
+                UploadDirectoryTurnToFail(uploadFolderInfo, itemIndex);                
+            }
+
+            return response.IsSuccessful;
+        }
+
+        private void FileUpload(FolderInfo uploadFolderInfo, string file)
+        {
+            try
+            {
+                string[] paths = uploadFolderInfo.LocalPath.Split(new char[] { '\\' });
+                string localDirectory = paths[paths.Length - 1];
+
+                //文件上传时，如果是相册类型StoreName要转化
+                CommonResponse response = new CommonResponse();
+                using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read))
+                {
+                    FileUploadRequest request = new FileUploadRequest();
+                    request.Token = ClientConfig.Token;
+                    request.Account = ClientConfig.Account;
+                    request.PassWord = ClientConfig.PassWord;
+                    request.CategoryType = uploadFolderInfo.CategoryType;
+                    request.CategoryId = uploadFolderInfo.CategoryId;
+                    request.FileServerId = _fileServerInfo.Id;
+                    request.OriginalFileServerRootDirectory = _fileServerInfo.OriginalFileServerRootDirectory;
+                    request.ThumbFileServerRootDirectory = _fileServerInfo.ThumbFileServerRootDirectory;
+                    request.CategoryAbsolutePath = uploadFolderInfo.LevelPath.Replace("|", "\\\\") + "\\\\" + localDirectory + "\\\\";
+                    request.CategoryRelativePath = uploadFolderInfo.LevelPath.Replace("|", "/") + "/" + localDirectory + "/";
+                    request.LevelCategoryName = uploadFolderInfo.LevelCategory;
+                    if (uploadFolderInfo.CategoryType == CategoryType.Gallery)
+                    {
+                        request.StoreTableName = uploadFolderInfo.StoreTableName.Replace("Album", "Photo");
+                    }
+                    else
+                    {
+                        request.StoreTableName = uploadFolderInfo.StoreTableName;
+                    }
+                    request.FileName = Path.GetFileName(file);
+                    request.FileData = fs;
+                    response = _proxy.FileUpLoad(request);
+                }
+
+                if (response.IsSuccessful)
+                {
+                    //文件属性置为只读 
+                    File.SetAttributes(file, FileAttributes.ReadOnly);
+                }
+                else
+                {
+                    string uploadResult = string.Format("{0},{1}", Path.GetFileName(file), response.ResultMessage);
+                    uploadFolderInfo.UploadResult.AppendLine(uploadResult);
+                }
+            }
+            catch(Exception ex)
+            {
+                string uploadResult = string.Format("{0},{1}", Path.GetFileName(file), ex.Message);
+                uploadFolderInfo.UploadResult.AppendLine(uploadResult);
+            }
+        }
+
+        private void FileUploadProcess(FolderInfo uploadFolderInfo, int itemIndex)
+        {
+            foreach (string file in Directory.GetFiles(uploadFolderInfo.LocalPath))
+            {
+                if ((File.GetAttributes(file) & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                {
+                    continue;
+                }
+
+                FileUpload(uploadFolderInfo, file);  
+            } 
+        }
+
+        private bool FileBundlingProcess(FolderInfo uploadFolderInfo, int itemIndex)
+        {
+            string[] paths = uploadFolderInfo.LocalPath.Split(new char[] { '\\' });
+            string localDirectory = paths[paths.Length - 1];
+
+            GalleryBundlingRequest request = new GalleryBundlingRequest();
+            request.FileServerId = _fileServerInfo.Id;
+            request.Token = ClientConfig.Token;
+            request.Account = ClientConfig.Account;
+            request.PassWord = ClientConfig.PassWord;
+            request.OriginalAbsoluteFileDirectory = _fileServerInfo.OriginalFileServerRootDirectory + uploadFolderInfo.LevelPath.Replace("|", "\\\\") + "\\\\" + localDirectory;
+            CommonResponse response = _proxy.FileBundling(request);        
+
+            if (!response.IsSuccessful)
+            {
+                uploadFolderInfo.UploadResult.AppendLine(response.ResultMessage);
+                UploadDirectoryTurnToFail(uploadFolderInfo, itemIndex);
+            }
+
+            return response.IsSuccessful;
+        }
+
+        private void UploadDirectoryTurnProcess(FolderInfo uploadFolderInfo, int itemIndex)
+        {
+            if (string.IsNullOrEmpty(uploadFolderInfo.UploadResult.ToString()))
+            {
+                DirectoryInfo directoryInfo = new DirectoryInfo(uploadFolderInfo.LocalPath);
+                directoryInfo.Attributes = FileAttributes.ReadOnly & FileAttributes.Directory;
+
+                UploadDirectoryTurnToSucessful(uploadFolderInfo, itemIndex);
+            }
+            else
+            {
+                UploadDirectoryTurnToFail(uploadFolderInfo, itemIndex);
+            }
+        }     
+  
     }
 }
