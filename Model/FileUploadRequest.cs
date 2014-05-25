@@ -20,6 +20,15 @@ namespace Model
         public string PassWord;
 
         [MessageHeader]
+        public int ThumbPictureWidth;
+
+        [MessageHeader]
+        public int ThumbPictureHeight;
+
+        [MessageHeader]
+        public string VectorPictureExtenName;
+
+        [MessageHeader]
         public CategoryType CategoryType;
 
         [MessageHeader]
@@ -51,9 +60,6 @@ namespace Model
 
         [MessageHeader]
         public string StoreTableName; //Files_Boy
-
-        [MessageHeader]
-        public bool IsVectorPicture;
 
         [MessageHeader]
         public string FileName;

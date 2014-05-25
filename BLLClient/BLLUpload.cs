@@ -352,6 +352,9 @@ namespace BLLClient
                     request.Token = ClientConfig.Token;
                     request.Account = ClientConfig.Account;
                     request.PassWord = ClientConfig.PassWord;
+                    request.ThumbPictureWidth = ClientConfig.ThumbPictureWidth;
+                    request.ThumbPictureHeight = ClientConfig.ThumbPictureHeight;
+                    request.VectorPictureExtenName = ClientConfig.VectorPictureExtenName;
                     request.CategoryType = uploadFolderInfo.CategoryType;
                     request.CategoryId = uploadFolderInfo.CategoryId;
                     request.FileServerId = _fileServerInfo.Id;
@@ -368,6 +371,7 @@ namespace BLLClient
                     {
                         request.StoreTableName = uploadFolderInfo.StoreTableName;
                     }
+                   
                     request.FileName = Path.GetFileName(file);
                     request.FileData = fs;
                     response = _proxy.FileUpLoad(request);
