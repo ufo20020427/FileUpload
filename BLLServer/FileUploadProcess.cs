@@ -297,6 +297,8 @@ namespace BLLServer
 
         public CommonResponse FileUpLoad(FileUploadRequest request)
         {
+          
+
             CommonResponse response = new CommonResponse();
             response.IsSuccessful = false;
             string originalFileSavePath = string.Empty;
@@ -311,12 +313,7 @@ namespace BLLServer
                     response.IsSuccessful = false;
                     response.ResultMessage = "您没有访问该文件服务器接口的权限!";
                     return response;
-                }
-#warning 别忘了这里
-                if(request.FileName=="01.jpg")
-                {
-                  //  Thread.Sleep(8000);
-                }
+                }            
 
                 string fileName = request.FileName.ToLower();
                 string fileExtenName = Path.GetExtension(fileName).ToLower();

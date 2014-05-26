@@ -21,6 +21,7 @@ namespace BLLClient
                 _vectorPictureExtenName = ConfigurationManager.AppSettings["VectorPictureExtenName"].ToString();
                 _pictureExtenName = ConfigurationManager.AppSettings["PictureExtenName"].ToString();
                 _maxThread = int.Parse(ConfigurationManager.AppSettings["MaxThread"]);
+                _sendTimeout = int.Parse(ConfigurationManager.AppSettings["SendTimeout"]);
 
                 string[] restHours = ConfigurationManager.AppSettings["RestHours"].ToString().Split('-');
                 _restHourStart = int.Parse(restHours[0]);
@@ -43,7 +44,8 @@ namespace BLLClient
         private static string _pictureExtenName;
         private static int _restHourStart;
         private static int _restHourEnd;
-        private static int _maxThread;    
+        private static int _maxThread;
+        private static int _sendTimeout;      
 
         public static string WCFAddress
         {
@@ -98,6 +100,11 @@ namespace BLLClient
         public static int MaxThread
         {
             get { return _maxThread; }
+        }
+
+        public static int SendTimeout
+        {
+            get { return _sendTimeout; }
         }
     }
 }

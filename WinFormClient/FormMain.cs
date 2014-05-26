@@ -22,7 +22,7 @@ namespace WinFormClient
         private FileServerInfo _fileServerInfo;
         private BLLCategoryTree _bllCategoryTree;
         private BLLUpload _bllUpload;
-        private static Mutex mutexRun; 
+        private static Mutex mutexRun;
 
         #region 窗体
 
@@ -51,17 +51,17 @@ namespace WinFormClient
             {
                 e.Cancel = true;
                 return;
-            }   
+            }
 
             _bllUpload.Stop();
-            (_proxy as ICommunicationObject).Close();          
+            (_proxy as ICommunicationObject).Close();
         }
 
         private void notifyIcon_MouseClick(object sender, MouseEventArgs e)
         {
             this.Show();
             this.WindowState = FormWindowState.Normal;
-            this.notifyIcon.Visible = false;      
+            this.notifyIcon.Visible = false;
         }
 
         private void FormMain_SizeChanged(object sender, EventArgs e)
@@ -102,10 +102,10 @@ namespace WinFormClient
 
                 NetTcpBinding binding = new NetTcpBinding();
                 binding.TransferMode = TransferMode.Streamed;
-                binding.SendTimeout = new TimeSpan(0,0,5);
+                binding.SendTimeout = new TimeSpan(0, ClientConfig.SendTimeout, 0);
                 ChannelFactory<IFileUpload> channelFactory = new ChannelFactory<IFileUpload>(binding, ClientConfig.WCFAddress);
                 _proxy = channelFactory.CreateChannel();
-                (_proxy as ICommunicationObject).Open();  
+                (_proxy as ICommunicationObject).Open();
             }
             catch (Exception ex)
             {
@@ -135,7 +135,7 @@ namespace WinFormClient
             try
             {
                 DataTableResponse response = _proxy.GetCategoryInfo(ClientConfig.Token, 1, ClientConfig.Account, ClientConfig.PassWord);
-   
+
                 if (response.DataTable != null || response.DataTable.Rows.Count > 1)
                 {
                     _bllCategoryTree = new BLLCategoryTree(treeCategory);
@@ -165,7 +165,7 @@ namespace WinFormClient
             {
                 TreeNode selectedNode = treeCategory.SelectedNode;
                 Category category = selectedNode.Tag as Category;
-             
+
                 string typeName = "类型：" + (category.Type == CategoryType.Picture ? "图片" : "相册");
                 string isExistVideo = "视频：" + (category.IsExistVideo ? "需要" : "不需");
                 string isExistVector = "失量图：" + (category.IsExistVector ? "需要" : "不需");
@@ -185,13 +185,13 @@ namespace WinFormClient
                         localFolderInfo.CategoryId = category.Id;
                         localFolderInfo.CategoryType = category.Type;
                         localFolderInfo.LevelPath = category.LevelPath;
-                        localFolderInfo.LevelCategory = category.LevelCategory.Remove(0,1);
+                        localFolderInfo.LevelCategory = category.LevelCategory.Remove(0, 1);
                         localFolderInfo.StoreTableName = category.StoreTableName;
                         localFolderInfo.IsExistVideo = category.IsExistVideo;
-                        localFolderInfo.IsExistVector = category.IsExistVector;                     
+                        localFolderInfo.IsExistVector = category.IsExistVector;
                         localFolderInfo.LocalPath = localFile;
                         localFolderInfo.IsRunning = false;
-                        
+
                         listBoxLocalDirectory.Items.Add(localFolderInfo);
                     }
                 }
@@ -239,7 +239,7 @@ namespace WinFormClient
             if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
             {
                 myBrush = new SolidBrush(Color.FromArgb(150, 200, 250));
-            }      
+            }
             else
             {
                 myBrush = new SolidBrush(Color.White);
@@ -346,13 +346,13 @@ namespace WinFormClient
 
                 FolderInfo folderInfo = (sender as ListBox).Items[e.Index] as FolderInfo;
 
-                if(!string.IsNullOrEmpty(folderInfo.CheckResult))
+                if (!string.IsNullOrEmpty(folderInfo.CheckResult))
                 {
                     ListBoxDrawItem(e, "Images/CheckFail.ico", folderInfo.LocalPath);
                     return;
                 }
 
-                DirectoryInfo directoryInfo = new DirectoryInfo(folderInfo.LocalPath);           
+                DirectoryInfo directoryInfo = new DirectoryInfo(folderInfo.LocalPath);
                 if ((directoryInfo.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
                 {
                     ListBoxDrawItem(e, "Images/SucessfulDirectory.ico", folderInfo.LocalPath);
@@ -431,7 +431,7 @@ namespace WinFormClient
                 foreach (var item in listBoxLocalDirectory.SelectedItems)
                 {
                     FolderInfo folderInfo = item as FolderInfo;
-                    DirectoryInfo directoryInfo = new DirectoryInfo(folderInfo.LocalPath);                   
+                    DirectoryInfo directoryInfo = new DirectoryInfo(folderInfo.LocalPath);
                     if ((directoryInfo.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
                     {
                         directoryInfo.Attributes = FileAttributes.Normal & FileAttributes.Directory;
@@ -469,7 +469,7 @@ namespace WinFormClient
                         directoryInfo.Attributes = FileAttributes.Normal;
                     }
 
-                    foreach(string file in Directory.GetFiles(folderInfo.LocalPath))
+                    foreach (string file in Directory.GetFiles(folderInfo.LocalPath))
                     {
                         File.SetAttributes(file, FileAttributes.Normal);
                     }
@@ -486,7 +486,7 @@ namespace WinFormClient
         {
             try
             {
-                DirectoryOpen(listBoxLocalDirectory);              
+                DirectoryOpen(listBoxLocalDirectory);
             }
             catch (Exception ex)
             {
@@ -563,8 +563,8 @@ namespace WinFormClient
             }
         }
 
-        #endregion 本地目录|上传目录     
-   
+        #endregion 本地目录|上传目录
+
         #region 上传结果
 
         private void listBoxSucessfulDirectory_DrawItem(object sender, DrawItemEventArgs e)
@@ -632,7 +632,7 @@ namespace WinFormClient
                 FolderInfo folderInfo = (sender as ListBox).SelectedItem as FolderInfo;
 
                 textBoxFailDetail.Clear();
-                textBoxFailDetail.Text = folderInfo.UploadResult.ToString();            
+                textBoxFailDetail.Text = folderInfo.UploadResult.ToString();
             }
             catch (Exception ex)
             {
@@ -645,7 +645,7 @@ namespace WinFormClient
         {
             try
             {
-                ListBoxSelectedItemsRemove(listBoxSucessfulDirectory);    
+                ListBoxSelectedItemsRemove(listBoxSucessfulDirectory);
             }
             catch (Exception ex)
             {
@@ -680,7 +680,7 @@ namespace WinFormClient
                 if (MessageBox.Show("确定上传选中目录？", "提示", MessageBoxButtons.YesNo) == DialogResult.No)
                 {
                     return;
-                }       
+                }
 
                 for (int index = listBoxFailDirectory.Items.Count - 1; index >= 0; index--)
                 {
@@ -705,7 +705,7 @@ namespace WinFormClient
 
                     listBoxUploadDirectory.Items.Add(failFolderInfo);
                     listBoxFailDirectory.Items.RemoveAt(index);
-                }                
+                }
             }
             catch (Exception ex)
             {
@@ -727,15 +727,6 @@ namespace WinFormClient
             }
         }
 
-        #endregion 上传结果          
-
-    
-
-   
-
-    
-
-     
-    
+        #endregion 上传结果
     }
 }
