@@ -15,20 +15,14 @@ using System.Data;
 namespace BLLServer
 {
     [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, InstanceContextMode = InstanceContextMode.Single, IncludeExceptionDetailInFaults = true)]
-    public class FileUploadProcess : BLLBase, IFileUpload, IDisposable
+    public class FileUploadProcess : BLLBase, IFileUpload
     {
         private Dictionary<int, DateTime> _dicAuth;
 
         public FileUploadProcess()
-        {
-            Console.WriteLine("文件处理程序启动");
+        {      
             _dicAuth = new Dictionary<int, DateTime>();
-        }
-
-        public void Dispose()
-        {
-            Console.WriteLine("文件处理程序终止");
-        }
+        }    
 
         private bool Authentication(string token, int fileServerId, string account, string passWord)
         {
