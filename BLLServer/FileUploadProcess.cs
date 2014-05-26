@@ -315,7 +315,7 @@ namespace BLLServer
 #warning 别忘了这里
                 if(request.FileName=="01.jpg")
                 {
-                    Thread.Sleep(8000);
+                  //  Thread.Sleep(8000);
                 }
 
                 string fileName = request.FileName.ToLower();

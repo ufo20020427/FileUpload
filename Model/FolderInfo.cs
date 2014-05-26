@@ -33,6 +33,7 @@ namespace Model
         public int GalleryId { get; set; } //数据库返回的GalleryId 
 
         public string FilePath { get; set; } //因Task只能传一个参数，所以需保存文件
+        public bool IsRunning { get; set; }
        
     }
 

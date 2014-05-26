@@ -19,8 +19,11 @@ namespace BLLClient
         private ListBox _listBoxSucessfulDirectory;
         private ListBox _listBoxFailDirectory;
 
+        private int _fileCount;
+        private Semaphore _semaphoreTask;
         private Thread _threadUpload;
-        private bool _isRun;        
+        private bool _isRun;
+        private object _syncLock = new object();
  
         private Action<FolderInfo, int> _delegateTurnToSucessful;
         private Action<FolderInfo, int> _delegateTurnToFail;
@@ -59,6 +62,7 @@ namespace BLLClient
             _listBoxSucessfulDirectory = listBoxSucessfulDirectory;
             _listBoxFailDirectory = listBoxFailDirectory;
             _isRun = false;
+            _semaphoreTask = new Semaphore(ClientConfig.MaxThread, ClientConfig.MaxThread);
 
             _delegateTurnToSucessful = UploadDirectoryTurnToSucessful;
             _delegateTurnToFail = UploadDirectoryTurnToFail;
@@ -233,7 +237,8 @@ namespace BLLClient
                         try
                         {
                             uploadFolderInfo = _listBoxUploadDirectory.Items[index] as FolderInfo;
-                            uploadFolderInfo.UploadResult.Clear();
+                            uploadFolderInfo.IsRunning = true;
+                            uploadFolderInfo.UploadResult.Clear();                           
 
                             //目录、相册创建                        
                             if (!RemoteDirectoryCreateProcess(ref uploadFolderInfo, index))
@@ -241,8 +246,16 @@ namespace BLLClient
                                 continue;
                             }
 
+                            _fileCount = Directory.GetFiles(uploadFolderInfo.LocalPath).Count();
+
                             //文件上传
-                            FileUploadProcess(uploadFolderInfo, index);                       
+                            FileUploadProcess(uploadFolderInfo, index);  
+                     
+                            //这里要想办法阻塞
+                            while(_fileCount > 0)
+                            {
+                                Thread.Sleep(5000);
+                            }
 
                             //相册文件打包
                             if (!FileBundlingProcess(uploadFolderInfo, index))
@@ -262,9 +275,13 @@ namespace BLLClient
                             uploadFolderInfo.UploadResult.AppendLine(ex.Message);
                             UploadDirectoryTurnToFail(uploadFolderInfo, index);
                         }
+                        finally
+                        {
+                            uploadFolderInfo.IsRunning = false;
+                        }
                     }
 
-                    Thread.Sleep(5000);
+                    Thread.Sleep(10000);
                 } //  while (_isRun)
             }
             catch (ThreadAbortException)
@@ -345,6 +362,8 @@ namespace BLLClient
 
         private void FileUpload(object folderInfo)
         {
+            _semaphoreTask.WaitOne();
+
             FolderInfo uploadFolderInfo = null;
             try
             {
@@ -402,6 +421,17 @@ namespace BLLClient
                 string uploadResult = string.Format("{0},{1}", Path.GetFileName(uploadFolderInfo.FilePath), ex.Message);
                 uploadFolderInfo.UploadResult.AppendLine(uploadResult);
             }
+            finally
+            {
+                lock (_syncLock)
+                {
+                    if (_fileCount > 0)
+                    {
+                        _fileCount--;
+                    }
+                }
+                _semaphoreTask.Release();
+            }
         }
 
         private void FileUploadProcess(FolderInfo uploadFolderInfo, int itemIndex)
@@ -415,9 +445,10 @@ namespace BLLClient
                         continue;
                     }
                     uploadFolderInfo.FilePath = file;
-                    //if 线程五个以内
+                    FileUpload(uploadFolderInfo);
+
                     Task task = new Task(FileUpload, uploadFolderInfo);
-                    task.Start();
+                    task.Start();                    
                 }
                 catch (Exception ex)
                 {

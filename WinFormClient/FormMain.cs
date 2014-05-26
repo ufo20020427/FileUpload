@@ -189,7 +189,8 @@ namespace WinFormClient
                         localFolderInfo.StoreTableName = category.StoreTableName;
                         localFolderInfo.IsExistVideo = category.IsExistVideo;
                         localFolderInfo.IsExistVector = category.IsExistVector;                     
-                        localFolderInfo.LocalPath = localFile;                      
+                        localFolderInfo.LocalPath = localFile;
+                        localFolderInfo.IsRunning = false;
                         
                         listBoxLocalDirectory.Items.Add(localFolderInfo);
                     }
@@ -308,7 +309,8 @@ namespace WinFormClient
 
             for (int index = listBox.Items.Count - 1; index >= 0; index--)
             {
-                if (listBox.GetSelected(index))
+                FolderInfo folderInfo = listBox.Items[index] as FolderInfo;
+                if (listBox.GetSelected(index) && !folderInfo.IsRunning)
                 {
                     listBox.Items.RemoveAt(index);
                 }
