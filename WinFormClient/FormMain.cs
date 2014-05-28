@@ -292,7 +292,9 @@ namespace WinFormClient
             string isExistVideo = "视频：" + (folderInfo.IsExistVideo ? "需要" : "不需");
             string isExistVector = "失量图：" + (folderInfo.IsExistVector ? "需要" : "不需");       
             string checkResult = string.IsNullOrEmpty(folderInfo.CheckResult) ? string.Empty : "检查结果：" + folderInfo.CheckResult;
-            statusLabel.Text = string.Format("{0}   {1}   {2}   {3}", typeName, isExistVideo, isExistVector, checkResult);
+            string waitUploadFilesCount = "等待上传文件数：" + folderInfo.WaitUploadFilesCount.ToString();
+            string sucessfulUploadFilesCount = "成功上传文件数：" + folderInfo.SucessfulUploadFilesCount.ToString();
+            statusLabel.Text = string.Format("{0}   {1}   {2}   {3}   {4}   {5}", typeName, isExistVideo, isExistVector, checkResult, waitUploadFilesCount, sucessfulUploadFilesCount);
         }
 
         private void ListBoxSelectedItemsRemove(ListBox listBox)

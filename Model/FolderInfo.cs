@@ -10,6 +10,8 @@ namespace Model
         public FolderInfo()
         {
             UploadResult = new StringBuilder();
+            WaitUploadFilesCount = 0;
+            SucessfulUploadFilesCount = 0;
         }
 
         public int CategoryId { get; set; }
@@ -31,7 +33,10 @@ namespace Model
         public StringBuilder UploadResult { get; set; }
 
         public int GalleryId { get; set; } //数据库返回的GalleryId       
-        public bool IsRunning { get; set; }       
+        public bool IsRunning { get; set; }
+
+        public int WaitUploadFilesCount { get; set; }
+        public int SucessfulUploadFilesCount { get; set; }
     }
 }
 

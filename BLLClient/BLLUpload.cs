@@ -185,7 +185,7 @@ namespace BLLClient
                 string vectorPictureExtenName = ClientConfig.VectorPictureExtenName.ToLower();
                 string pictureExtenName = ClientConfig.PictureExtenName.ToLower();
 
-                int newFileCount = 0;
+                folderInfo.WaitUploadFilesCount = 0;
                 foreach (string file in Directory.GetFiles(folderInfo.LocalPath))
                 {
                     string fileExtenName = Path.GetExtension(file).ToLower();
@@ -215,12 +215,12 @@ namespace BLLClient
                     {
                         continue;
                     }
-                    newFileCount++;
+                    folderInfo.WaitUploadFilesCount++;
                 }// end foreach
 
-                if (newFileCount == 0)
+                if (folderInfo.WaitUploadFilesCount == 0)
                 {
-                    folderInfo.CheckResult = "该目录没有未曾上传过的文件！";
+                    folderInfo.CheckResult = "该目录不存在未上传过的文件！";
                     return;
                 }
             }
@@ -251,6 +251,7 @@ namespace BLLClient
                         {
                             uploadFolderInfo = _listBoxUploadDirectory.Items[index] as FolderInfo;
                             uploadFolderInfo.IsRunning = true;
+                            uploadFolderInfo.SucessfulUploadFilesCount = 0;
                             uploadFolderInfo.UploadResult.Clear();                           
 
                             //目录、相册创建                        
@@ -423,7 +424,10 @@ namespace BLLClient
 
                 if (response.IsSuccessful)
                 {
-                    //文件属性置为只读 
+
+                    uploadFolderInfo.SucessfulUploadFilesCount++;
+
+                            //文件属性置为只读 
                     File.SetAttributes(uploadInfo.FilePath, FileAttributes.ReadOnly);
                 }
                 else
