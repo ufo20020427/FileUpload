@@ -105,7 +105,7 @@ namespace BLLClient
         {
             try
             {
-                if(Directory.GetFiles(folderInfo.LocalPath).Count() == 0)
+                if (Directory.GetFiles(folderInfo.LocalPath).Count() == 0)
                 {
                     folderInfo.CheckResult = "待上传目录为空";
                     return;
@@ -185,6 +185,7 @@ namespace BLLClient
                 string vectorPictureExtenName = ClientConfig.VectorPictureExtenName.ToLower();
                 string pictureExtenName = ClientConfig.PictureExtenName.ToLower();
 
+                int newFileCount = 0;
                 foreach (string file in Directory.GetFiles(folderInfo.LocalPath))
                 {
                     string fileExtenName = Path.GetExtension(file).ToLower();
@@ -204,11 +205,23 @@ namespace BLLClient
                         }
                     }
 
-                    if(!pictureExtenName.Contains(fileExtenName))
+                    if (!pictureExtenName.Contains(fileExtenName))
                     {
                         folderInfo.CheckResult = string.Format("{0}不是图片文件", file);
                         return;
                     }
+
+                    if ((File.GetAttributes(file) & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                    {
+                        continue;
+                    }
+                    newFileCount++;
+                }// end foreach
+
+                if (newFileCount == 0)
+                {
+                    folderInfo.CheckResult = "该目录没有未曾上传过的文件！";
+                    return;
                 }
             }
             catch (Exception ex)

@@ -19,30 +19,11 @@ namespace Client
         static ChannelFactory<IFileUpload> channelFactory;
         static IFileUpload _proxy;
 
-        static void ThreadProc(Object sender)
+        static void EndAdd(IAsyncResult ar)
         {
-
-            string file = "E:\\项目前期资料\\佛山三期资料\\固定费统计分析\\输入\\201312\\abc.jpg";
-            using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read))
-            {
-                FileUploadRequest request = new FileUploadRequest();
-                request.Token = "1qaz2wsx";
-                request.Account = "account1";
-                request.PassWord = "pass1";
-                request.CategoryId = 123;
-                request.FileServerId = 1;
-                request.OriginalFileServerRootDirectory = "F:\\素材\\Big";
-                request.ThumbFileServerRootDirectory = "F:\\素材\\Small";
-                request.CategoryAbsolutePath = "\\男装一级目录\\男装二级目录\\201405\\";
-                request.CategoryRelativePath = "/男装一级目录/男装二级目录/201405/";
-                request.LevelCategoryName = "品牌画册二级目录";
-                request.FileName = "abc.jpg";
-                request.StoreTableName = "Files_Boy";
-                request.FileData = fs;
-                CommonResponse response = _proxy.FileUpLoad(request);
-                Console.WriteLine(response.IsSuccessful);
-                Console.WriteLine(response.ResultMessage);
-            }    
+           int result = _proxy.EndAdd(ar);
+           Console.WriteLine("执行结果：" + result.ToString());
+           Console.WriteLine("执行结果时间:" + DateTime.Now.ToString());
         }
 
         static void Test()
@@ -51,19 +32,17 @@ namespace Client
             {
                 NetTcpBinding binding = new NetTcpBinding();
                 binding.TransferMode = TransferMode.Streamed;
+                binding.SendTimeout = new TimeSpan(0, 0, 2);
+                
                 channelFactory = new ChannelFactory<IFileUpload>(binding, ClientConfig.WCFAddress);
 
                 _proxy = channelFactory.CreateChannel();
 
                 (_proxy as ICommunicationObject).Open();
 
-                DataTableResponse response = _proxy.GetFileServerInfoByEndPoint(ClientConfig.Token, ClientConfig.WCFAddress, "account1", "pass1");
-                Console.WriteLine(response.IsSuccessful.ToString());
-                Console.WriteLine(response.ResultMessage);
-                DataTable dt = response.DataTable;
-                Console.WriteLine(dt.Rows.Count.ToString());
-
-                //   ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadProc), string.Empty);
+                Console.WriteLine("主方法开始执行:" + DateTime.Now.ToString());
+                _proxy.BeginAdd(1, 2, EndAdd, null);
+                Console.WriteLine("主方法结束:" + DateTime.Now.ToString());
 
 
             }

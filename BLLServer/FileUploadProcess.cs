@@ -601,6 +601,21 @@ namespace BLLServer
 
             return response;
         }
-    
+
+        public int Add(int a, int b)
+        {
+            Thread.Sleep(5000);  
+            return a + b;  
+        }
+
+        public IAsyncResult BeginAdd(int a, int b, AsyncCallback callBack, object state)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+        
+        public int EndAdd(IAsyncResult ar) 
+        { 
+            throw new Exception("The method or operation is not implemented.");
+        } 
     }
 }

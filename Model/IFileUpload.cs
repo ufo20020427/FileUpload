@@ -29,5 +29,13 @@ namespace Model
 
         [OperationContract]
         DataTableResponse GetFileServerInfoByEndPoint(string token, string wcfAddress, string account, string passWord);
+
+        [OperationContract]
+        int Add(int a, int b);
+
+        [OperationContract(AsyncPattern = true)]
+        IAsyncResult BeginAdd(int a, int b, AsyncCallback callBack, object state); 
+        
+        int EndAdd(IAsyncResult ar); 
     }
 }

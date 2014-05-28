@@ -290,7 +290,7 @@ namespace WinFormClient
 
             string typeName = "类型：" + (folderInfo.CategoryType == CategoryType.Picture ? "图片" : "相册");
             string isExistVideo = "视频：" + (folderInfo.IsExistVideo ? "需要" : "不需");
-            string isExistVector = "失量图：" + (folderInfo.IsExistVector ? "需要" : "不需");
+            string isExistVector = "失量图：" + (folderInfo.IsExistVector ? "需要" : "不需");       
             string checkResult = string.IsNullOrEmpty(folderInfo.CheckResult) ? string.Empty : "检查结果：" + folderInfo.CheckResult;
             statusLabel.Text = string.Format("{0}   {1}   {2}   {3}", typeName, isExistVideo, isExistVector, checkResult);
         }
