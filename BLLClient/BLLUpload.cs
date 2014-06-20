@@ -272,9 +272,12 @@ namespace BLLClient
                             }
 
                             //相册文件打包
-                            if (!FileBundlingProcess(uploadFolderInfo, index))
+                            if (uploadFolderInfo.CategoryType == CategoryType.Gallery)
                             {
-                                continue;
+                                if (!FileBundlingProcess(uploadFolderInfo, index))
+                                {
+                                    continue;
+                                }
                             }
                             
                             UploadDirectoryTurnProcess(uploadFolderInfo, index);
@@ -481,7 +484,7 @@ namespace BLLClient
         }
 
         private bool FileBundlingProcess(FolderInfo uploadFolderInfo, int itemIndex)
-        {
+        {    
             string[] paths = uploadFolderInfo.LocalPath.Split(new char[] { '\\' });
             string localDirectory = paths[paths.Length - 1];
 
