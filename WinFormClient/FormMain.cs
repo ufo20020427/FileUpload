@@ -100,9 +100,10 @@ namespace WinFormClient
                 ClientConfig.Init();
                 ProgramRepeatCheck();
 
-                NetTcpBinding binding = new NetTcpBinding();
+                NetTcpBinding binding = new NetTcpBinding(SecurityMode.None);
                 binding.TransferMode = TransferMode.Streamed;
-                binding.SendTimeout = new TimeSpan(0, ClientConfig.SendTimeout, 0);
+                binding.SendTimeout = new TimeSpan(0, ClientConfig.SendTimeout, 0);   
+
                 ChannelFactory<IFileUpload> channelFactory = new ChannelFactory<IFileUpload>(binding, ClientConfig.WCFAddress);
                 _proxy = channelFactory.CreateChannel();
                 (_proxy as ICommunicationObject).Open();
@@ -169,7 +170,8 @@ namespace WinFormClient
                 string typeName = "类型：" + (category.Type == CategoryType.Picture ? "图片" : "相册");
                 string isExistVideo = "视频：" + (category.IsExistVideo ? "需要" : "不需");
                 string isExistVector = "失量图：" + (category.IsExistVector ? "需要" : "不需");
-                statusLabel.Text = string.Format("{0}   {1}   {2}", typeName, isExistVideo, isExistVector);
+                string localDirectoryPath = "本地目录：" + category.LocalDirectoryPath;
+                statusLabel.Text = string.Format("{0}   {1}   {2}   {3}", typeName, isExistVideo, isExistVector, localDirectoryPath);
 
                 if (category.IsDetail)
                 {
@@ -227,6 +229,29 @@ namespace WinFormClient
         private void ContextItemCategoryRefresh_Click(object sender, EventArgs e)
         {
             CategoryTreeLoad();
+        }
+
+        private void ContextMenuLocalDirectoryOpen_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                TreeNode selectedNode = treeCategory.SelectedNode;
+                Category category = selectedNode.Tag as Category;
+
+                if (string.IsNullOrEmpty(category.LocalDirectoryPath) || !Directory.Exists(category.LocalDirectoryPath))
+                {
+                    return;
+                }
+            
+                System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo("Explorer.exe");
+                processStartInfo.Arguments = "/e," + category.LocalDirectoryPath;
+                System.Diagnostics.Process.Start(processStartInfo);
+            }
+            catch (Exception ex)
+            {
+                Tools.LogWrite(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
         }
 
         #endregion 分类
@@ -730,5 +755,6 @@ namespace WinFormClient
         }
 
         #endregion 上传结果
+
     }
 }

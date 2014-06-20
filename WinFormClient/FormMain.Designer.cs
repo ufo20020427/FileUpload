@@ -57,12 +57,13 @@
             this.contextFailDirectory = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.contextItemFailDirectoryRemove = new System.Windows.Forms.ToolStripMenuItem();
             this.contextItemFailDirectoryReUpload = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextItemFailDirectoryOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBoxSucessfulDirectory = new System.Windows.Forms.GroupBox();
             this.listBoxSucessfulDirectory = new System.Windows.Forms.ListBox();
             this.contextSucessfulDirectory = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.contextItemSucessfulDirectoryRemove = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.contextItemFailDirectoryOpen = new System.Windows.Forms.ToolStripMenuItem();
+            this.ContextMenuLocalDirectoryOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             this.contextCategory.SuspendLayout();
             this.contextLocalDirectory.SuspendLayout();
@@ -98,21 +99,22 @@
             // 
             this.contextCategory.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ContextMenuLocalDirectoryBind,
-            this.ContextItemCategoryRefresh});
+            this.ContextItemCategoryRefresh,
+            this.ContextMenuLocalDirectoryOpen});
             this.contextCategory.Name = "contextCategory";
-            this.contextCategory.Size = new System.Drawing.Size(143, 48);
+            this.contextCategory.Size = new System.Drawing.Size(153, 92);
             // 
             // ContextMenuLocalDirectoryBind
             // 
             this.ContextMenuLocalDirectoryBind.Name = "ContextMenuLocalDirectoryBind";
-            this.ContextMenuLocalDirectoryBind.Size = new System.Drawing.Size(142, 22);
+            this.ContextMenuLocalDirectoryBind.Size = new System.Drawing.Size(152, 22);
             this.ContextMenuLocalDirectoryBind.Text = "关联本地目录";
             this.ContextMenuLocalDirectoryBind.Click += new System.EventHandler(this.ContextMenuLocalDirectoryBind_Click);
             // 
             // ContextItemCategoryRefresh
             // 
             this.ContextItemCategoryRefresh.Name = "ContextItemCategoryRefresh";
-            this.ContextItemCategoryRefresh.Size = new System.Drawing.Size(142, 22);
+            this.ContextItemCategoryRefresh.Size = new System.Drawing.Size(152, 22);
             this.ContextItemCategoryRefresh.Text = "刷新分类";
             this.ContextItemCategoryRefresh.Click += new System.EventHandler(this.ContextItemCategoryRefresh_Click);
             // 
@@ -332,7 +334,7 @@
             this.contextItemFailDirectoryReUpload,
             this.contextItemFailDirectoryOpen});
             this.contextFailDirectory.Name = "contextUploadDirectory";
-            this.contextFailDirectory.Size = new System.Drawing.Size(167, 92);
+            this.contextFailDirectory.Size = new System.Drawing.Size(167, 70);
             // 
             // contextItemFailDirectoryRemove
             // 
@@ -347,6 +349,13 @@
             this.contextItemFailDirectoryReUpload.Size = new System.Drawing.Size(166, 22);
             this.contextItemFailDirectoryReUpload.Text = "重新上传选中目录";
             this.contextItemFailDirectoryReUpload.Click += new System.EventHandler(this.contextItemFailDirectoryReUpload_Click);
+            // 
+            // contextItemFailDirectoryOpen
+            // 
+            this.contextItemFailDirectoryOpen.Name = "contextItemFailDirectoryOpen";
+            this.contextItemFailDirectoryOpen.Size = new System.Drawing.Size(166, 22);
+            this.contextItemFailDirectoryOpen.Text = "打开选中目录";
+            this.contextItemFailDirectoryOpen.Click += new System.EventHandler(this.contextItemFailDirectoryOpen_Click);
             // 
             // groupBoxSucessfulDirectory
             // 
@@ -397,12 +406,12 @@
             this.notifyIcon.Text = "素材上传";
             this.notifyIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseClick);
             // 
-            // contextItemFailDirectoryOpen
+            // ContextMenuLocalDirectoryOpen
             // 
-            this.contextItemFailDirectoryOpen.Name = "contextItemFailDirectoryOpen";
-            this.contextItemFailDirectoryOpen.Size = new System.Drawing.Size(166, 22);
-            this.contextItemFailDirectoryOpen.Text = "打开选中目录";
-            this.contextItemFailDirectoryOpen.Click += new System.EventHandler(this.contextItemFailDirectoryOpen_Click);
+            this.ContextMenuLocalDirectoryOpen.Name = "ContextMenuLocalDirectoryOpen";
+            this.ContextMenuLocalDirectoryOpen.Size = new System.Drawing.Size(152, 22);
+            this.ContextMenuLocalDirectoryOpen.Text = "打开选中目录";
+            this.ContextMenuLocalDirectoryOpen.Click += new System.EventHandler(this.ContextMenuLocalDirectoryOpen_Click);
             // 
             // FormMain
             // 
@@ -475,6 +484,7 @@
         private System.Windows.Forms.NotifyIcon notifyIcon;
         private System.Windows.Forms.ToolStripMenuItem contextItemFileSetCanUpload;
         private System.Windows.Forms.ToolStripMenuItem contextItemFailDirectoryOpen;
+        private System.Windows.Forms.ToolStripMenuItem ContextMenuLocalDirectoryOpen;
         
     }
 }
