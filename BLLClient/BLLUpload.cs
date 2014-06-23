@@ -18,8 +18,7 @@ namespace BLLClient
         private ListBox _listBoxUploadDirectory;
         private ListBox _listBoxSucessfulDirectory;
         private ListBox _listBoxFailDirectory;
-
-        private int _fileCount;
+    
         private Semaphore _semaphoreTask;
         private Thread _threadUpload;
         private bool _isRun;
@@ -180,23 +179,24 @@ namespace BLLClient
                                 return;
                             }
                     }
-                }
+                } // end if(folderInfo.CategoryType == CategoryType.Gallery)
 
-                string vectorPictureExtenName = ClientConfig.VectorPictureExtenName.ToLower();
                 string pictureExtenName = ClientConfig.PictureExtenName.ToLower();
+                string vectorPictureExtenName = ClientConfig.VectorPictureExtenName.ToLower();              
 
                 folderInfo.WaitUploadFilesCount = 0;
                 foreach (string file in Directory.GetFiles(folderInfo.LocalPath))
-                {
-                    string fileExtenName = Path.GetExtension(file).ToLower();
+                {                   
+                    string fileName = Path.GetFileName(file).ToLower();
+                    string fileExtenName = Path.GetExtension(file).ToLower();                  
 
                     if (folderInfo.IsExistVector)
                     {
                         if (vectorPictureExtenName.Contains(fileExtenName))
                         {
                             string directory = Path.GetDirectoryName(file);
-                            string fileName = Path.GetFileNameWithoutExtension(file);
-                            string thumbFile = Path.Combine(directory, "sm_" + fileName + ".jpg");
+                            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+                            string thumbFile = Path.Combine(directory, "sm_" + fileNameWithoutExtension + ".jpg");
                             if (!File.Exists(thumbFile))
                             {
                                 folderInfo.CheckResult = string.Format("失量图缺少缩略图文件{0}", thumbFile);
@@ -205,17 +205,35 @@ namespace BLLClient
                         }
                     }
 
-                    if (!pictureExtenName.Contains(fileExtenName))
+                    if (folderInfo.CategoryType == CategoryType.Gallery)
                     {
-                        folderInfo.CheckResult = string.Format("{0}不是图片文件", file);
-                        return;
+                        if (fileName != "info.txt" && fileName != "video.rar" && !pictureExtenName.Contains(fileExtenName))
+                        {
+                            folderInfo.CheckResult = string.Format("{0}不是图片文件", file);
+                            return;
+                        }
+                    }
+                    else if (folderInfo.CategoryType == CategoryType.Picture)
+                    {
+                        if (!pictureExtenName.Contains(fileExtenName) && !vectorPictureExtenName.Contains(fileExtenName))
+                        {
+                            folderInfo.CheckResult = string.Format("{0}不是图片文件或失量图文件", file);
+                            return;
+                        }
                     }
 
                     if ((File.GetAttributes(file) & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
                     {
                         continue;
                     }
+
+                    if (Path.GetFileName(file).ToLower() == "info.txt")
+                    {                       
+                        continue;
+                    }
+
                     folderInfo.WaitUploadFilesCount++;
+
                 }// end foreach
 
                 if (folderInfo.WaitUploadFilesCount == 0)
@@ -247,6 +265,8 @@ namespace BLLClient
 
                     for (int index = uploadDirectoryCount; index >= 0; index--)
                     {
+                        DateTime dtUploadDirectoryStart = DateTime.Now;
+
                         try
                         {
                             uploadFolderInfo = _listBoxUploadDirectory.Items[index] as FolderInfo;
@@ -258,16 +278,18 @@ namespace BLLClient
                             if (!RemoteDirectoryCreateProcess(ref uploadFolderInfo, index))
                             {
                                 continue;
-                            }
-
-                            _fileCount = Directory.GetFiles(uploadFolderInfo.LocalPath).Count();
+                            }                  
 
                             //文件上传
                             FileUploadProcess(uploadFolderInfo, index);  
                      
                             //这里要想办法阻塞
-                            while(_fileCount > 0)
+                            while (uploadFolderInfo.WaitUploadFilesCount > 0)
                             {
+                                if ((DateTime.Now.Subtract(dtUploadDirectoryStart).Minutes) > (ClientConfig.SendTimeout + 1))
+                                {
+                                    break;
+                                }
                                 Thread.Sleep(5000);
                             }
 
@@ -344,7 +366,7 @@ namespace BLLClient
             request.BundlingRelativeFilePath = "/Big" + uploadFolderInfo.LevelPath.Replace("|", "/") + "/" + localDirectory + "/Package.zip";
             request.PageCount = uploadFolderInfo.PageCount;
             request.Introudce = uploadFolderInfo.Introudce;
-            request.VideoRelativeFilePath = "/Big" + uploadFolderInfo.LevelPath.Replace("|", "/") + "/video.rar";
+            request.VideoRelativeFilePath = "/Big" + uploadFolderInfo.LevelPath.Replace("|", "/") + "/" + localDirectory + "/Video.rar";
             request.Designer = uploadFolderInfo.Designer;
             request.Address = uploadFolderInfo.Address;
             request.OriginalAbsoluteFileDirectory = _fileServerInfo.OriginalFileServerRootDirectory + uploadFolderInfo.LevelPath.Replace("|", "\\\\") + "\\\\" + localDirectory;
@@ -427,10 +449,9 @@ namespace BLLClient
 
                 if (response.IsSuccessful)
                 {
-
                     uploadFolderInfo.SucessfulUploadFilesCount++;
 
-                            //文件属性置为只读 
+                    //文件属性置为只读 
                     File.SetAttributes(uploadInfo.FilePath, FileAttributes.ReadOnly);
                 }
                 else
@@ -448,9 +469,9 @@ namespace BLLClient
             {
                 lock (_syncLock)
                 {
-                    if (_fileCount > 0)
+                    if (uploadFolderInfo.WaitUploadFilesCount > 0)
                     {
-                        _fileCount--;
+                        uploadFolderInfo.WaitUploadFilesCount--;
                     }
                 }
                 _semaphoreTask.Release();
@@ -465,6 +486,12 @@ namespace BLLClient
                 {
                     if ((File.GetAttributes(file) & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
                     {
+                        continue;
+                    }
+
+                    if (Path.GetFileName(file).ToLower() == "info.txt")
+                    {
+                        File.SetAttributes(file, FileAttributes.ReadOnly);
                         continue;
                     }
 

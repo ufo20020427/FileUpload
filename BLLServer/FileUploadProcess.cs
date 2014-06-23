@@ -316,7 +316,7 @@ namespace BLLServer
 
                 isOriginalFileExists = File.Exists(originalFileSavePath);
 
-                if (fileName.Substring(0, 3) == "sm_" || fileName == "cover.jpg") //缩略图
+                if (fileName.Substring(0, 3) == "sm_" || fileName == "cover.jpg") //缩略图或封面
                 {
                     // 直接复制到缩略图路径       
                     thumbFileSavePath = request.ThumbFileServerRootDirectory + request.CategoryAbsolutePath + fileName;
@@ -348,7 +348,7 @@ namespace BLLServer
                         response.IsSuccessful = true;
                         response.ResultMessage = string.Empty;
                     }
-
+                  
                     //不是失量文件，则要生成缩略图
                     if (!request.VectorPictureExtenName.ToLower().Contains(fileExtenName))
                     {                       

@@ -236,13 +236,19 @@ namespace WinFormClient
             try
             {
                 TreeNode selectedNode = treeCategory.SelectedNode;
+
+                if (selectedNode == null)
+                {
+                    return;
+                }
+
                 Category category = selectedNode.Tag as Category;
 
                 if (string.IsNullOrEmpty(category.LocalDirectoryPath) || !Directory.Exists(category.LocalDirectoryPath))
                 {
                     return;
                 }
-            
+
                 System.Diagnostics.ProcessStartInfo processStartInfo = new System.Diagnostics.ProcessStartInfo("Explorer.exe");
                 processStartInfo.Arguments = "/e," + category.LocalDirectoryPath;
                 System.Diagnostics.Process.Start(processStartInfo);
