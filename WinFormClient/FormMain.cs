@@ -177,6 +177,7 @@ namespace WinFormClient
                 {
                     if (string.IsNullOrEmpty(category.LocalDirectoryPath) || !Directory.Exists(category.LocalDirectoryPath))
                     {
+                        listBoxLocalDirectory.Items.Clear();
                         return;
                     }
 
@@ -196,6 +197,10 @@ namespace WinFormClient
 
                         listBoxLocalDirectory.Items.Add(localFolderInfo);
                     }
+                }
+                else
+                {
+                    listBoxLocalDirectory.Items.Clear();
                 }
             }
             catch (Exception ex)
