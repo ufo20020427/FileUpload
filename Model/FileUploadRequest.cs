@@ -64,6 +64,9 @@ namespace Model
         [MessageHeader]
         public string FileName;
 
+        [MessageHeader]
+        public bool IsVector;
+
         [MessageBodyMember]
         public Stream FileData;
     }

@@ -197,9 +197,17 @@ namespace BLLClient
                             string directory = Path.GetDirectoryName(file);
                             string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
                             string thumbFile = Path.Combine(directory, "sm_" + fileNameWithoutExtension + ".jpg");
+                            string bigThumbFile = Path.Combine(directory, "big_" + fileNameWithoutExtension + ".jpg");
+
                             if (!File.Exists(thumbFile))
                             {
                                 folderInfo.CheckResult = string.Format("失量图缺少缩略图文件{0}", thumbFile);
+                                return;
+                            }
+
+                            if (!File.Exists(bigThumbFile))
+                            {
+                                folderInfo.CheckResult = string.Format("失量图缺少预览图文件{0}", bigThumbFile);
                                 return;
                             }
                         }
@@ -227,14 +235,14 @@ namespace BLLClient
                         continue;
                     }
 
-                    if (Path.GetFileName(file).ToLower() == "info.txt")
+                    if (fileName == "info.txt")
                     {                       
                         continue;
                     }
+                  
+                   folderInfo.WaitUploadFilesCount++;
 
-                    folderInfo.WaitUploadFilesCount++;
-
-                }// end foreach
+                }// end foreach (string file in Directory.GetFiles(folderInfo.LocalPath))
 
                 if (folderInfo.WaitUploadFilesCount == 0)
                 {
@@ -244,8 +252,7 @@ namespace BLLClient
             }
             catch (Exception ex)
             {
-                folderInfo.CheckResult = "异常:" + ex.Message;
-                return;
+                folderInfo.CheckResult = "异常:" + ex.Message;                
             }
         }
 
@@ -433,6 +440,7 @@ namespace BLLClient
                     request.CategoryAbsolutePath = uploadFolderInfo.LevelPath.Replace("|", "\\\\") + "\\\\" + localDirectory + "\\\\";
                     request.CategoryRelativePath = uploadFolderInfo.LevelPath.Replace("|", "/") + "/" + localDirectory + "/";
                     request.LevelCategoryName = uploadFolderInfo.LevelCategory;
+                    request.IsVector = uploadFolderInfo.IsExistVector;
                     if (uploadFolderInfo.CategoryType == CategoryType.Gallery)
                     {
                         request.StoreTableName = uploadFolderInfo.StoreTableName.Replace("Album", "Photo");
@@ -467,14 +475,15 @@ namespace BLLClient
             }
             finally
             {
+                _semaphoreTask.Release();
+
                 lock (_syncLock)
                 {
                     if (uploadFolderInfo.WaitUploadFilesCount > 0)
                     {
                         uploadFolderInfo.WaitUploadFilesCount--;
                     }
-                }
-                _semaphoreTask.Release();
+                }               
             }
         }
 

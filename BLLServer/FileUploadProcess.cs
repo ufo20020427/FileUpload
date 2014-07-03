@@ -282,17 +282,27 @@ namespace BLLServer
             cmd.Parameters.Add(param);
 
             param = _dataBaseAccess.CreateParameter();
+            param.ParameterName = "@PreViewRelativeFilePath";
+            param.DbType = DbType.String;
+            param.Value = "/Big" + request.CategoryRelativePath + "big_" + request.FileName;
+            cmd.Parameters.Add(param);            
+
+            param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@OriginalRelativeFilePath";
             param.DbType = DbType.String;
             param.Value = "/Big" + request.CategoryRelativePath + request.FileName;
-            cmd.Parameters.Add(param);       
+            cmd.Parameters.Add(param);
+
+            param = _dataBaseAccess.CreateParameter();
+            param.ParameterName = "@IsVector";
+            param.DbType = DbType.Boolean;
+            param.Value = request.IsVector;
+            cmd.Parameters.Add(param);  
         }
 
 
         public CommonResponse FileUpLoad(FileUploadRequest request)
-        {
-          
-
+        { 
             CommonResponse response = new CommonResponse();
             response.IsSuccessful = false;
             string originalFileSavePath = string.Empty;
@@ -316,7 +326,7 @@ namespace BLLServer
 
                 isOriginalFileExists = File.Exists(originalFileSavePath);
 
-                if (fileName.Substring(0, 3) == "sm_" || fileName == "cover.jpg") //缩略图或封面
+                if (fileName == "cover.jpg" || fileName.Substring(0, 3) == "sm_") //封面或缩略图
                 {
                     // 直接复制到缩略图路径       
                     thumbFileSavePath = request.ThumbFileServerRootDirectory + request.CategoryAbsolutePath + fileName;
@@ -328,7 +338,7 @@ namespace BLLServer
                         response.ResultMessage = string.Empty;
                     }
                 }
-                else if (fileName == "video.rar")
+                else if (fileName == "video.rar" || fileName.Substring(0, 4) == "big_") //视频或预览图
                 {
                     //直接保存到原始图即可
                     using (FileStream outputStream = new FileStream(originalFileSavePath, FileMode.OpenOrCreate, FileAccess.Write))
