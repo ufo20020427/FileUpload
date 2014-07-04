@@ -182,36 +182,34 @@ namespace BLLClient
                 } // end if(folderInfo.CategoryType == CategoryType.Gallery)
 
                 string pictureExtenName = ClientConfig.PictureExtenName.ToLower();
-                string vectorPictureExtenName = ClientConfig.VectorPictureExtenName.ToLower();              
+                string vectorPictureExtenName = ClientConfig.VectorPictureExtenName.ToLower();
 
                 folderInfo.WaitUploadFilesCount = 0;
                 foreach (string file in Directory.GetFiles(folderInfo.LocalPath))
-                {                   
+                {
                     string fileName = Path.GetFileName(file).ToLower();
-                    string fileExtenName = Path.GetExtension(file).ToLower();                  
+                    string fileExtenName = Path.GetExtension(file).ToLower();
 
-                    if (folderInfo.IsExistVector)
+                    if (vectorPictureExtenName.Contains(fileExtenName))
                     {
-                        if (vectorPictureExtenName.Contains(fileExtenName))
+                        string directory = Path.GetDirectoryName(file);
+                        string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+                        string thumbFile = Path.Combine(directory, "sm_" + fileNameWithoutExtension + ".jpg");
+                        string bigThumbFile = Path.Combine(directory, "big_" + fileNameWithoutExtension + ".jpg");
+
+                        if (!File.Exists(thumbFile))
                         {
-                            string directory = Path.GetDirectoryName(file);
-                            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
-                            string thumbFile = Path.Combine(directory, "sm_" + fileNameWithoutExtension + ".jpg");
-                            string bigThumbFile = Path.Combine(directory, "big_" + fileNameWithoutExtension + ".jpg");
+                            folderInfo.CheckResult = string.Format("失量图缺少缩略图文件{0}", thumbFile);
+                            return;
+                        }
 
-                            if (!File.Exists(thumbFile))
-                            {
-                                folderInfo.CheckResult = string.Format("失量图缺少缩略图文件{0}", thumbFile);
-                                return;
-                            }
-
-                            if (!File.Exists(bigThumbFile))
-                            {
-                                folderInfo.CheckResult = string.Format("失量图缺少预览图文件{0}", bigThumbFile);
-                                return;
-                            }
+                        if (!File.Exists(bigThumbFile))
+                        {
+                            folderInfo.CheckResult = string.Format("失量图缺少预览图文件{0}", bigThumbFile);
+                            return;
                         }
                     }
+
 
                     if (folderInfo.CategoryType == CategoryType.Gallery)
                     {
@@ -236,11 +234,11 @@ namespace BLLClient
                     }
 
                     if (fileName == "info.txt")
-                    {                       
+                    {
                         continue;
                     }
-                  
-                   folderInfo.WaitUploadFilesCount++;
+
+                    folderInfo.WaitUploadFilesCount++;
 
                 }// end foreach (string file in Directory.GetFiles(folderInfo.LocalPath))
 
@@ -252,7 +250,7 @@ namespace BLLClient
             }
             catch (Exception ex)
             {
-                folderInfo.CheckResult = "异常:" + ex.Message;                
+                folderInfo.CheckResult = "异常:" + ex.Message;
             }
         }
 
@@ -421,36 +419,40 @@ namespace BLLClient
                 string[] paths = uploadFolderInfo.LocalPath.Split(new char[] { '\\' });
                 string localDirectory = paths[paths.Length - 1];
 
+                string vectorPictureExtenName = ClientConfig.VectorPictureExtenName.ToLower();
+                string fileExtenName = Path.GetExtension(uploadInfo.FilePath).ToLower();
+
+                FileUploadRequest request = new FileUploadRequest();
+                request.Token = ClientConfig.Token;
+                request.Account = ClientConfig.Account;
+                request.PassWord = ClientConfig.PassWord;
+                request.ThumbPictureWidth = ClientConfig.ThumbPictureWidth;
+                request.ThumbPictureHeight = ClientConfig.ThumbPictureHeight;
+                request.VectorPictureExtenName = ClientConfig.VectorPictureExtenName;
+                request.CategoryType = uploadFolderInfo.CategoryType;
+                request.CategoryId = uploadFolderInfo.CategoryId;
+                request.FileServerId = _fileServerInfo.Id;
+                request.OriginalFileServerRootDirectory = _fileServerInfo.OriginalFileServerRootDirectory;
+                request.ThumbFileServerRootDirectory = _fileServerInfo.ThumbFileServerRootDirectory;
+                request.CategoryAbsolutePath = uploadFolderInfo.LevelPath.Replace("|", "\\\\") + "\\\\" + localDirectory + "\\\\";
+                request.CategoryRelativePath = uploadFolderInfo.LevelPath.Replace("|", "/") + "/" + localDirectory + "/";
+                request.LevelCategoryName = uploadFolderInfo.LevelCategory;
+                request.IsVector = vectorPictureExtenName.Contains(fileExtenName);
+                request.FileName = Path.GetFileName(uploadInfo.FilePath);
+
+                if (uploadFolderInfo.CategoryType == CategoryType.Gallery)
+                {
+                    request.StoreTableName = uploadFolderInfo.StoreTableName.Replace("Album", "Photo");
+                }
+                else
+                {
+                    request.StoreTableName = uploadFolderInfo.StoreTableName;
+                }
+
                 //文件上传时，如果是相册类型StoreName要转化
                 CommonResponse response = new CommonResponse();
                 using (FileStream fs = new FileStream(uploadInfo.FilePath, FileMode.Open, FileAccess.Read))
-                {
-                    FileUploadRequest request = new FileUploadRequest();
-                    request.Token = ClientConfig.Token;
-                    request.Account = ClientConfig.Account;
-                    request.PassWord = ClientConfig.PassWord;
-                    request.ThumbPictureWidth = ClientConfig.ThumbPictureWidth;
-                    request.ThumbPictureHeight = ClientConfig.ThumbPictureHeight;
-                    request.VectorPictureExtenName = ClientConfig.VectorPictureExtenName;
-                    request.CategoryType = uploadFolderInfo.CategoryType;
-                    request.CategoryId = uploadFolderInfo.CategoryId;
-                    request.FileServerId = _fileServerInfo.Id;
-                    request.OriginalFileServerRootDirectory = _fileServerInfo.OriginalFileServerRootDirectory;
-                    request.ThumbFileServerRootDirectory = _fileServerInfo.ThumbFileServerRootDirectory;
-                    request.CategoryAbsolutePath = uploadFolderInfo.LevelPath.Replace("|", "\\\\") + "\\\\" + localDirectory + "\\\\";
-                    request.CategoryRelativePath = uploadFolderInfo.LevelPath.Replace("|", "/") + "/" + localDirectory + "/";
-                    request.LevelCategoryName = uploadFolderInfo.LevelCategory;
-                    request.IsVector = uploadFolderInfo.IsExistVector;
-                    if (uploadFolderInfo.CategoryType == CategoryType.Gallery)
-                    {
-                        request.StoreTableName = uploadFolderInfo.StoreTableName.Replace("Album", "Photo");
-                    }
-                    else
-                    {
-                        request.StoreTableName = uploadFolderInfo.StoreTableName;
-                    }
-
-                    request.FileName = Path.GetFileName(uploadInfo.FilePath);
+                {                    
                     request.FileData = fs;
                     response = _proxy.FileUpLoad(request);
                 }
