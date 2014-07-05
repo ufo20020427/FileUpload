@@ -19,7 +19,7 @@ namespace Model
         public int ParentId { get; set; }
         public CategoryType Type { get; set; }
         public bool IsExistVideo { get; set; }
-        public bool IsExistVector { get; set; }
+        public bool IsThumbSquare { get; set; }
         public string StoreTableName { get; set; }
         public bool IsDetail { get; set; }
 

@@ -169,9 +169,9 @@ namespace WinFormClient
 
                 string typeName = "类型：" + (category.Type == CategoryType.Picture ? "图片" : "相册");
                 string isExistVideo = "视频：" + (category.IsExistVideo ? "需要" : "不需");
-                string isExistVector = "失量图：" + (category.IsExistVector ? "需要" : "不需");
+                string isThumbSquare = "缩略图：" + (category.IsThumbSquare ? "正方形" : "按比例");
                 string localDirectoryPath = "本地目录：" + category.LocalDirectoryPath;
-                statusLabel.Text = string.Format("{0}   {1}   {2}   {3}", typeName, isExistVideo, isExistVector, localDirectoryPath);
+                statusLabel.Text = string.Format("{0}   {1}   {2}   {3}", typeName, isExistVideo, isThumbSquare, localDirectoryPath);
 
                 if (category.IsDetail)
                 {
@@ -191,7 +191,7 @@ namespace WinFormClient
                         localFolderInfo.LevelCategory = category.LevelCategory.Remove(0, 1);
                         localFolderInfo.StoreTableName = category.StoreTableName;
                         localFolderInfo.IsExistVideo = category.IsExistVideo;
-                        localFolderInfo.IsExistVector = category.IsExistVector;
+                        localFolderInfo.IsThumbSquare = category.IsThumbSquare;
                         localFolderInfo.LocalPath = localFile;
                         localFolderInfo.IsRunning = false;
 
@@ -326,11 +326,11 @@ namespace WinFormClient
 
             string typeName = "类型：" + (folderInfo.CategoryType == CategoryType.Picture ? "图片" : "相册");
             string isExistVideo = "视频：" + (folderInfo.IsExistVideo ? "需要" : "不需");
-            string isExistVector = "失量图：" + (folderInfo.IsExistVector ? "需要" : "不需");       
+            string isThumbSquare = "缩略图：" + (folderInfo.IsThumbSquare ? "正方形" : "按比例");       
             string checkResult = string.IsNullOrEmpty(folderInfo.CheckResult) ? string.Empty : "检查结果：" + folderInfo.CheckResult;
             string waitUploadFilesCount = "等待上传文件数：" + folderInfo.WaitUploadFilesCount.ToString();
             string sucessfulUploadFilesCount = "成功上传文件数：" + folderInfo.SucessfulUploadFilesCount.ToString();
-            statusLabel.Text = string.Format("{0}   {1}   {2}   {3}   {4}   {5}", typeName, isExistVideo, isExistVector, checkResult, waitUploadFilesCount, sucessfulUploadFilesCount);
+            statusLabel.Text = string.Format("{0}   {1}   {2}   {3}   {4}   {5}", typeName, isExistVideo, isThumbSquare, checkResult, waitUploadFilesCount, sucessfulUploadFilesCount);
         }
 
         private void ListBoxSelectedItemsRemove(ListBox listBox)

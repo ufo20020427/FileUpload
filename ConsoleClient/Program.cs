@@ -55,9 +55,20 @@ namespace Client
 
         static void Main(string[] args)
         {
-            ClientConfig.Init();
-            Test();
-            Console.ReadKey();
+            //ClientConfig.Init();
+            //Test();
+            //Console.ReadKey();
+            try
+            {
+                //Tools.CreatePictureThumbSquare("f:\\sms.jpg", "f:\\2.jpg");
+                Tools.CreatePictureThumbFromCenter("f:\\SMS.JPG", "f:\\3.jpg", 800, 600);
+                Console.WriteLine("生成完成");
+
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

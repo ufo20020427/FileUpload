@@ -363,7 +363,15 @@ namespace BLLServer
                     if (!request.VectorPictureExtenName.ToLower().Contains(fileExtenName))
                     {                       
                         thumbFileSavePath = request.ThumbFileServerRootDirectory + request.CategoryAbsolutePath + "sm_" + fileName;
-                        Tools.PictureProcess(originalFileSavePath, thumbFileSavePath, request.ThumbPictureWidth, request.ThumbPictureHeight);
+
+                        if (request.IsThumbSquare)
+                        {
+                            Tools.CreatePictureThumbFromCenter(originalFileSavePath, thumbFileSavePath);
+                        }
+                        else
+                        {
+                            Tools.CreatePictureThumbFromCenter(originalFileSavePath, thumbFileSavePath, request.ThumbPictureWidth, request.ThumbPictureHeight);
+                        }
                     }
 
                     // if 文件之前不存在，则添加记录到数据库

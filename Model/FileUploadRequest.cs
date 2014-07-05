@@ -65,7 +65,10 @@ namespace Model
         public string FileName;
 
         [MessageHeader]
-        public bool IsVector;     
+        public bool IsVector;
+
+        [MessageHeader]
+        public bool IsThumbSquare; //True：缩略图为正方形  False：缩略图按比例
 
         [MessageBodyMember]
         public Stream FileData;

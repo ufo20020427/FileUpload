@@ -438,6 +438,7 @@ namespace BLLClient
                 request.CategoryRelativePath = uploadFolderInfo.LevelPath.Replace("|", "/") + "/" + localDirectory + "/";
                 request.LevelCategoryName = uploadFolderInfo.LevelCategory;
                 request.IsVector = vectorPictureExtenName.Contains(fileExtenName);
+                request.IsThumbSquare = uploadFolderInfo.IsThumbSquare;
                 request.FileName = Path.GetFileName(uploadInfo.FilePath);
 
                 if (uploadFolderInfo.CategoryType == CategoryType.Gallery)

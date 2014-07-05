@@ -17,7 +17,7 @@ namespace Model
         public int CategoryId { get; set; }
         public CategoryType CategoryType { get; set; }
         public bool IsExistVideo { get; set; }
-        public bool IsExistVector { get; set; }
+        public bool IsThumbSquare { get; set; }
         public string StoreTableName { get; set; }
         public string LocalPath { get; set; }       
         public string LevelPath { get; set; }

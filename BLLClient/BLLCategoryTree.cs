@@ -121,7 +121,7 @@ namespace BLLClient
                 category.ParentId = Convert.ToInt32(drv[_indexParentId]);
                 category.Type = (CategoryType)Convert.ToByte(drv[_indexType]);
                 category.IsExistVideo = Convert.ToBoolean(drv[_indexIsExistVideo]);
-                category.IsExistVector = Convert.ToBoolean(drv[_indexIsExistVector]);
+                category.IsThumbSquare = Convert.ToBoolean(drv[_indexIsExistVector]);
                 category.StoreTableName = drv[_indexStoreTableName].ToString();
                 category.IsDetail = Convert.ToBoolean(drv[_indexIsDetail]);
                 category.LevelPath = (parentNode.Tag as Category).LevelPath + "|" + category.FolderName;
