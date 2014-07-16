@@ -171,7 +171,10 @@ namespace WinFormClient
                 string isExistVideo = "视频：" + (category.IsExistVideo ? "需要" : "不需");
                 string isThumbSquare = "缩略图：" + (category.IsThumbSquare ? "正方形" : "按比例");
                 string localDirectoryPath = "本地目录：" + category.LocalDirectoryPath;
-                statusLabel.Text = string.Format("{0}   {1}   {2}   {3}", typeName, isExistVideo, isThumbSquare, localDirectoryPath);
+                string tipInfo = string.Format("{0}   {1}   {2}   {3}", typeName, isExistVideo, isThumbSquare, localDirectoryPath);
+
+                statusLabel.Text = tipInfo;                
+                toolTip1.SetToolTip(treeCategory,tipInfo);
 
                 if (category.IsDetail)
                 {
@@ -330,7 +333,10 @@ namespace WinFormClient
             string checkResult = string.IsNullOrEmpty(folderInfo.CheckResult) ? string.Empty : "检查结果：" + folderInfo.CheckResult;
             string waitUploadFilesCount = "等待上传文件数：" + folderInfo.WaitUploadFilesCount.ToString();
             string sucessfulUploadFilesCount = "成功上传文件数：" + folderInfo.SucessfulUploadFilesCount.ToString();
-            statusLabel.Text = string.Format("{0}   {1}   {2}   {3}   {4}   {5}", typeName, isExistVideo, isThumbSquare, checkResult, waitUploadFilesCount, sucessfulUploadFilesCount);
+            string tipInfo = string.Format("{0}   {1}   {2}   {3}   {4}   {5}", typeName, isExistVideo, isThumbSquare, checkResult, waitUploadFilesCount, sucessfulUploadFilesCount);
+
+            statusLabel.Text = tipInfo;
+            toolTip1.SetToolTip(sender as ListBox, tipInfo);
         }
 
         private void ListBoxSelectedItemsRemove(ListBox listBox)

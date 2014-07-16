@@ -35,6 +35,7 @@
             this.contextCategory = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ContextMenuLocalDirectoryBind = new System.Windows.Forms.ToolStripMenuItem();
             this.ContextItemCategoryRefresh = new System.Windows.Forms.ToolStripMenuItem();
+            this.ContextMenuLocalDirectoryOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.contextLocalDirectory = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.contextItemUploadDirectoryAdd = new System.Windows.Forms.ToolStripMenuItem();
             this.contextItemLocalDirectoryOpen = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,7 +64,7 @@
             this.contextSucessfulDirectory = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.contextItemSucessfulDirectoryRemove = new System.Windows.Forms.ToolStripMenuItem();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.ContextMenuLocalDirectoryOpen = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.statusStrip.SuspendLayout();
             this.contextCategory.SuspendLayout();
             this.contextLocalDirectory.SuspendLayout();
@@ -102,21 +103,28 @@
             this.ContextItemCategoryRefresh,
             this.ContextMenuLocalDirectoryOpen});
             this.contextCategory.Name = "contextCategory";
-            this.contextCategory.Size = new System.Drawing.Size(153, 92);
+            this.contextCategory.Size = new System.Drawing.Size(143, 70);
             // 
             // ContextMenuLocalDirectoryBind
             // 
             this.ContextMenuLocalDirectoryBind.Name = "ContextMenuLocalDirectoryBind";
-            this.ContextMenuLocalDirectoryBind.Size = new System.Drawing.Size(152, 22);
+            this.ContextMenuLocalDirectoryBind.Size = new System.Drawing.Size(142, 22);
             this.ContextMenuLocalDirectoryBind.Text = "关联本地目录";
             this.ContextMenuLocalDirectoryBind.Click += new System.EventHandler(this.ContextMenuLocalDirectoryBind_Click);
             // 
             // ContextItemCategoryRefresh
             // 
             this.ContextItemCategoryRefresh.Name = "ContextItemCategoryRefresh";
-            this.ContextItemCategoryRefresh.Size = new System.Drawing.Size(152, 22);
+            this.ContextItemCategoryRefresh.Size = new System.Drawing.Size(142, 22);
             this.ContextItemCategoryRefresh.Text = "刷新分类";
             this.ContextItemCategoryRefresh.Click += new System.EventHandler(this.ContextItemCategoryRefresh_Click);
+            // 
+            // ContextMenuLocalDirectoryOpen
+            // 
+            this.ContextMenuLocalDirectoryOpen.Name = "ContextMenuLocalDirectoryOpen";
+            this.ContextMenuLocalDirectoryOpen.Size = new System.Drawing.Size(142, 22);
+            this.ContextMenuLocalDirectoryOpen.Text = "打开选中目录";
+            this.ContextMenuLocalDirectoryOpen.Click += new System.EventHandler(this.ContextMenuLocalDirectoryOpen_Click);
             // 
             // contextLocalDirectory
             // 
@@ -406,13 +414,6 @@
             this.notifyIcon.Text = "素材上传";
             this.notifyIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseClick);
             // 
-            // ContextMenuLocalDirectoryOpen
-            // 
-            this.ContextMenuLocalDirectoryOpen.Name = "ContextMenuLocalDirectoryOpen";
-            this.ContextMenuLocalDirectoryOpen.Size = new System.Drawing.Size(152, 22);
-            this.ContextMenuLocalDirectoryOpen.Text = "打开选中目录";
-            this.ContextMenuLocalDirectoryOpen.Click += new System.EventHandler(this.ContextMenuLocalDirectoryOpen_Click);
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -485,6 +486,7 @@
         private System.Windows.Forms.ToolStripMenuItem contextItemFileSetCanUpload;
         private System.Windows.Forms.ToolStripMenuItem contextItemFailDirectoryOpen;
         private System.Windows.Forms.ToolStripMenuItem ContextMenuLocalDirectoryOpen;
+        private System.Windows.Forms.ToolTip toolTip1;
         
     }
 }

@@ -392,7 +392,11 @@ namespace BLLClient
             else
             {
                 response = GalleryCreate(uploadFolderInfo);
-                uploadFolderInfo.GalleryId = int.Parse(response.ResultMessage);
+
+                if (response.IsSuccessful)
+                {
+                    uploadFolderInfo.GalleryId = int.Parse(response.ResultMessage);
+                }
             }
 
             if (!response.IsSuccessful)
@@ -430,7 +434,7 @@ namespace BLLClient
                 request.ThumbPictureHeight = ClientConfig.ThumbPictureHeight;
                 request.VectorPictureExtenName = ClientConfig.VectorPictureExtenName;
                 request.CategoryType = uploadFolderInfo.CategoryType;
-                request.CategoryId = uploadFolderInfo.CategoryId;
+               
                 request.FileServerId = _fileServerInfo.Id;
                 request.OriginalFileServerRootDirectory = _fileServerInfo.OriginalFileServerRootDirectory;
                 request.ThumbFileServerRootDirectory = _fileServerInfo.ThumbFileServerRootDirectory;
@@ -443,10 +447,12 @@ namespace BLLClient
 
                 if (uploadFolderInfo.CategoryType == CategoryType.Gallery)
                 {
+                    request.CategoryId = uploadFolderInfo.GalleryId;
                     request.StoreTableName = uploadFolderInfo.StoreTableName.Replace("Album", "Photo");
                 }
                 else
                 {
+                    request.CategoryId = uploadFolderInfo.CategoryId;
                     request.StoreTableName = uploadFolderInfo.StoreTableName;
                 }
 
