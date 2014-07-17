@@ -64,6 +64,10 @@ namespace Client
                // Tools.CreatePictureThumbFromCenter("f:\\slide-1.jpg", "f:\\slide-2.jpg", 150, 200);
 
               //  Tools.CreatePictureThumbFromCenter("f:\\test-1.jpg", "f:\\test-2.jpg", 150, 200);
+
+                string fileName = "12.ai";
+                string newFileName = fileName.Split(new char[] { '.' })[0] + ".jpg";
+                Console.WriteLine(newFileName);
                 Console.WriteLine("生成完成");
 
             }

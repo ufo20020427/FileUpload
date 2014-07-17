@@ -275,16 +275,18 @@ namespace BLLServer
             param.Value = request.FileServerId;
             cmd.Parameters.Add(param);
 
+            string thumbFileName = request.FileName.Split(new char[]{'.'})[0]+".jpg";
+
             param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@ThumbRelativeFilePath";
             param.DbType = DbType.String;
-            param.Value = "/Small" + request.CategoryRelativePath + "sm_" + request.FileName;
+            param.Value = "/Small" + request.CategoryRelativePath + "sm_" + thumbFileName;
             cmd.Parameters.Add(param);
 
             param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@PreViewRelativeFilePath";
             param.DbType = DbType.String;
-            param.Value = "/Big" + request.CategoryRelativePath + "big_" + request.FileName;
+            param.Value = "/Big" + request.CategoryRelativePath + "big_" + thumbFileName;
             cmd.Parameters.Add(param);            
 
             param = _dataBaseAccess.CreateParameter();
