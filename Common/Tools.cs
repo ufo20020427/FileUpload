@@ -125,7 +125,8 @@ namespace Common
             string tempPicturePathNew = string.Empty;
             try
             {
-                tempPicturePathNew = picturePathOld.Replace(Path.GetFileNameWithoutExtension(picturePathOld), Guid.NewGuid().ToString());
+                string newFileName =  Guid.NewGuid().ToString() + Path.GetExtension(picturePathOld);
+                tempPicturePathNew = Path.Combine(Path.GetDirectoryName(picturePathOld), newFileName);
                 CreatePictureThumb(picturePathOld, tempPicturePathNew, widthNew, heightNew);
 
                 using (Image sourceImage = Image.FromFile(tempPicturePathNew))
