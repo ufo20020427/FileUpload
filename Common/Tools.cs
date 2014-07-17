@@ -74,36 +74,18 @@ namespace Common
                 int widthOld = sourceImage.Width;
                 int heightOld = sourceImage.Height;
 
-                //原图宽度与高度均超过新图
-                if (widthOld > widthNew && heightOld > heightNew)
-                {
-                    //判断是宽更长还是高更长，以便以它做标准
+                widthNew = Math.Min(widthOld, widthNew);
+                heightNew = Math.Min(heightOld, heightNew);
 
-                    if ((decimal)heightOld / (decimal)widthOld > (decimal)heightNew / (decimal)widthNew)
-                    {
-                        //如果是高更长，设置高为最大限制值，宽等比例缩小
-                        widthNew = (int)((decimal)widthOld * ((decimal)heightNew / (decimal)heightOld));
-                    }
-                    else
-                    {
-                        //如果是宽更长，设置宽为最大限制值，高等比例缩小
-                        heightNew = (int)((decimal)heightOld * ((decimal)widthNew / (decimal)widthOld));
-                    }
-                }
-                else if (widthOld > widthNew && heightOld <= heightNew)  //只是宽度超过新图
+                if ((decimal)heightOld / (decimal)widthOld > (decimal)heightNew / (decimal)widthNew)
                 {
-                    //以新宽度作为标准，原高等比缩小
+                    //如果是高更长，宽等比例缩小
                     heightNew = (int)((decimal)heightOld * ((decimal)widthNew / (decimal)widthOld));
                 }
-                else if (widthOld <= widthNew && heightOld > heightNew) //只是高度超过新图
+                else
                 {
-                    //以新高度作为标准，原宽等比缩小
+                    //如果是宽更长，高等比例缩小
                     widthNew = (int)((decimal)widthOld * ((decimal)heightNew / (decimal)heightOld));
-                }
-                else  //均没超过，直接复制
-                {
-                    File.Copy(picturePathOld, picturePathNew, true);
-                    return;
                 }
 
                 File.Delete(picturePathNew);
@@ -128,9 +110,7 @@ namespace Common
                         bitmap.Save(picturePathNew, ImageFormat.Jpeg);
                     }
                 }
-            }
-
-        
+            }        
         }
 
         /// <summary>
@@ -142,71 +122,54 @@ namespace Common
         /// <param name="heightNew">新高度</param>       
         public static void CreatePictureThumbFromCenter(string picturePathOld, string picturePathNew, int widthNew, int heightNew)
         {
-            using (Image sourceImage = Image.FromFile(picturePathOld))
+            string tempPicturePathNew = string.Empty;
+            try
             {
-                int widthOld = sourceImage.Width;
-                int heightOld = sourceImage.Height;
+                tempPicturePathNew = picturePathOld.Replace(Path.GetFileNameWithoutExtension(picturePathOld), Guid.NewGuid().ToString());
+                CreatePictureThumb(picturePathOld, tempPicturePathNew, widthNew, heightNew);
 
-                //原图宽度与高度均超过新图
-                if (widthOld > widthNew && heightOld > heightNew)
+                using (Image sourceImage = Image.FromFile(tempPicturePathNew))
                 {
-                    //判断是宽更长还是高更长，以便以它做标准
+                    int widthOld = sourceImage.Width;
+                    int heightOld = sourceImage.Height;
 
-                    if ((decimal)heightOld / (decimal)widthOld > (decimal)heightNew / (decimal)widthNew)
+                    widthNew = Math.Min(widthOld, widthNew);
+                    heightNew = Math.Min(heightOld, heightNew);
+
+                    int xStart = (widthOld - widthNew) / 2;
+                    int yStart = (heightOld - heightNew) / 2;
+
+                    File.Delete(picturePathNew);
+
+                    using (Bitmap bitmap = new Bitmap(widthNew, heightNew))
                     {
-                        //如果是高更长，设置高为最大限制值，宽等比例缩小
-                        widthNew = (int)((decimal)widthOld * ((decimal)heightNew / (decimal)heightOld));
-                    }
-                    else
-                    {
-                        //如果是宽更长，设置宽为最大限制值，高等比例缩小
-                        heightNew = (int)((decimal)heightOld * ((decimal)widthNew / (decimal)widthOld));
-                    }
-                }
-                else if (widthOld > widthNew && heightOld <= heightNew)  //只是宽度超过新图
-                {
-                    //以新宽度作为标准，原高等比缩小
-                    heightNew = (int)((decimal)heightOld * ((decimal)widthNew / (decimal)widthOld));
-                }
-                else if (widthOld <= widthNew && heightOld > heightNew) //只是高度超过新图
-                {
-                    //以新高度作为标准，原宽等比缩小
-                    widthNew = (int)((decimal)widthOld * ((decimal)heightNew / (decimal)heightOld));
-                }
-                else  //均没超过，直接复制
-                {
-                    File.Copy(picturePathOld, picturePathNew, true);
-                    return;
-                }
+                        using (Graphics g = Graphics.FromImage(bitmap))
+                        {
+                            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
 
-                int xStart = (widthOld - widthNew) / 2;
-                int yStart = (heightOld - heightNew) / 2;
+                            //设置高质量,低速度呈现平滑程度
+                            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
 
-                File.Delete(picturePathNew);
+                            //清空画布并以透明背景色填充
+                            g.Clear(Color.Transparent);
 
-                using (Bitmap bitmap = new Bitmap(widthNew, heightNew))
-                {
-                    using (Graphics g = Graphics.FromImage(bitmap))
-                    {
-                        g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
+                            //在指定位置并且按指定大小绘制原图片的指定部分
+                            g.DrawImage(sourceImage, new Rectangle(0, 0, widthNew, heightNew), new Rectangle(xStart, yStart, widthNew, heightNew),
+                                System.Drawing.GraphicsUnit.Pixel);
 
-                        //设置高质量,低速度呈现平滑程度
-                        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-
-                        //清空画布并以透明背景色填充
-
-                        g.Clear(Color.Transparent);
-
-                        //在指定位置并且按指定大小绘制原图片的指定部分
-                        g.DrawImage(sourceImage, new Rectangle(0, 0, widthNew, heightNew), new Rectangle(xStart, yStart, widthNew, heightNew),
-                            System.Drawing.GraphicsUnit.Pixel);
-
-                        bitmap.Save(picturePathNew, ImageFormat.Jpeg);
+                            bitmap.Save(picturePathNew, ImageFormat.Jpeg);
+                        }
                     }
                 }
             }
-
-
+            catch(Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                File.Delete(tempPicturePathNew);
+            }
         }
 
         /// <summary>
@@ -249,7 +212,6 @@ namespace Common
                     }
                 }
             }
-
 
         }
 

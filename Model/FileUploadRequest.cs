@@ -68,7 +68,7 @@ namespace Model
         public bool IsVector;
 
         [MessageHeader]
-        public bool IsThumbSquare; //True：缩略图为正方形  False：缩略图按比例
+        public bool IsThumbSquare; //True：缩略图为正方形  False：缩略图按配置绝对值
 
         [MessageBodyMember]
         public Stream FileData;

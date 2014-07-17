@@ -60,8 +60,10 @@ namespace Client
             //Console.ReadKey();
             try
             {
-                //Tools.CreatePictureThumbSquare("f:\\sms.jpg", "f:\\2.jpg");
-                Tools.CreatePictureThumbFromCenter("f:\\SMS.JPG", "f:\\3.jpg", 800, 600);
+
+               // Tools.CreatePictureThumbFromCenter("f:\\slide-1.jpg", "f:\\slide-2.jpg", 150, 200);
+            
+              //  Tools.CreatePictureThumbFromCenter("f:\\Desert-1.jpg", "f:\\Desert-2.jpg", 300, 400);
                 Console.WriteLine("生成完成");
 
             }
