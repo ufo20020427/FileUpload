@@ -392,14 +392,14 @@ namespace WinFormClient
 
                 if (!string.IsNullOrEmpty(folderInfo.CheckResult))
                 {
-                    ListBoxDrawItem(e, "Images/CheckFail.ico", folderInfo.LocalPath);
+                    ListBoxDrawItem(e, "Images/CheckFail.png", folderInfo.LocalPath);
                     return;
                 }
 
                 DirectoryInfo directoryInfo = new DirectoryInfo(folderInfo.LocalPath);
                 if ((directoryInfo.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
                 {
-                    ListBoxDrawItem(e, "Images/SucessfulDirectory.ico", folderInfo.LocalPath);
+                    ListBoxDrawItem(e, "Images/SucessfulDirectory.png", folderInfo.LocalPath);
                 }
                 else
                 {
@@ -467,7 +467,7 @@ namespace WinFormClient
                     return;
                 }
 
-                if (MessageBox.Show("确定把已上传目录重置为允许上传？", "提示", MessageBoxButtons.YesNo) == DialogResult.No)
+                if (MessageBox.Show("重新上传（仅新文件）？", "提示", MessageBoxButtons.YesNo) == DialogResult.No)
                 {
                     return;
                 }
@@ -481,6 +481,10 @@ namespace WinFormClient
                         directoryInfo.Attributes = FileAttributes.Normal & FileAttributes.Directory;
                     }
                 }
+
+                Thread.Sleep(1000);
+
+                UploadDirectoryAdd();
             }
             catch (Exception ex)
             {
@@ -499,7 +503,7 @@ namespace WinFormClient
                     return;
                 }
 
-                if (MessageBox.Show("确定把已上传目录及其下所有文件重置为允许上传？", "提示", MessageBoxButtons.YesNo) == DialogResult.No)
+                if (MessageBox.Show("重新上传（所有文件）？", "提示", MessageBoxButtons.YesNo) == DialogResult.No)
                 {
                     return;
                 }
@@ -518,6 +522,10 @@ namespace WinFormClient
                         File.SetAttributes(file, FileAttributes.Normal);
                     }
                 }
+
+                Thread.Sleep(1000);
+
+                UploadDirectoryAdd();
             }
             catch (Exception ex)
             {
@@ -539,6 +547,43 @@ namespace WinFormClient
             }
         }
 
+        private void UploadDirectoryAdd()
+        {
+            for (int index = listBoxLocalDirectory.Items.Count - 1; index >= 0; index--)
+            {
+                if (!listBoxLocalDirectory.GetSelected(index))
+                {
+                    continue;
+                }
+
+                FolderInfo localFolderInfo = listBoxLocalDirectory.Items[index] as FolderInfo;
+
+                FileAttributes attributes = File.GetAttributes(localFolderInfo.LocalPath);
+                if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                {
+                    MessageBox.Show("该目录已上传过，如要重新上传，请执行“重新上传”");
+                    continue;
+                }
+
+                if (IsItemExists(listBoxUploadDirectory.Items, localFolderInfo.LocalPath))
+                {
+                    continue;
+                }
+
+                localFolderInfo.CheckResult = string.Empty;
+                _bllUpload.UploadDirectoryCheck(ref localFolderInfo);
+                if (!string.IsNullOrEmpty(localFolderInfo.CheckResult))
+                {
+                    continue;
+                }
+
+                listBoxUploadDirectory.Items.Add(localFolderInfo);
+                listBoxLocalDirectory.Items.RemoveAt(index);
+            }
+
+            listBoxLocalDirectory.Invalidate();
+        }
+
         private void contextItemUploadDirectoryAdd_Click(object sender, EventArgs e)
         {
             try
@@ -553,39 +598,7 @@ namespace WinFormClient
                     return;
                 }
 
-                for (int index = listBoxLocalDirectory.Items.Count - 1; index >= 0; index--)
-                {
-                    if (!listBoxLocalDirectory.GetSelected(index))
-                    {
-                        continue;
-                    }
-
-                    FolderInfo localFolderInfo = listBoxLocalDirectory.Items[index] as FolderInfo;
-
-                    FileAttributes attributes = File.GetAttributes(localFolderInfo.LocalPath);
-                    if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
-                    {
-                        MessageBox.Show("该目录已上传过，如要重新上传，请执行“目录重置为可上传”");
-                        continue;
-                    }
-
-                    if (IsItemExists(listBoxUploadDirectory.Items, localFolderInfo.LocalPath))
-                    {
-                        continue;
-                    }
-
-                    localFolderInfo.CheckResult = string.Empty;
-                    _bllUpload.UploadDirectoryCheck(ref localFolderInfo);
-                    if (!string.IsNullOrEmpty(localFolderInfo.CheckResult))
-                    {
-                        continue;
-                    }
-
-                    listBoxUploadDirectory.Items.Add(localFolderInfo);
-                    listBoxLocalDirectory.Items.RemoveAt(index);
-                }
-
-                listBoxLocalDirectory.Invalidate();
+                UploadDirectoryAdd();
             }
             catch (Exception ex)
             {
@@ -621,7 +634,7 @@ namespace WinFormClient
                 }
 
                 FolderInfo folderInfo = (sender as ListBox).Items[e.Index] as FolderInfo;
-                ListBoxDrawItem(e, "Images/SucessfulDirectory.ico", folderInfo.LocalPath);
+                ListBoxDrawItem(e, "Images/SucessfulDirectory.png", folderInfo.LocalPath);
             }
             catch (Exception ex)
             {

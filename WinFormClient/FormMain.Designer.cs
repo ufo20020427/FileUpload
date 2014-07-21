@@ -134,7 +134,7 @@
             this.contextItemSetCanUpload,
             this.contextItemFileSetCanUpload});
             this.contextLocalDirectory.Name = "contextLocalDirectory";
-            this.contextLocalDirectory.Size = new System.Drawing.Size(227, 92);
+            this.contextLocalDirectory.Size = new System.Drawing.Size(191, 114);
             this.contextLocalDirectory.Text = "上传选中目录";
             // 
             // contextItemUploadDirectoryAdd
@@ -155,14 +155,14 @@
             // 
             this.contextItemSetCanUpload.Name = "contextItemSetCanUpload";
             this.contextItemSetCanUpload.Size = new System.Drawing.Size(226, 22);
-            this.contextItemSetCanUpload.Text = "目录重置为可上传(仅目录）";
+            this.contextItemSetCanUpload.Text = "重新上传（仅新文件）";
             this.contextItemSetCanUpload.Click += new System.EventHandler(this.contextItemSetCanUpload_Click);
             // 
             // contextItemFileSetCanUpload
             // 
             this.contextItemFileSetCanUpload.Name = "contextItemFileSetCanUpload";
-            this.contextItemFileSetCanUpload.Size = new System.Drawing.Size(226, 22);
-            this.contextItemFileSetCanUpload.Text = "目录及其下文件重置为可上传";
+            this.contextItemFileSetCanUpload.Size = new System.Drawing.Size(190, 22);
+            this.contextItemFileSetCanUpload.Text = "重新上传（所有文件）";
             this.contextItemFileSetCanUpload.Click += new System.EventHandler(this.contextItemFileSetCanUpload_Click);
             // 
             // tabs
@@ -199,7 +199,7 @@
             this.groupBoxUploadDirectory.Size = new System.Drawing.Size(480, 615);
             this.groupBoxUploadDirectory.TabIndex = 5;
             this.groupBoxUploadDirectory.TabStop = false;
-            this.groupBoxUploadDirectory.Text = "待上传目录";
+            this.groupBoxUploadDirectory.Text = "正在上传目录";
             // 
             // listBoxUploadDirectory
             // 
