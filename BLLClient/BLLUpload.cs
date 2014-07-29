@@ -180,9 +180,7 @@ namespace BLLClient
                             }
                     }
                 } // end if(folderInfo.CategoryType == CategoryType.Gallery)
-
-                string pictureExtenName = ClientConfig.PictureExtenName.ToLower();
-                string vectorPictureExtenName = ClientConfig.VectorPictureExtenName.ToLower();
+                                         
 
                 folderInfo.WaitUploadFilesCount = 0;
                 foreach (string file in Directory.GetFiles(folderInfo.LocalPath))
@@ -190,12 +188,12 @@ namespace BLLClient
                     string fileName = Path.GetFileName(file).ToLower();
                     string fileExtenName = Path.GetExtension(file).ToLower();
 
-                    if (vectorPictureExtenName.Contains(fileExtenName))
+                    if (ClientConfig.VectorPictureExtenName.Contains(fileExtenName))
                     {
-                        string directory = Path.GetDirectoryName(file);
+                        string directoryName = Path.GetDirectoryName(file);
                         string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
-                        string thumbFile = Path.Combine(directory, "sm_" + fileNameWithoutExtension + ".jpg");
-                        string bigThumbFile = Path.Combine(directory, "big_" + fileNameWithoutExtension + ".jpg");
+                        string thumbFile = Path.Combine(directoryName, "sm_" + fileNameWithoutExtension + ".jpg");
+                        string bigThumbFile = Path.Combine(directoryName, "big_" + fileNameWithoutExtension + ".jpg");
 
                         if (!File.Exists(thumbFile))
                         {
@@ -213,7 +211,7 @@ namespace BLLClient
 
                     if (folderInfo.CategoryType == CategoryType.Gallery)
                     {
-                        if (fileName != "info.txt" && fileName != "video.rar" && !pictureExtenName.Contains(fileExtenName))
+                        if (fileName != "info.txt" && fileName != "video.rar" && !ClientConfig.PictureExtenName.Contains(fileExtenName))
                         {
                             folderInfo.CheckResult = string.Format("{0}不是图片文件", file);
                             return;
@@ -221,7 +219,7 @@ namespace BLLClient
                     }
                     else if (folderInfo.CategoryType == CategoryType.Picture)
                     {
-                        if (!pictureExtenName.Contains(fileExtenName) && !vectorPictureExtenName.Contains(fileExtenName))
+                        if (!ClientConfig.PictureExtenName.Contains(fileExtenName) && !ClientConfig.VectorPictureExtenName.Contains(fileExtenName))
                         {
                             folderInfo.CheckResult = string.Format("{0}不是图片文件或失量图文件", file);
                             return;
@@ -244,7 +242,7 @@ namespace BLLClient
 
                 if (folderInfo.WaitUploadFilesCount == 0)
                 {
-                    folderInfo.CheckResult = "该目录不存在未上传过的文件！";
+                    folderInfo.CheckResult = "该目录无文件符合上传要求！";
                     return;
                 }
             }
@@ -270,7 +268,7 @@ namespace BLLClient
 
                     for (int index = uploadDirectoryCount; index >= 0; index--)
                     {
-                        DateTime dtUploadDirectoryStart = DateTime.Now;
+                        DateTime uploadDirectoryStartTime = DateTime.Now;
 
                         try
                         {
@@ -291,7 +289,7 @@ namespace BLLClient
                             //这里要想办法阻塞
                             while (uploadFolderInfo.WaitUploadFilesCount > 0)
                             {
-                                if ((DateTime.Now.Subtract(dtUploadDirectoryStart).Minutes) > (ClientConfig.SendTimeout + 1))
+                                if ((DateTime.Now.Subtract(uploadDirectoryStartTime).Minutes) > (ClientConfig.SendTimeout + 1))
                                 {
                                     break;
                                 }
@@ -422,8 +420,7 @@ namespace BLLClient
 
                 string[] paths = uploadFolderInfo.LocalPath.Split(new char[] { '\\' });
                 string localDirectory = paths[paths.Length - 1];
-
-                string vectorPictureExtenName = ClientConfig.VectorPictureExtenName.ToLower();
+            
                 string fileExtenName = Path.GetExtension(uploadInfo.FilePath).ToLower();
 
                 FileUploadRequest request = new FileUploadRequest();
@@ -441,7 +438,7 @@ namespace BLLClient
                 request.CategoryAbsolutePath = uploadFolderInfo.LevelPath.Replace("|", "\\\\") + "\\\\" + localDirectory + "\\\\";
                 request.CategoryRelativePath = uploadFolderInfo.LevelPath.Replace("|", "/") + "/" + localDirectory + "/";
                 request.LevelCategoryName = uploadFolderInfo.LevelCategory;
-                request.IsVector = vectorPictureExtenName.Contains(fileExtenName);
+                request.IsVector = ClientConfig.VectorPictureExtenName.Contains(fileExtenName);
                 request.IsThumbSquare = uploadFolderInfo.IsThumbSquare;
                 request.FileName = Path.GetFileName(uploadInfo.FilePath);
 

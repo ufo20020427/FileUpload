@@ -37,6 +37,8 @@ namespace Model
 
         public int WaitUploadFilesCount { get; set; }
         public int SucessfulUploadFilesCount { get; set; }
+
+        public Dictionary<string, string> dicVectorFile { get; set; } // key = abc, value = abc.ai|abc.cdi
     }
 }
 

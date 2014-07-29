@@ -18,8 +18,8 @@ namespace BLLClient
                 _token = ConfigurationManager.AppSettings["Token"].ToString();
                 _thumbPictureWidth = int.Parse(ConfigurationManager.AppSettings["ThumbPictureWidth"]);
                 _thumbPictureHeight = int.Parse(ConfigurationManager.AppSettings["ThumbPictureHeight"]);
-                _vectorPictureExtenName = ConfigurationManager.AppSettings["VectorPictureExtenName"].ToString();
-                _pictureExtenName = ConfigurationManager.AppSettings["PictureExtenName"].ToString();
+                _vectorPictureExtenName = ConfigurationManager.AppSettings["VectorPictureExtenName"].ToString().ToLower();
+                _pictureExtenName = ConfigurationManager.AppSettings["PictureExtenName"].ToString().ToLower();
                 _maxThread = int.Parse(ConfigurationManager.AppSettings["MaxThread"]);
                 _sendTimeout = int.Parse(ConfigurationManager.AppSettings["SendTimeout"]);
 

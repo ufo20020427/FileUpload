@@ -62,7 +62,7 @@ namespace Model
         public string StoreTableName; //Files_Boy
 
         [MessageHeader]
-        public string FileName;
+        public string FileName; //假如是失量图，则为 abc.cdi|abc.ai   
 
         [MessageHeader]
         public bool IsVector;

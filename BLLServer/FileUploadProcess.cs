@@ -275,7 +275,7 @@ namespace BLLServer
             param.Value = request.FileServerId;
             cmd.Parameters.Add(param);
 
-            string thumbFileName = request.FileName.Split(new char[]{'.'})[0]+".jpg";
+            string thumbFileName = request.FileName.Split(new char[]{'.'})[0] + ".jpg";
 
             param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@ThumbRelativeFilePath";
@@ -308,8 +308,7 @@ namespace BLLServer
             CommonResponse response = new CommonResponse();
             response.IsSuccessful = false;
             string originalFileSavePath = string.Empty;
-            string thumbFileSavePath = string.Empty;
-            bool isOriginalFileExists = true;
+            string thumbFileSavePath = string.Empty;      
 
             try
             {
@@ -325,13 +324,11 @@ namespace BLLServer
                 string fileExtenName = Path.GetExtension(fileName).ToLower();
 
                 originalFileSavePath = request.OriginalFileServerRootDirectory + request.CategoryAbsolutePath + fileName;
-
-                isOriginalFileExists = File.Exists(originalFileSavePath);
+                thumbFileSavePath = request.ThumbFileServerRootDirectory + request.CategoryAbsolutePath + fileName;                
 
                 if (fileName == "cover.jpg" || fileName.Substring(0, 3) == "sm_") //封面或缩略图
                 {
-                    // 直接复制到缩略图路径       
-                    thumbFileSavePath = request.ThumbFileServerRootDirectory + request.CategoryAbsolutePath + fileName;
+                    // 直接复制到缩略图路径  
                     using (FileStream outputStream = new FileStream(thumbFileSavePath, FileMode.OpenOrCreate, FileAccess.Write))
                     {
                         request.FileData.CopyTo(outputStream);
@@ -342,7 +339,7 @@ namespace BLLServer
                 }
                 else if (fileName == "video.rar" || fileName.Substring(0, 4) == "big_") //视频或预览图
                 {
-                    //直接保存到原始图即可
+                    //直接保存到原始图路径
                     using (FileStream outputStream = new FileStream(originalFileSavePath, FileMode.OpenOrCreate, FileAccess.Write))
                     {
                         request.FileData.CopyTo(outputStream);
@@ -374,6 +371,13 @@ namespace BLLServer
                         {
                             Tools.CreatePictureThumbFromCenter(originalFileSavePath, thumbFileSavePath, request.ThumbPictureWidth, request.ThumbPictureHeight);
                         }
+                    }
+
+                  
+                    bool isOriginalFileExists = File.Exists(originalFileSavePath);
+                    if(request.IsVector)
+                    {
+                        //isOriginalFileExists = 几种缩略图文件分别看是否存在，只要一个存在，就不添加数据库记录
                     }
 
                     // if 文件之前不存在，则添加记录到数据库
