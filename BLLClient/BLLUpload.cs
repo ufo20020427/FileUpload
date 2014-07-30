@@ -450,17 +450,13 @@ namespace BLLClient
                 request.CategoryRelativePath = uploadFolderInfo.LevelPath.Replace("|", "/") + "/" + localDirectory + "/";
                 request.LevelCategoryName = uploadFolderInfo.LevelCategory;
                 request.IsVector = ClientConfig.VectorPictureExtenName.Contains(fileExtenName);
-                request.IsThumbSquare = uploadFolderInfo.IsThumbSquare;               
-                
+                request.IsThumbSquare = uploadFolderInfo.IsThumbSquare;
+                request.FileName = Path.GetFileName(uploadInfo.FilePath).ToLower();
                 if (request.IsVector)
                 {
                     string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(uploadInfo.FilePath);
-                    request.FileName = uploadFolderInfo.dicVectorFile[fileNameWithoutExtension];
-                }
-                else
-                {
-                    request.FileName = Path.GetFileName(uploadInfo.FilePath);
-                }
+                    request.VectorFileName = uploadFolderInfo.dicVectorFile[fileNameWithoutExtension];
+                }               
 
                 if (uploadFolderInfo.CategoryType == CategoryType.Gallery)
                 {
