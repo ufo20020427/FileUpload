@@ -184,14 +184,14 @@ namespace BLLClient
 
                 folderInfo.WaitUploadFilesCount = 0;
                 foreach (string file in Directory.GetFiles(folderInfo.LocalPath))
-                {
+                {              
                     string fileName = Path.GetFileName(file).ToLower();
                     string fileExtenName = Path.GetExtension(file).ToLower();
 
                     if (ClientConfig.VectorPictureExtenName.Contains(fileExtenName))
                     {
                         string directoryName = Path.GetDirectoryName(file);
-                        string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file);
+                        string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file).ToLower();
                         string thumbFile = Path.Combine(directoryName, "sm_" + fileNameWithoutExtension + ".jpg");
                         string bigThumbFile = Path.Combine(directoryName, "big_" + fileNameWithoutExtension + ".jpg");
 
@@ -205,6 +205,17 @@ namespace BLLClient
                         {
                             folderInfo.CheckResult = string.Format("失量图缺少预览图文件{0}", bigThumbFile);
                             return;
+                        }
+
+                        if (folderInfo.dicVectorFile.ContainsKey(fileNameWithoutExtension))
+                        {
+                            string value = folderInfo.dicVectorFile[fileNameWithoutExtension];
+                            value = string.Format("{0}|{1}", value, fileName);
+                            folderInfo.dicVectorFile[fileNameWithoutExtension] = value;
+                        }
+                        else
+                        {
+                            folderInfo.dicVectorFile.Add(fileNameWithoutExtension, fileName);
                         }
                     }
 
@@ -286,7 +297,7 @@ namespace BLLClient
                             //文件上传
                             FileUploadProcess(uploadFolderInfo, index);  
                      
-                            //这里要想办法阻塞
+                            //全部文件上传完成才打包，所以这里阻塞
                             while (uploadFolderInfo.WaitUploadFilesCount > 0)
                             {
                                 if ((DateTime.Now.Subtract(uploadDirectoryStartTime).Minutes) > (ClientConfig.SendTimeout + 1))
@@ -439,8 +450,17 @@ namespace BLLClient
                 request.CategoryRelativePath = uploadFolderInfo.LevelPath.Replace("|", "/") + "/" + localDirectory + "/";
                 request.LevelCategoryName = uploadFolderInfo.LevelCategory;
                 request.IsVector = ClientConfig.VectorPictureExtenName.Contains(fileExtenName);
-                request.IsThumbSquare = uploadFolderInfo.IsThumbSquare;
-                request.FileName = Path.GetFileName(uploadInfo.FilePath);
+                request.IsThumbSquare = uploadFolderInfo.IsThumbSquare;               
+                
+                if (request.IsVector)
+                {
+                    string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(uploadInfo.FilePath);
+                    request.FileName = uploadFolderInfo.dicVectorFile[fileNameWithoutExtension];
+                }
+                else
+                {
+                    request.FileName = Path.GetFileName(uploadInfo.FilePath);
+                }
 
                 if (uploadFolderInfo.CategoryType == CategoryType.Gallery)
                 {

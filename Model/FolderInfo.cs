@@ -9,9 +9,10 @@ namespace Model
     {
         public FolderInfo()
         {
+            dicVectorFile = new Dictionary<string, string>();
             UploadResult = new StringBuilder();
             WaitUploadFilesCount = 0;
-            SucessfulUploadFilesCount = 0;
+            SucessfulUploadFilesCount = 0;          
         }
 
         public int CategoryId { get; set; }

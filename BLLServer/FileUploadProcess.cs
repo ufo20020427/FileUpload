@@ -287,12 +287,19 @@ namespace BLLServer
             param.ParameterName = "@PreViewRelativeFilePath";
             param.DbType = DbType.String;
             param.Value = "/Big" + request.CategoryRelativePath + "big_" + thumbFileName;
-            cmd.Parameters.Add(param);            
+            cmd.Parameters.Add(param);
+
+            string originalRelativeFilePath=string.Empty;
+            string[] fileNames = request.FileName.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach(string fileName in fileNames)
+            {
+                originalRelativeFilePath += string.Format("/Big{0}|", request.CategoryRelativePath, fileName);               
+            }
 
             param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@OriginalRelativeFilePath";
             param.DbType = DbType.String;
-            param.Value = "/Big" + request.CategoryRelativePath + request.FileName;
+            param.Value = originalRelativeFilePath;
             cmd.Parameters.Add(param);
 
             param = _dataBaseAccess.CreateParameter();
@@ -304,11 +311,11 @@ namespace BLLServer
 
 
         public CommonResponse FileUpLoad(FileUploadRequest request)
-        { 
+        {
             CommonResponse response = new CommonResponse();
             response.IsSuccessful = false;
             string originalFileSavePath = string.Empty;
-            string thumbFileSavePath = string.Empty;      
+            string thumbFileSavePath = string.Empty;
 
             try
             {
@@ -318,13 +325,13 @@ namespace BLLServer
                     response.IsSuccessful = false;
                     response.ResultMessage = "您没有访问该文件服务器接口的权限!";
                     return response;
-                }            
+                }
 
                 string fileName = request.FileName.ToLower();
                 string fileExtenName = Path.GetExtension(fileName).ToLower();
 
                 originalFileSavePath = request.OriginalFileServerRootDirectory + request.CategoryAbsolutePath + fileName;
-                thumbFileSavePath = request.ThumbFileServerRootDirectory + request.CategoryAbsolutePath + fileName;                
+                thumbFileSavePath = request.ThumbFileServerRootDirectory + request.CategoryAbsolutePath + fileName;
 
                 if (fileName == "cover.jpg" || fileName.Substring(0, 3) == "sm_") //封面或缩略图
                 {
@@ -349,7 +356,7 @@ namespace BLLServer
                     }
                 }
                 else  //即要保存原始图，又要生成缩略图      
-                {                               
+                {
                     using (FileStream outputStream = new FileStream(originalFileSavePath, FileMode.OpenOrCreate, FileAccess.Write))
                     {
                         request.FileData.CopyTo(outputStream);
@@ -357,10 +364,10 @@ namespace BLLServer
                         response.IsSuccessful = true;
                         response.ResultMessage = string.Empty;
                     }
-                  
+
                     //不是失量文件，则要生成缩略图
                     if (!request.VectorPictureExtenName.ToLower().Contains(fileExtenName))
-                    {                       
+                    {
                         thumbFileSavePath = request.ThumbFileServerRootDirectory + request.CategoryAbsolutePath + "sm_" + fileName;
 
                         if (request.IsThumbSquare)
@@ -373,12 +380,22 @@ namespace BLLServer
                         }
                     }
 
-                  
-                    bool isOriginalFileExists = File.Exists(originalFileSavePath);
-                    if(request.IsVector)
+
+                    bool isOriginalFileExists = false;
+
+                    //isOriginalFileExists = 几种失量图文件分别看是否存在，只要一个存在，就不添加数据库记录
+                    string[] fileNames = fileName.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string file in fileNames)
                     {
-                        //isOriginalFileExists = 几种缩略图文件分别看是否存在，只要一个存在，就不添加数据库记录
+                        string checkFile = request.OriginalFileServerRootDirectory + request.CategoryAbsolutePath + file;
+
+                        if (File.Exists(checkFile))
+                        {
+                            isOriginalFileExists = true;
+                            break;
+                        }
                     }
+
 
                     // if 文件之前不存在，则添加记录到数据库
                     if (!isOriginalFileExists)
@@ -395,7 +412,7 @@ namespace BLLServer
                             param.Value = request.LevelCategoryName;
                             cmd.Parameters.Add(param);
 
-                            _dataBaseAccess.ExecuteCommand(cmd);  
+                            _dataBaseAccess.ExecuteCommand(cmd);
                         }
                         else if (request.CategoryType == CategoryType.Gallery)
                         {
@@ -409,10 +426,10 @@ namespace BLLServer
                             param.Value = request.FileName;
                             cmd.Parameters.Add(param);
 
-                            _dataBaseAccess.ExecuteCommand(cmd);  
+                            _dataBaseAccess.ExecuteCommand(cmd);
                         }
                     }
-                }         
+                }
             }
             catch (Exception ex)
             {
@@ -429,7 +446,7 @@ namespace BLLServer
                         File.Delete(thumbFileSavePath);
                     }
                 }
-                catch(Exception exception)
+                catch (Exception exception)
                 {
                     Tools.LogWrite(exception.ToString());
                 }
