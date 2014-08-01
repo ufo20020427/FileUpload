@@ -102,6 +102,7 @@ namespace WinFormClient
 
                 NetTcpBinding binding = new NetTcpBinding(SecurityMode.None);
                 binding.TransferMode = TransferMode.Streamed;
+                binding.MaxReceivedMessageSize = 2147483648;
                 binding.SendTimeout = new TimeSpan(0, ClientConfig.SendTimeout, 0);   
 
                 ChannelFactory<IFileUpload> channelFactory = new ChannelFactory<IFileUpload>(binding, ClientConfig.WCFAddress);
