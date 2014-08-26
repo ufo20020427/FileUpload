@@ -26,6 +26,8 @@ namespace BLLClient
                 string[] restHours = ConfigurationManager.AppSettings["RestHours"].ToString().Split('-');
                 _restHourStart = int.Parse(restHours[0]);
                 _restHourEnd = int.Parse(restHours[1]);
+
+                _infoFileSplitIncludeEmpty = Convert.ToBoolean(ConfigurationManager.AppSettings["InfoFileSplitIncludeEmpty"]);
             }
             catch (Exception ex)
             {
@@ -45,7 +47,9 @@ namespace BLLClient
         private static int _restHourStart;
         private static int _restHourEnd;
         private static int _maxThread;
-        private static int _sendTimeout;      
+        private static int _sendTimeout;
+        private static bool _infoFileSplitIncludeEmpty;
+ 
 
         public static string WCFAddress
         {
@@ -105,6 +109,11 @@ namespace BLLClient
         public static int SendTimeout
         {
             get { return _sendTimeout; }
+        }
+
+        public static bool InfoFileSplitIncludeEmpty
+        {
+            get { return _infoFileSplitIncludeEmpty; }
         }
     }
 }

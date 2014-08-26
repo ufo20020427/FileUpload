@@ -168,10 +168,10 @@ namespace BLLClient
              {
                  category.LocalDirectoryPath = parentNodeLevelPath + "\\" + category.FolderName;
 
-                 if (!string.IsNullOrEmpty(category.LevelPath))
-                 {
-                     Directory.CreateDirectory(category.LocalDirectoryPath);
-                 }
+                 //if (!string.IsNullOrEmpty(category.LevelPath))
+                 //{
+                 //    Directory.CreateDirectory(category.LocalDirectoryPath);
+                 //}
              }                
 
             foreach (TreeNode node in selectedNode.Nodes)

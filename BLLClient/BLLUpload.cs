@@ -138,7 +138,9 @@ namespace BLLClient
                     }
 
                     string infoContent = File.ReadAllText(Path.Combine(folderInfo.LocalPath, "info.txt"), Encoding.GetEncoding("gb2312")).Trim().Replace("\r", "").Replace("\n", "");
-                    string[] columns = infoContent.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    StringSplitOptions infoFileSplitOptions = ClientConfig.InfoFileSplitIncludeEmpty ? StringSplitOptions.None : StringSplitOptions.RemoveEmptyEntries;
+                    string[] columns = infoContent.Split(new char[] { '|' }, infoFileSplitOptions);
                     switch (folderInfo.StoreTableName)
                     {
                         case "Album_Brand":    //品牌画册                    
