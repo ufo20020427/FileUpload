@@ -364,9 +364,7 @@ namespace BLLServer
                     using (FileStream outputStream = new FileStream(originalFileSavePath, FileMode.OpenOrCreate, FileAccess.Write))
                     {
                         request.FileData.CopyTo(outputStream);
-                        outputStream.Flush();
-                        response.IsSuccessful = true;
-                        response.ResultMessage = string.Empty;
+                        outputStream.Flush();                     
                     }
 
                     if (request.IsThumbSquare)
@@ -377,6 +375,9 @@ namespace BLLServer
                     {
                         Tools.CreatePictureThumbFromCenter(originalFileSavePath, thumbFileSavePath, request.ThumbPictureWidth, request.ThumbPictureHeight);
                     }
+
+                    response.IsSuccessful = true;
+                    response.ResultMessage = string.Empty;
                 }
                 else if(request.FileName.Substring(0, 3) == "sm_") //缩略图
                 {
