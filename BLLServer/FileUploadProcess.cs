@@ -357,7 +357,28 @@ namespace BLLServer
                 }
 
 
-                if (request.FileName == "cover.jpg" || request.FileName.Substring(0, 3) == "sm_") //封面或缩略图
+                if (request.FileName == "cover.jpg") //封面
+                {
+                    originalFileSavePath = request.ThumbFileServerRootDirectory + request.CategoryAbsolutePath + "cover_Temp.jpg";
+                    thumbFileSavePath = request.ThumbFileServerRootDirectory + request.CategoryAbsolutePath + request.FileName;
+                    using (FileStream outputStream = new FileStream(originalFileSavePath, FileMode.OpenOrCreate, FileAccess.Write))
+                    {
+                        request.FileData.CopyTo(outputStream);
+                        outputStream.Flush();
+                        response.IsSuccessful = true;
+                        response.ResultMessage = string.Empty;
+                    }
+
+                    if (request.IsThumbSquare)
+                    {
+                        Tools.CreatePictureThumbFromCenter(originalFileSavePath, thumbFileSavePath);
+                    }
+                    else
+                    {
+                        Tools.CreatePictureThumbFromCenter(originalFileSavePath, thumbFileSavePath, request.ThumbPictureWidth, request.ThumbPictureHeight);
+                    }
+                }
+                else if(request.FileName.Substring(0, 3) == "sm_") //缩略图
                 {
                     // 直接复制到缩略图路径  
                     thumbFileSavePath = request.ThumbFileServerRootDirectory + request.CategoryAbsolutePath + request.FileName;
