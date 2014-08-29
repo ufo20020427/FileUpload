@@ -456,7 +456,7 @@ namespace BLLClient
                 request.FileName = Path.GetFileName(uploadInfo.FilePath).ToLower();
                 if (request.IsVector)
                 {
-                    string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(uploadInfo.FilePath);
+                    string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(uploadInfo.FilePath).ToLower();
                     request.VectorFileName = uploadFolderInfo.dicVectorFile[fileNameWithoutExtension];
                 }               
 
@@ -530,7 +530,7 @@ namespace BLLClient
 
                     UploadInfo uploadInfo = new UploadInfo();
                     uploadInfo.FolderInfo = uploadFolderInfo;
-                    uploadInfo.FilePath = file;
+                    uploadInfo.FilePath = file;                 
 
                     Task task = new Task(FileUpload, uploadInfo);
                     task.Start();
