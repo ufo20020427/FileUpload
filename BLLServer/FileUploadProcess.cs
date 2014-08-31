@@ -379,10 +379,7 @@ namespace BLLServer
                     if (File.Exists(originalFileSavePath))
                     {
                         File.Delete(originalFileSavePath);
-                    }
-
-                    response.IsSuccessful = true;
-                    response.ResultMessage = string.Empty;
+                    }     
                 }
                 else if(request.FileName.Substring(0, 3) == "sm_") //缩略图
                 {
@@ -391,9 +388,7 @@ namespace BLLServer
                     using (FileStream outputStream = new FileStream(thumbFileSavePath, FileMode.OpenOrCreate, FileAccess.Write))
                     {
                         request.FileData.CopyTo(outputStream);
-                        outputStream.Flush();
-                        response.IsSuccessful = true;
-                        response.ResultMessage = string.Empty;
+                        outputStream.Flush();                        
                     }
                 }
                 else if (request.FileName == "video.rar" || request.FileName.Substring(0, 4) == "big_") //视频或预览图
@@ -402,9 +397,7 @@ namespace BLLServer
                     using (FileStream outputStream = new FileStream(originalFileSavePath, FileMode.OpenOrCreate, FileAccess.Write))
                     {
                         request.FileData.CopyTo(outputStream);
-                        outputStream.Flush();
-                        response.IsSuccessful = true;
-                        response.ResultMessage = string.Empty;
+                        outputStream.Flush();                       
                     }
                 }
                 else  //即要保存原始图，又要生成缩略图      
@@ -412,9 +405,7 @@ namespace BLLServer
                     using (FileStream outputStream = new FileStream(originalFileSavePath, FileMode.OpenOrCreate, FileAccess.Write))
                     {
                         request.FileData.CopyTo(outputStream);
-                        outputStream.Flush();
-                        response.IsSuccessful = true;
-                        response.ResultMessage = string.Empty;
+                        outputStream.Flush();                   
                     }
 
                     //不是失量文件，则要生成缩略图
@@ -466,6 +457,9 @@ namespace BLLServer
                         }
                     }
                 }
+
+                response.IsSuccessful = true;
+                response.ResultMessage = string.Empty;
             }
             catch (Exception ex)
             {

@@ -556,7 +556,6 @@ namespace BLLClient
 
                     string errorInfo = string.Format("目录:{0}\r\n异常:{1}", uploadFolderInfo.LocalPath, uploadResult);
                     Tools.LogWrite(errorInfo);
-
                     
                     uploadFolderInfo.UploadResult.AppendLine(uploadResult);
                 }
