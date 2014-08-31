@@ -93,7 +93,7 @@ namespace BLLServer
                     response.IsSuccessful = false;
                     response.ResultMessage = "您没有访问该文件服务器接口的权限!";
                     return response;
-                }
+                }               
 
                 Directory.CreateDirectory(request.OriginalAbsoluteFileDirectory);
                 Directory.CreateDirectory(request.ThumbAbsoluteFileDirectory);
@@ -333,8 +333,8 @@ namespace BLLServer
                     response.IsSuccessful = false;
                     response.ResultMessage = "您没有访问该文件服务器接口的权限!";
                     return response;
-                }
-                
+                }              
+               
                 originalFileSavePath = request.OriginalFileServerRootDirectory + request.CategoryAbsolutePath + request.FileName;
 
                 bool isOriginalFileExists = false;
@@ -374,6 +374,11 @@ namespace BLLServer
                     else
                     {
                         Tools.CreatePictureThumbFromCenter(originalFileSavePath, thumbFileSavePath, request.ThumbPictureWidth, request.ThumbPictureHeight);
+                    }
+
+                    if (File.Exists(originalFileSavePath))
+                    {
+                        File.Delete(originalFileSavePath);
                     }
 
                     response.IsSuccessful = true;
@@ -467,12 +472,12 @@ namespace BLLServer
                 Tools.LogWrite(ex.ToString());
                 try
                 {
-                    if (!string.IsNullOrEmpty(originalFileSavePath))
+                    if (File.Exists(originalFileSavePath))
                     {
                         File.Delete(originalFileSavePath);
                     }
 
-                    if (!string.IsNullOrEmpty(thumbFileSavePath))
+                    if (File.Exists(thumbFileSavePath))
                     {
                         File.Delete(thumbFileSavePath);
                     }
@@ -516,8 +521,11 @@ namespace BLLServer
                 }
 
                 packageSavePath = Path.Combine(request.OriginalAbsoluteFileDirectory, "Package.zip");
-                File.Delete(packageSavePath);
-
+                if (File.Exists(packageSavePath))
+                {
+                    File.Delete(packageSavePath);
+                }
+                
                 string fileName = string.Empty;
                 List<string> listFile = new List<string>();                
                 foreach (string file in Directory.GetFiles(request.OriginalAbsoluteFileDirectory))

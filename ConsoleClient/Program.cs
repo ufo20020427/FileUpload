@@ -60,20 +60,17 @@ namespace Client
             //Console.ReadKey();
             try
             {
-
-               // Tools.CreatePictureThumbFromCenter("f:\\slide-1.jpg", "f:\\slide-2.jpg", 150, 200);
-
-              //  Tools.CreatePictureThumbFromCenter("f:\\test-1.jpg", "f:\\test-2.jpg", 150, 200);
-
-                string fileName = "12.ai";
-                string newFileName = fileName.Split(new char[] { '.' })[0] + ".jpg";
-                Console.WriteLine(newFileName);
-                Console.WriteLine("生成完成");
+                string fileName = "";
+                if (File.Exists(fileName))
+                {
+                    File.Delete(fileName);
+                }
+                Console.WriteLine("删除ok");
 
             }
             catch(Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex);
             }
         }
     }

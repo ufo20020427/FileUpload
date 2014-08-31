@@ -759,7 +759,7 @@ namespace WinFormClient
                     if (!string.IsNullOrEmpty(failFolderInfo.CheckResult))
                     {
                         continue;
-                    }
+                    }  
 
                     listBoxUploadDirectory.Items.Add(failFolderInfo);
                     listBoxFailDirectory.Items.RemoveAt(index);

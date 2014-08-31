@@ -73,6 +73,7 @@ namespace BLLClient
             {
                 _isRun = true;
                 _threadUpload = new Thread(UpLoadProcess);
+                _threadUpload.IsBackground = true;
                 _threadUpload.Start();
             }
             catch (Exception ex)
@@ -327,6 +328,9 @@ namespace BLLClient
                         catch (Exception ex)
                         {
                             //转移到失败目录
+                            string errorInfo = string.Format("目录:{0}\r\nUpLoadProcess()异常:{1}", uploadFolderInfo.LocalPath, ex.ToString());
+                            Tools.LogWrite(errorInfo);
+
                             uploadFolderInfo.UploadResult.AppendLine(ex.Message);
                             UploadDirectoryTurnToFail(uploadFolderInfo, index);
                         }
@@ -334,7 +338,7 @@ namespace BLLClient
                         {
                             uploadFolderInfo.IsRunning = false;
                         }
-                    }
+                    } // end for
 
                     Thread.Sleep(10000);
                 } //  while (_isRun)
@@ -412,6 +416,9 @@ namespace BLLClient
 
             if (!response.IsSuccessful)
             {
+                string errorInfo = string.Format("目录:{0}\r\n服务器目录创建失败:{1}", uploadFolderInfo.LocalPath, response.ResultMessage);
+                Tools.LogWrite(errorInfo);
+
                 uploadFolderInfo.UploadResult.AppendLine(response.ResultMessage);
                 UploadDirectoryTurnToFail(uploadFolderInfo, itemIndex);                
             }
@@ -489,12 +496,20 @@ namespace BLLClient
                 else
                 {
                     string uploadResult = string.Format("{0},{1}", Path.GetFileName(uploadInfo.FilePath), response.ResultMessage);
+
+                    string errorInfo = string.Format("目录:{0}\r\n文件上传失败:{1}", uploadFolderInfo.LocalPath, uploadResult);
+                    Tools.LogWrite(errorInfo);
+
                     uploadFolderInfo.UploadResult.AppendLine(uploadResult);
                 }
             }
             catch(Exception ex)
             {
-                string uploadResult = string.Format("{0},{1}", Path.GetFileName(uploadInfo.FilePath), ex.Message);
+                string uploadResult = string.Format("{0},{1}", Path.GetFileName(uploadInfo.FilePath), ex.ToString());
+
+                string errorInfo = string.Format("目录:{0}\r\n文件上传异常:{1}", uploadFolderInfo.LocalPath, uploadResult);
+                Tools.LogWrite(errorInfo);
+
                 uploadFolderInfo.UploadResult.AppendLine(uploadResult);
             }
             finally
@@ -532,12 +547,17 @@ namespace BLLClient
                     uploadInfo.FolderInfo = uploadFolderInfo;
                     uploadInfo.FilePath = file;                 
 
-                    Task task = new Task(FileUpload, uploadInfo);
+                    Task task = new Task(FileUpload, uploadInfo);                    
                     task.Start();
                 }
                 catch (Exception ex)
                 {
-                    string uploadResult = string.Format("{0},{1}", Path.GetFileName(file), ex.Message);
+                    string uploadResult = string.Format("{0},{1}", Path.GetFileName(file), ex.ToString());
+
+                    string errorInfo = string.Format("目录:{0}\r\n异常:{1}", uploadFolderInfo.LocalPath, uploadResult);
+                    Tools.LogWrite(errorInfo);
+
+                    
                     uploadFolderInfo.UploadResult.AppendLine(uploadResult);
                 }
             }
@@ -558,6 +578,9 @@ namespace BLLClient
 
             if (!response.IsSuccessful)
             {
+                string errorInfo = string.Format("目录:{0}\r\n服务端目录打包异常:{1}", uploadFolderInfo.LocalPath, response.ResultMessage);
+                Tools.LogWrite(errorInfo);
+
                 uploadFolderInfo.UploadResult.AppendLine(response.ResultMessage);
                 UploadDirectoryTurnToFail(uploadFolderInfo, itemIndex);
             }
