@@ -430,6 +430,8 @@ namespace BLLClient
         {
             _semaphoreTask.WaitOne();
 
+            _fileUploadStartTime = DateTime.Now;
+
             UploadInfo uploadInfo = null;
             FolderInfo uploadFolderInfo = null;
            
@@ -547,7 +549,7 @@ namespace BLLClient
                     uploadInfo.FolderInfo = uploadFolderInfo;
                     uploadInfo.FilePath = file;
 
-                    _fileUploadStartTime = DateTime.Now;
+                    
                     Task task = new Task(FileUpload, uploadInfo);                    
                     task.Start();
                 }
