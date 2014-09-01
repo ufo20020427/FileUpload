@@ -27,6 +27,8 @@ namespace BLLClient
         private Action<FolderInfo, int> _delegateTurnToSucessful;
         private Action<FolderInfo, int> _delegateTurnToFail;
 
+        private DateTime _fileUploadStartTime;
+
         private void UploadDirectoryTurnToSucessful(FolderInfo uploadFolderInfo, int itemIndex)
         {
             if (_listBoxUploadDirectory.InvokeRequired)
@@ -282,8 +284,6 @@ namespace BLLClient
 
                     for (int index = uploadDirectoryCount; index >= 0; index--)
                     {
-                        DateTime uploadDirectoryStartTime = DateTime.Now;
-
                         try
                         {
                             uploadFolderInfo = _listBoxUploadDirectory.Items[index] as FolderInfo;
@@ -303,7 +303,7 @@ namespace BLLClient
                             //全部文件上传完成才打包，所以这里阻塞
                             while (uploadFolderInfo.WaitUploadFilesCount > 0)
                             {
-                                if ((DateTime.Now.Subtract(uploadDirectoryStartTime).Minutes) > (ClientConfig.SendTimeout + 1))
+                                if ((DateTime.Now.Subtract(_fileUploadStartTime).Minutes) > (ClientConfig.SendTimeout + 1))
                                 {
                                     break;
                                 }
@@ -545,8 +545,9 @@ namespace BLLClient
 
                     UploadInfo uploadInfo = new UploadInfo();
                     uploadInfo.FolderInfo = uploadFolderInfo;
-                    uploadInfo.FilePath = file;                 
+                    uploadInfo.FilePath = file;
 
+                    _fileUploadStartTime = DateTime.Now;
                     Task task = new Task(FileUpload, uploadInfo);                    
                     task.Start();
                 }
