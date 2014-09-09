@@ -155,6 +155,11 @@ namespace BLLServer
             param.Value = request.Introudce;
             cmd.Parameters.Add(param);
 
+            if(!request.IsExistVideo)
+            {
+                request.VideoRelativeFilePath = string.Empty;
+            }
+
             param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@VideoRelativeFilePath";
             param.DbType = DbType.String;

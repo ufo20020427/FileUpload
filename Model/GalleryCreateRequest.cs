@@ -56,5 +56,8 @@ namespace Model
 
         [MessageHeader]
         public string StoreTableName; //Album_Brand
+
+        [MessageHeader]
+        public bool IsExistVideo;
     }
 }

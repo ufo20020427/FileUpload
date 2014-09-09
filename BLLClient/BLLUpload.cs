@@ -392,6 +392,7 @@ namespace BLLClient
             request.OriginalAbsoluteFileDirectory = _fileServerInfo.OriginalFileServerRootDirectory + uploadFolderInfo.LevelPath.Replace("|", "\\\\") + "\\\\" + localDirectory;
             request.ThumbAbsoluteFileDirectory = _fileServerInfo.ThumbFileServerRootDirectory + uploadFolderInfo.LevelPath.Replace("|", "\\\\") + "\\\\" + localDirectory;
             request.StoreTableName = uploadFolderInfo.StoreTableName;
+            request.IsExistVideo = uploadFolderInfo.IsExistVideo;
 
             CommonResponse response = _proxy.GalleryCreate(request);
             return response;
