@@ -374,7 +374,7 @@ namespace BLLServer
 
                     if (request.IsThumbSquare)
                     {
-                        Tools.CreatePictureThumbFromCenter(originalFileSavePath, thumbFileSavePath);
+                        Tools.CreatePictureThumbFromCenter(originalFileSavePath, thumbFileSavePath, Math.Max(request.ThumbPictureWidth, request.ThumbPictureHeight));
                     }
                     else
                     {
@@ -420,7 +420,7 @@ namespace BLLServer
 
                         if (request.IsThumbSquare)
                         {
-                            Tools.CreatePictureThumbFromCenter(originalFileSavePath, thumbFileSavePath);
+                            Tools.CreatePictureThumbFromCenter(originalFileSavePath, thumbFileSavePath, Math.Max(request.ThumbPictureWidth, request.ThumbPictureHeight));
                         }
                         else
                         {

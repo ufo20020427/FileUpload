@@ -174,18 +174,23 @@ namespace Common
         }
 
         /// <summary>
-        /// 从中心点生成图片缩略图（按原图短的边生成正方形）
+        /// 从中心点生成图片缩略图（按新图长的边生成正方形）
         /// </summary>
         /// <param name="picturePathOld">原图片路径</param>
         /// <param name="picturePathNew">新图片路径</param>    
-        public static void CreatePictureThumbFromCenter(string picturePathOld, string picturePathNew)
+        public static void CreatePictureThumbFromCenter(string picturePathOld, string picturePathNew, int widthNew)
         {
             using (Image sourceImage = Image.FromFile(picturePathOld))
             {
                 int widthOld = sourceImage.Width;
                 int heightOld = sourceImage.Height;
 
-                int widthNew = Math.Min(widthOld, heightOld);
+                int minWidthOld = Math.Min(widthOld, heightOld);
+                if (widthNew > minWidthOld)
+                {
+                    widthNew = minWidthOld;
+                }
+
                 int heightNew = widthNew;
 
                 int xStart = (widthOld - widthNew )/2;
