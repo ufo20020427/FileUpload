@@ -60,12 +60,9 @@ namespace Client
             //Console.ReadKey();
             try
             {
-                string fileName = "";
-                if (File.Exists(fileName))
-                {
-                    File.Delete(fileName);
-                }
-                Console.WriteLine("删除ok");
+                string f = "f:\\abc.123.jpg";
+                string r = Path.GetFileNameWithoutExtension(f);
+                Console.WriteLine(r);
 
             }
             catch(Exception ex)

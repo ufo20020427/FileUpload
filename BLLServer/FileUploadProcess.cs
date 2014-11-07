@@ -280,7 +280,8 @@ namespace BLLServer
             param.Value = request.FileServerId;
             cmd.Parameters.Add(param);
 
-            string thumbFileName = request.FileName.Split(new char[]{'.'})[0] + ".jpg";
+            string thumbFileName = Path.GetFileNameWithoutExtension(request.FileName) + ".jpg";
+            
 
             param = _dataBaseAccess.CreateParameter();
             param.ParameterName = "@ThumbRelativeFilePath";
