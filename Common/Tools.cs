@@ -45,7 +45,7 @@ namespace Common
                 zip.Save(savePath);
             }
         }
- 
+
         public static string MD5Encrypt(string content)
         {
             MD5 md5 = new MD5CryptoServiceProvider();
@@ -67,7 +67,7 @@ namespace Common
         /// <param name="picturePathNew">新图片路径</param>
         /// <param name="widthNew">新宽度</param>
         /// <param name="heightNew">新高度</param>       
-        public static void CreatePictureThumb(string picturePathOld, string picturePathNew, int widthNew, int heightNew)
+        private static void CreatePictureThumb(string picturePathOld, string picturePathNew, int widthNew, int heightNew)
         {
             using (Image sourceImage = Image.FromFile(picturePathOld))
             {
@@ -110,7 +110,7 @@ namespace Common
                         bitmap.Save(picturePathNew, ImageFormat.Jpeg);
                     }
                 }
-            }        
+            }
         }
 
         /// <summary>
@@ -125,8 +125,8 @@ namespace Common
             string tempPicturePathNew = string.Empty;
             try
             {
-                string newFileName =  Guid.NewGuid().ToString() + Path.GetExtension(picturePathOld);
-                tempPicturePathNew = Path.Combine(Path.GetDirectoryName(picturePathOld), newFileName);
+                string newFileName = Guid.NewGuid().ToString() + Path.GetExtension(picturePathOld);
+                tempPicturePathNew = Path.Combine(Path.GetDirectoryName(picturePathOld), newFileName);                
                 CreatePictureThumb(picturePathOld, tempPicturePathNew, widthNew, heightNew);
 
                 using (Image sourceImage = Image.FromFile(tempPicturePathNew))
@@ -163,7 +163,7 @@ namespace Common
                     }
                 }
             }
-            catch(Exception)
+            catch (Exception)
             {
                 throw;
             }
@@ -180,42 +180,38 @@ namespace Common
         /// <param name="picturePathNew">新图片路径</param>    
         public static void CreatePictureThumbFromCenter(string picturePathOld, string picturePathNew)
         {
-            using (Image sourceImage = Image.FromFile(picturePathOld))
+            string tempPicturePathNew = string.Empty;
+
+            try
             {
-                int widthOld = sourceImage.Width;
-                int heightOld = sourceImage.Height;
+                string newFileName = Guid.NewGuid().ToString() + Path.GetExtension(picturePathOld);
+                tempPicturePathNew = Path.Combine(Path.GetDirectoryName(picturePathOld), newFileName);
 
-                int minOld = Math.Min(widthOld, heightOld);
-                int widthNew = Math.Min(minOld, 200);
-                int heightNew = widthNew;
-
-                int xStart = (widthOld - widthNew )/2;
-                int yStart = (heightOld - heightNew) / 2;
-
-                File.Delete(picturePathNew);
-
-                using (Bitmap bitmap = new Bitmap(widthNew, heightNew))
+                using (Image sourceImage = Image.FromFile(picturePathOld))
                 {
-                    using (Graphics g = Graphics.FromImage(bitmap))
-                    {
-                        g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
+                    CreatePictureThumbFromCenter(picturePathOld, tempPicturePathNew, Math.Min(sourceImage.Width, sourceImage.Height), Math.Min(sourceImage.Width, sourceImage.Height));
+                }
 
-                        //设置高质量,低速度呈现平滑程度
-                        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                using (Image sourceImage = Image.FromFile(tempPicturePathNew))
+                {
+                    int widthOld = sourceImage.Width;
+                    int heightOld = sourceImage.Height;
 
-                        //清空画布并以透明背景色填充
-                        g.Clear(Color.Transparent);
-
-                        //在指定位置并且按指定大小绘制原图片的指定部分
-                        g.DrawImage(sourceImage, new Rectangle(0, 0, widthNew, heightNew), new Rectangle(xStart, yStart, widthNew, heightNew),
-                            System.Drawing.GraphicsUnit.Pixel);
-
-                        bitmap.Save(picturePathNew, ImageFormat.Jpeg);
-                    }
+                    int minOld = Math.Min(widthOld, heightOld);
+                    int widthNew = Math.Min(minOld, 200);
+                    CreatePictureThumb(tempPicturePathNew, picturePathNew, widthNew, widthNew);
                 }
             }
-
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                File.Delete(tempPicturePathNew);
+            }
         }
+
 
     }
 }

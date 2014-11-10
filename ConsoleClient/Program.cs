@@ -60,10 +60,8 @@ namespace Client
             //Console.ReadKey();
             try
             {
-                string f = "f:\\abc.123.jpg";
-                string r = Path.GetFileNameWithoutExtension(f);
-                Console.WriteLine(r);
-
+              // Tools.CreatePictureThumbFromCenter("f:\\a.jpg", "f:\\b.jpg",240,320);
+               
             }
             catch(Exception ex)
             {
